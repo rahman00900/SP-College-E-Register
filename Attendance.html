@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SARDAR PATEL COLLEGE - ATTENDANCE MANAGEMENT SYSTEM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --white: #ffffff;
+      --navy: #0f172a;
+      --navy-light: #1e293b;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --green: #16a34a;
+      --red: #dc2626;
+      --orange: #ea580c;
+      --text: #0f172a;
+      --text-secondary: #334155;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+    /* Modal / Dialog */
+    .overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6); display: flex; align-items: center;
+      justify-content: center; z-index: 100;
+    }
+    .modal {
+      background: var(--white); padding: 30px; border-radius: 8px;
+      width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .modal h2 { margin-bottom: 12px; color: var(--text); }
+    .modal p { color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 10px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 14px; font-weight: 600;
+    }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px; background-color: var(--navy); color: white;
+      display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
+    }
+    .sidebar-header { padding: 30px 20px; border-bottom: 1px solid var(--navy-light); }
+    .sidebar-header h2 { font-size: 20px; letter-spacing: 0.5px; }
+    .sidebar-header h3 { font-size: 18px; color: #93c5fd; }
+    .sidebar-menu { display: flex; flex-direction: column; gap: 6px; padding: 15px 10px; flex-grow: 1; }
+    .sidebar-btn {
+      background: transparent; border: none; color: white; padding: 12px 16px;
+      text-align: left; font-size: 14px; font-weight: 600; border-radius: 6px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .sidebar-btn:hover, .sidebar-btn.active { background-color: var(--navy-light); }
+    .sidebar-footer { padding: 20px; border-top: 1px solid var(--navy-light); font-size: 12px; color: #cbd5e1; }
+
+    /* Content Area */
+    .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 25px 30px; }
+    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .page-title h1 { font-size: 26px; color: var(--text); }
+    .page-title p { color: var(--text-secondary); font-size: 14px; }
+    .class-badge { text-align: right; font-size: 13px; color: var(--text-secondary); }
+    .class-badge b { color: var(--text); font-size: 15px; }
+
+    /* Cards */
+    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+    .card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+      padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .card-info h4 { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; }
+    .card-info span { font-size: 26px; font-weight: 700; }
+    .card-bar { width: 6px; height: 40px; border-radius: 3px; }
+
+    /* Action Table Container */
+    .table-container {
+      background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+      padding: 20px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
+    }
+    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .table-toolbar input[type="text"] {
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 260px; font-weight: 600;
+    }
+    .btn-group { display: flex; gap: 8px; }
+    .btn {
+      padding: 8px 16px; border: none; border-radius: 6px; font-size: 13px;
+      font-weight: 600; cursor: pointer; color: white;
+    }
+    .btn-primary { background: var(--primary); }
+    .btn-dark { background: var(--primary-dark); }
+    .btn-green { background: var(--green); }
+    .btn-red { background: var(--red); }
+    .btn-orange { background: var(--orange); }
+
+    /* Table */
+    .table-scroll { overflow: auto; flex-grow: 1; border: 1px solid var(--border); border-radius: 6px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    th { background: #f8fafc; padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-weight: 600; }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    .badge-present { color: var(--green); }
+    .badge-absent { color: var(--red); }
+  </style>
+</head>
+<body>
+
+  <!-- Auth Dialog -->
+  <div id="authModal" class="overlay" style="display: flex;">
+    <div class="modal">
+      <h2>SARDAR PATEL COLLEGE</h2>
+      <p>Attendance Management System - Staff Authentication</p>
+      <div id="authSetupFields" style="display: none;">
+        <div class="form-group">
+          <label>Create Staff Password</label>
+          <input type="password" id="newPass">
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="confirmPass">
+        </div>
+      </div>
+      <div id="authLoginFields">
+        <div class="form-group">
+          <label>Staff Password</label>
+          <input type="password" id="loginPass">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="handleAuth()">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Shell -->
+  <div class="sidebar">
+    <div>
+      <div class="sidebar-header">
+        <h2>ATTENDANCE</h2>
+        <h3>MANAGEMENT</h3>
+      </div>
+      <div class="sidebar-menu">
+        <button class="sidebar-btn" onclick="showDashboard()">Dashboard</button>
+        <button class="sidebar-btn" onclick="showStudents()">Students</button>
+        <button class="sidebar-btn" onclick="openMarkAttendanceModal()">Mark Attendance</button>
+        <button class="sidebar-btn" onclick="exportCSV()">Export CSV</button>
+        <button class="sidebar-btn" onclick="openAddClassModal()">Add Class</button>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div id="contextLabel">No Class Selected</div>
+      <button class="sidebar-btn" style="margin-top: 10px; padding: 6px 0;" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="top-header">
+      <div class="page-title">
+        <h1 id="viewTitle">Dashboard</h1>
+        <p id="viewSubtitle">Overview of your class attendance</p>
+      </div>
+      <div class="class-badge" id="classBadge"></div>
+    </div>
+
+    <!-- Dashboard Metric Cards -->
+    <div class="cards-row" id="metricsRow">
+      <div class="card">
+        <div class="card-info">
+          <h4>Total Students</h4>
+          <span id="metricTotal" style="color: var(--primary);">0</span>
+        </div>
+        <div class="card-bar" style="background: var(--primary);"></div>
+      </div>
+      <div class="card">
+        <div class="card-info">
+          <h4>Present Today</h4>
+          <span id="metricPresent" style="color: var(--green);">0</span>
+        </div>
+        <div class="card-bar" style="background: var(--green);"></div>
+      </div>
+      <div class="card">
+        <div class="card-info">
+          <h4>Absent Today</h4>
+          <span id="metricAbsent" style="color: var(--red);">0</span>
+        </div>
+        <div class="card-bar" style="background: var(--red);"></div>
+      </div>
+      <div class="card">
+        <div class="card-info">
+          <h4>Attendance</h4>
+          <span id="metricPercentage" style="color: var(--orange);">0%</span>
+        </div>
+        <div class="card-bar" style="background: var(--orange);"></div>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <div class="table-toolbar">
+        <input type="text" id="tableSearch" placeholder="Search by name, hall ticket..." oninput="renderTable()">
+        <div class="btn-group" id="tableActions"></div>
+      </div>
+      <div class="table-scroll">
+        <table id="mainTable">
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State Store
+    const STORAGE_KEY = 'spc_attendance_data';
+    let app = { passwordHash: '', classes: {}, currentClassKey: '' };
+    let currentView = 'dashboard';
+
+    function init() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { app = JSON.parse(saved); } catch (e) { console.error(e); }
+      }
+      if (!app.passwordHash) {
+        document.getElementById('authSetupFields').style.display = 'block';
+        document.getElementById('authLoginFields').style.display = 'none';
+      }
+      if (!app.classes || Object.keys(app.classes).length === 0) {
+        const id = 'class_' + Date.now();
+        app.classes = {};
+        app.classes[id] = { id, name: 'B.Sc MPCs', academicYear: '2026-27', semester: 'I Semester', students: [], dates: [] };
+        app.currentClassKey = id;
+        save();
+      }
+    }
+
+    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(app)); }
+    function getCurrentClass() { return app.classes[app.currentClassKey]; }
+
+    // Authentication
+    function handleAuth() {
+      if (!app.passwordHash) {
+        const p1 = document.getElementById('newPass').value;
+        const p2 = document.getElementById('confirmPass').value;
+        if (p1.length < 4 || p1 !== p2) { alert('Password must match and be at least 4 characters.'); return; }
+        app.passwordHash = btoa(p1);
+        save();
+        document.getElementById('authModal').style.display = 'none';
+        showDashboard();
+      } else {
+        const pass = document.getElementById('loginPass').value;
+        if (btoa(pass) === app.passwordHash) {
+          document.getElementById('authModal').style.display = 'none';
+          showDashboard();
+        } else {
+          alert('Incorrect password.');
+        }
+      }
+    }
+    function logout() { location.reload(); }
+
+    // Navigation & Views
+    function updateContext() {
+      const c = getCurrentClass();
+      document.getElementById('contextLabel').innerHTML = `<b>${c.name}</b><br>${c.academicYear}<br>${c.semester}`;
+      document.getElementById('classBadge').innerHTML = `<b>${c.name}</b><br>${c.academicYear} | ${c.semester}`;
+    }
+
+    function showDashboard() {
+      currentView = 'dashboard';
+      document.getElementById('viewTitle').innerText = 'Dashboard';
+      document.getElementById('viewSubtitle').innerText = 'Overview of your selected class';
+      document.getElementById('metricsRow').style.display = 'grid';
+      document.getElementById('tableActions').innerHTML = `
+        <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
+        <button class="btn btn-green" onclick="openMarkAttendanceModal()">Mark Attendance</button>
+      `;
+      updateContext();
+      updateMetrics();
+      renderTable();
+    }
+
+    function showStudents() {
+      currentView = 'students';
+      document.getElementById('viewTitle').innerText = 'Student Management';
+      document.getElementById('viewSubtitle').innerText = 'Manage, send WhatsApp notices, or review students';
+      document.getElementById('metricsRow').style.display = 'none';
+      document.getElementById('tableActions').innerHTML = `
+        <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
+      `;
+      updateContext();
+      renderTable();
+    }
+
+    function updateMetrics() {
+      const c = getCurrentClass();
+      const total = c.students.length;
+      let present = 0, absent = 0;
+      const latestDate = c.dates[c.dates.length - 1];
+
+      if (latestDate) {
+        c.students.forEach(s => {
+          if (s.attendance[latestDate] === 'Present') present++;
+          else if (s.attendance[latestDate] === 'Absent') absent++;
+        });
+      }
+      document.getElementById('metricTotal').innerText = total;
+      document.getElementById('metricPresent').innerText = present;
+      document.getElementById('metricAbsent').innerText = absent;
+      document.getElementById('metricPercentage').innerText = total === 0 ? '0%' : ((present / total) * 100).toFixed(1) + '%';
+    }
+
+    // Table Rendering
+    function renderTable() {
+      const c = getCurrentClass();
+      const query = document.getElementById('tableSearch').value.toLowerCase();
+      const thead = document.getElementById('tableHead');
+      const tbody = document.getElementById('tableBody');
+      thead.innerHTML = ''; tbody.innerHTML = '';
+
+      const filtered = c.students.filter(s =>
+        s.name.toLowerCase().includes(query) ||
+        s.hallTicket.toLowerCase().includes(query) ||
+        s.whatsapp.includes(query)
+      );
+
+      if (currentView === 'dashboard') {
+        let hHtml = `<tr><th>Hall Ticket No.</th><th>Student Name</th><th>WhatsApp</th>`;
+        c.dates.forEach(d => { hHtml += `<th>${d}</th>`; });
+        hHtml += `<th>Total</th><th>Present</th><th>Percentage</th></tr>`;
+        thead.innerHTML = hHtml;
+
+        filtered.forEach(s => {
+          const totalDays = c.dates.length;
+          let presentCount = 0;
+          c.dates.forEach(d => { if (s.attendance[d] === 'Present') presentCount++; });
+          const pct = totalDays === 0 ? '0.00%' : ((presentCount / totalDays) * 100).toFixed(2) + '%';
+
+          let rHtml = `<tr><td>${s.hallTicket}</td><td>${s.name}</td><td>${s.whatsapp}</td>`;
+          c.dates.forEach(d => {
+            const status = s.attendance[d] || '-';
+            const badge = status === 'Present' ? 'badge-present' : status === 'Absent' ? 'badge-absent' : '';
+            rHtml += `<td class="${badge}">${status}</td>`;
+          });
+          rHtml += `<td>${totalDays}</td><td>${presentCount}</td><td>${pct}</td></tr>`;
+          tbody.innerHTML += rHtml;
+        });
+      } else {
+        thead.innerHTML = `
+          <tr>
+            <th>Hall Ticket No.</th>
+            <th>Student Name</th>
+            <th>WhatsApp</th>
+            <th>Attendance %</th>
+            <th>Actions</th>
+          </tr>
+        `;
+        filtered.forEach((s, idx) => {
+          const totalDays = c.dates.length;
+          let presentCount = 0;
+          c.dates.forEach(d => { if (s.attendance[d] === 'Present') presentCount++; });
+          const pct = totalDays === 0 ? '0.00%' : ((presentCount / totalDays) * 100).toFixed(2) + '%';
+
+          tbody.innerHTML += `
+            <tr>
+              <td>${s.hallTicket}</td>
+              <td>${s.name}</td>
+              <td>${s.whatsapp}</td>
+              <td>${pct}</td>
+              <td>
+                <button class="btn btn-green" style="padding: 4px 8px; font-size:11px;" onclick="sendWhatsApp('${s.hallTicket}')">WhatsApp</button>
+                <button class="btn btn-red" style="padding: 4px 8px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+    }
+
+    // Student Actions
+    function openAddStudentModal() {
+      const hall = prompt('Enter Hall Ticket Number:');
+      if (!hall) return;
+      const name = prompt('Enter Student Name:');
+      if (!name) return;
+      const wa = prompt('Enter 10-digit WhatsApp Number:');
+      if (!wa) return;
+
+      const c = getCurrentClass();
+      if (c.students.some(s => s.hallTicket.toLowerCase() === hall.toLowerCase())) {
+        alert('Hall Ticket Number already exists.');
+        return;
+      }
+      c.students.push({ hallTicket: hall, name: name, whatsapp: wa.replace(/\D/g, ''), attendance: {} });
+      save();
+      updateMetrics();
+      renderTable();
+    }
+
+    function deleteStudent(index) {
+      if (confirm('Are you sure you want to delete this student?')) {
+        getCurrentClass().students.splice(index, 1);
+        save();
+        updateMetrics();
+        renderTable();
+      }
+    }
+
+    // Attendance Marking
+    function openMarkAttendanceModal() {
+      const c = getCurrentClass();
+      if (c.students.length === 0) { alert('Please add students first.'); return; }
+      const today = new Date().toISOString().slice(0,10).split('-').reverse().join('-');
+      const date = prompt('Enter Date (DD-MM-YYYY):', today);
+      if (!date) return;
+
+      if (!c.dates.includes(date)) c.dates.push(date);
+
+      c.students.forEach(s => {
+        const mark = confirm(`Mark PRESENT for ${s.name} (${s.hallTicket})?\n[OK = Present | Cancel = Absent]`);
+        s.attendance[date] = mark ? 'Present' : 'Absent';
+      });
+
+      save();
+      updateMetrics();
+      renderTable();
+      alert('Attendance recorded successfully for ' + date);
+    }
+
+    // WhatsApp Dispatch
+    function sendWhatsApp(hallTicket) {
+      const c = getCurrentClass();
+      const s = c.students.find(x => x.hallTicket === hallTicket);
+      if (!s || s.whatsapp.length < 10) { alert('Valid WhatsApp number required.'); return; }
+
+      const totalDays = c.dates.length;
+      let present = 0;
+      c.dates.forEach(d => { if (s.attendance[d] === 'Present') present++; });
+      const absent = totalDays - present;
+      const pct = totalDays === 0 ? '0.00%' : ((present / totalDays) * 100).toFixed(2) + '%';
+
+      let msg = `*SARDAR PATEL COLLEGE*\n*STUDENT ATTENDANCE REPORT*\n\n` +
+        `👤 *Student Name:* ${s.name}\n🆔 *Hall Ticket:* ${s.hallTicket}\n📚 *Class:* ${c.name}\n` +
+        `🗓️ *Academic Year:* ${c.academicYear} (${c.semester})\n\n` +
+        `*ATTENDANCE SUMMARY*\n• Total Classes: ${totalDays}\n• Present: ${present}\n• Absent: ${absent}\n• Percentage: ${pct}\n\n`;
+
+      if ((present / (totalDays || 1)) < 0.75) {
+        msg += `⚠️ *ALERT:* Attendance is below 75%. Please attend classes regularly.\n\n`;
+      }
+      msg += `Regards,\n*SARDAR PATEL COLLEGE*`;
+
+      window.open(`https://wa.me/${s.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // Class Management
+    function openAddClassModal() {
+      const name = prompt('Class / Department Name:');
+      if (!name) return;
+      const year = prompt('Academic Year (e.g. 2026-27):', '2026-27');
+      if (!year) return;
+      const sem = prompt('Semester:', 'I Semester');
+      if (!sem) return;
+
+      const id = 'class_' + Date.now();
+      app.classes[id] = { id, name, academicYear: year, semester: sem, students: [], dates: [] };
+      app.currentClassKey = id;
+      save();
+      showDashboard();
+    }
+
+    // CSV Export
+    function exportCSV() {
+      const c = getCurrentClass();
+      let csv = 'Hall Ticket Number,Student Name,WhatsApp,Total Days,Present,Percentage\n';
+      c.students.forEach(s => {
+        const total = c.dates.length;
+        let present = 0;
+        c.dates.forEach(d => { if (s.attendance[d] === 'Present') present++; });
+        const pct = total === 0 ? '0.00' : ((present / total) * 100).toFixed(2);
+        csv += `"${s.hallTicket}","${s.name}","${s.whatsapp}",${total},${present},${pct}%\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${c.name}_Attendance.csv`;
+      a.click();
+    }
+
+    init();
+  </script>
+</body>
+</html>
