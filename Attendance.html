@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SARDAR PATEL COLLEGE - ATTENDANCE MANAGEMENT SYSTEM</title>
+  <title>Attendance Management System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- PDF Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
   <style>
     :root {
       --bg: #f5f7fb;
@@ -11,134 +16,113 @@
       --navy: #0f172a;
       --navy-light: #1e293b;
       --primary: #2563eb;
-      --primary-dark: #1d4ed8;
       --green: #16a34a;
       --red: #dc2626;
       --orange: #ea580c;
       --text: #0f172a;
       --text-secondary: #334155;
-      --muted: #64748b;
       --border: #e2e8f0;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-    /* Modal / Dialog */
+    /* Modal / Popups */
     .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.6); display: flex; align-items: center;
+      background: rgba(15, 23, 42, 0.6); display: none; align-items: center;
       justify-content: center; z-index: 100;
     }
     .modal {
-      background: var(--white); padding: 30px; border-radius: 8px;
-      width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      background: var(--white); padding: 25px; border-radius: 8px;
+      width: 90%; max-width: 580px; max-height: 85vh; overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
-    .modal h2 { margin-bottom: 12px; color: var(--text); }
-    .modal p { color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; }
+    .modal h2 { margin-bottom: 12px; font-size: 20px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 13px; }
     .form-group input, .form-group select {
-      width: 100%; padding: 10px; border: 1px solid var(--border);
-      border-radius: 6px; font-size: 14px; font-weight: 600;
+      width: 100%; padding: 8px 10px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 14px;
     }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
 
     /* Sidebar */
     .sidebar {
-      width: 250px; background-color: var(--navy); color: white;
+      width: 260px; background-color: var(--navy); color: white;
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
     }
-    .sidebar-header { padding: 30px 20px; border-bottom: 1px solid var(--navy-light); }
-    .sidebar-header h2 { font-size: 20px; letter-spacing: 0.5px; }
-    .sidebar-header h3 { font-size: 18px; color: #93c5fd; }
+    .sidebar-header { padding: 25px 20px; border-bottom: 1px solid var(--navy-light); }
+    .sidebar-header h2 { font-size: 18px; }
+    .sidebar-header h3 { font-size: 15px; color: #93c5fd; }
     .sidebar-menu { display: flex; flex-direction: column; gap: 6px; padding: 15px 10px; flex-grow: 1; }
     .sidebar-btn {
-      background: transparent; border: none; color: white; padding: 12px 16px;
-      text-align: left; font-size: 14px; font-weight: 600; border-radius: 6px;
-      cursor: pointer; transition: 0.2s;
+      background: transparent; border: none; color: white; padding: 10px 14px;
+      text-align: left; font-size: 13px; font-weight: 600; border-radius: 6px;
+      cursor: pointer;
     }
-    .sidebar-btn:hover, .sidebar-btn.active { background-color: var(--navy-light); }
-    .sidebar-footer { padding: 20px; border-top: 1px solid var(--navy-light); font-size: 12px; color: #cbd5e1; }
+    .sidebar-btn:hover { background-color: var(--navy-light); }
+    .sidebar-footer { padding: 15px 20px; border-top: 1px solid var(--navy-light); font-size: 12px; color: #cbd5e1; }
 
-    /* Content Area */
-    .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 25px 30px; }
-    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .page-title h1 { font-size: 26px; color: var(--text); }
-    .page-title p { color: var(--text-secondary); font-size: 14px; }
+    /* Main Area */
+    .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 20px 25px; }
+    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .page-title h1 { font-size: 24px; }
     .class-badge { text-align: right; font-size: 13px; color: var(--text-secondary); }
     .class-badge b { color: var(--text); font-size: 15px; }
 
-    /* Cards */
-    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+    /* Summary Stats */
+    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px; }
     .card {
       background: var(--white); border: 1px solid var(--border); border-radius: 8px;
-      padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;
+      padding: 15px; display: flex; justify-content: space-between; align-items: center;
     }
-    .card-info h4 { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; }
-    .card-info span { font-size: 26px; font-weight: 700; }
-    .card-bar { width: 6px; height: 40px; border-radius: 3px; }
+    .card-info h4 { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; }
+    .card-info span { font-size: 22px; font-weight: 700; }
+    .card-bar { width: 5px; height: 35px; border-radius: 3px; }
 
-    /* Action Table Container */
+    /* Date vs Previous Date Comparison Box */
+    .comparison-banner {
+      background: var(--white); border: 1px solid var(--border); border-left: 4px solid var(--primary);
+      border-radius: 8px; padding: 12px 18px; margin-bottom: 15px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .comparison-controls { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+    .comparison-controls select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); font-weight: 600; }
+    .comparison-stats { display: flex; gap: 20px; font-size: 13px; }
+    .stat-pill { background: #f8fafc; border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; }
+
+    /* Table Container */
     .table-container {
       background: var(--white); border: 1px solid var(--border); border-radius: 8px;
-      padding: 20px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
+      padding: 15px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
     }
-    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .table-toolbar input[type="text"] {
-      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 260px; font-weight: 600;
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 250px;
     }
     .btn-group { display: flex; gap: 8px; }
     .btn {
-      padding: 8px 16px; border: none; border-radius: 6px; font-size: 13px;
+      padding: 8px 14px; border: none; border-radius: 6px; font-size: 12px;
       font-weight: 600; cursor: pointer; color: white;
     }
     .btn-primary { background: var(--primary); }
-    .btn-dark { background: var(--primary-dark); }
     .btn-green { background: var(--green); }
     .btn-red { background: var(--red); }
     .btn-orange { background: var(--orange); }
 
-    /* Table */
     .table-scroll { overflow: auto; flex-grow: 1; border: 1px solid var(--border); border-radius: 6px; }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-    th { background: #f8fafc; padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
-    td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-weight: 600; }
+    th { background: #f8fafc; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); white-space: nowrap; }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
     tr:nth-child(even) { background-color: #f8fafc; }
-    .badge-present { color: var(--green); }
-    .badge-absent { color: var(--red); }
+    .present { color: var(--green); font-weight: 600; }
+    .absent { color: var(--red); font-weight: 600; }
   </style>
 </head>
 <body>
 
-  <!-- Auth Dialog -->
-  <div id="authModal" class="overlay" style="display: flex;">
-    <div class="modal">
-      <h2>SARDAR PATEL COLLEGE</h2>
-      <p>Attendance Management System - Staff Authentication</p>
-      <div id="authSetupFields" style="display: none;">
-        <div class="form-group">
-          <label>Create Staff Password</label>
-          <input type="password" id="newPass">
-        </div>
-        <div class="form-group">
-          <label>Confirm Password</label>
-          <input type="password" id="confirmPass">
-        </div>
-      </div>
-      <div id="authLoginFields">
-        <div class="form-group">
-          <label>Staff Password</label>
-          <input type="password" id="loginPass">
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-primary" onclick="handleAuth()">Login</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main App Shell -->
+  <!-- Sidebar -->
   <div class="sidebar">
     <div>
       <div class="sidebar-header">
@@ -147,349 +131,635 @@
       </div>
       <div class="sidebar-menu">
         <button class="sidebar-btn" onclick="showDashboard()">Dashboard</button>
-        <button class="sidebar-btn" onclick="showStudents()">Students</button>
+        <button class="sidebar-btn" onclick="showStudents()">Manage Students</button>
         <button class="sidebar-btn" onclick="openMarkAttendanceModal()">Mark Attendance</button>
-        <button class="sidebar-btn" onclick="exportCSV()">Export CSV</button>
-        <button class="sidebar-btn" onclick="openAddClassModal()">Add Class</button>
+        <button class="sidebar-btn" onclick="openPdfModal()">Generate & Send PDF</button>
+        <button class="sidebar-btn" onclick="openAddDeptModal()">+ Add Department</button>
+        <button class="sidebar-btn" onclick="openSwitchDeptModal()">Switch Department</button>
       </div>
     </div>
     <div class="sidebar-footer">
-      <div id="contextLabel">No Class Selected</div>
-      <button class="sidebar-btn" style="margin-top: 10px; padding: 6px 0;" onclick="logout()">Logout</button>
+      <div id="sidebarDeptInfo">Loading...</div>
     </div>
   </div>
 
+  <!-- Content Screen -->
   <div class="main">
     <div class="top-header">
       <div class="page-title">
         <h1 id="viewTitle">Dashboard</h1>
-        <p id="viewSubtitle">Overview of your class attendance</p>
+        <p id="viewSubtitle">Daily and Previous Date Attendance Comparison</p>
       </div>
-      <div class="class-badge" id="classBadge"></div>
+      <div class="class-badge" id="deptBadge"></div>
     </div>
 
-    <!-- Dashboard Metric Cards -->
-    <div class="cards-row" id="metricsRow">
+    <!-- Summary Metrics -->
+    <div class="cards-row" id="statsRow">
       <div class="card">
         <div class="card-info">
           <h4>Total Students</h4>
-          <span id="metricTotal" style="color: var(--primary);">0</span>
+          <span id="statTotal" style="color: var(--primary);">0</span>
         </div>
         <div class="card-bar" style="background: var(--primary);"></div>
       </div>
       <div class="card">
         <div class="card-info">
           <h4>Present Today</h4>
-          <span id="metricPresent" style="color: var(--green);">0</span>
+          <span id="statPresent" style="color: var(--green);">0</span>
         </div>
         <div class="card-bar" style="background: var(--green);"></div>
       </div>
       <div class="card">
         <div class="card-info">
           <h4>Absent Today</h4>
-          <span id="metricAbsent" style="color: var(--red);">0</span>
+          <span id="statAbsent" style="color: var(--red);">0</span>
         </div>
         <div class="card-bar" style="background: var(--red);"></div>
       </div>
       <div class="card">
         <div class="card-info">
-          <h4>Attendance</h4>
-          <span id="metricPercentage" style="color: var(--orange);">0%</span>
+          <h4>Overall Percentage</h4>
+          <span id="statPct" style="color: var(--orange);">0%</span>
         </div>
         <div class="card-bar" style="background: var(--orange);"></div>
       </div>
     </div>
 
-    <!-- Table Container -->
+    <!-- Date Comparison Banner -->
+    <div class="comparison-banner" id="comparisonBanner">
+      <div class="comparison-controls">
+        <label>Select Date:</label>
+        <select id="selectedDateDropdown" onchange="updateDateComparison()"></select>
+      </div>
+      <div class="comparison-stats">
+        <div class="stat-pill">
+          Selected Date: <b id="compCurrentPct">-</b>
+        </div>
+        <div class="stat-pill">
+          Previous Date (<span id="compPrevDate">-</span>): <b id="compPrevPct">-</b>
+        </div>
+        <div class="stat-pill">
+          Trend: <b id="compTrend">-</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Table -->
     <div class="table-container">
       <div class="table-toolbar">
-        <input type="text" id="tableSearch" placeholder="Search by name, hall ticket..." oninput="renderTable()">
-        <div class="btn-group" id="tableActions"></div>
+        <input type="text" id="searchInput" placeholder="Search student name or hall ticket..." oninput="renderTable()">
+        <div class="btn-group" id="topToolbarActions"></div>
       </div>
       <div class="table-scroll">
-        <table id="mainTable">
-          <thead id="tableHead"></thead>
-          <tbody id="tableBody"></tbody>
+        <table>
+          <thead id="tblHead"></thead>
+          <tbody id="tblBody"></tbody>
         </table>
       </div>
     </div>
   </div>
 
+  <!-- Modal: Add Department -->
+  <div id="deptModal" class="overlay">
+    <div class="modal">
+      <h2>Add Department / Class</h2>
+      <div class="form-group">
+        <label>Department / Class Name</label>
+        <input type="text" id="deptName" placeholder="e.g., Computer Science (MPCs)">
+      </div>
+      <div class="form-group">
+        <label>Academic Year</label>
+        <input type="text" id="deptYear" value="2026-2027">
+      </div>
+      <div class="form-group">
+        <label>Semester</label>
+        <select id="deptSem">
+          <option>I Semester</option><option>II Semester</option>
+          <option>III Semester</option><option>IV Semester</option>
+          <option>V Semester</option><option>VI Semester</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-red" onclick="closeModal('deptModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveDepartment()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Switch Department -->
+  <div id="switchDeptModal" class="overlay">
+    <div class="modal">
+      <h2>Switch Department</h2>
+      <div class="form-group">
+        <label>Select Department</label>
+        <select id="switchDeptSelect"></select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-red" onclick="closeModal('switchDeptModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmSwitchDept()">Switch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Student -->
+  <div id="studentModal" class="overlay">
+    <div class="modal">
+      <h2>Add New Student</h2>
+      <div class="form-group">
+        <label>Hall Ticket Number</label>
+        <input type="text" id="stuHall" placeholder="e.g., 1051-24-468-001">
+      </div>
+      <div class="form-group">
+        <label>Student Name</label>
+        <input type="text" id="stuName" placeholder="e.g., Mohammed Rahman">
+      </div>
+      <div class="form-group">
+        <label>WhatsApp Number (10 digits)</label>
+        <input type="text" id="stuPhone" placeholder="9876543210">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-red" onclick="closeModal('studentModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveStudent()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Mark Attendance -->
+  <div id="attendanceModal" class="overlay">
+    <div class="modal" style="max-width: 680px;">
+      <h2>Mark Attendance</h2>
+      <div class="form-group">
+        <label>Attendance Date</label>
+        <input type="date" id="attendDate">
+      </div>
+      <div id="attendanceList" style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px;"></div>
+      <div class="modal-actions">
+        <button class="btn btn-red" onclick="closeModal('attendanceModal')">Cancel</button>
+        <button class="btn btn-green" onclick="saveAttendance()">Save Attendance</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: PDF & WhatsApp Export -->
+  <div id="pdfModal" class="overlay">
+    <div class="modal">
+      <h2>Generate PDF & Send to WhatsApp</h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+        Downloads the full attendance register with date-wise comparative statistics and opens WhatsApp.
+      </p>
+      <div class="form-group">
+        <label>Recipient WhatsApp Number (with country code, e.g., 916305262256)</label>
+        <input type="text" id="targetWhatsApp" placeholder="e.g., 919876543210">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-red" onclick="closeModal('pdfModal')">Cancel</button>
+        <button class="btn btn-green" onclick="processPdfAndWhatsApp()">Download PDF & Send</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // State Store
-    const STORAGE_KEY = 'spc_attendance_data';
-    let app = { passwordHash: '', classes: {}, currentClassKey: '' };
-    let currentView = 'dashboard';
+    const STORAGE_KEY = 'college_attendance_db';
+    let data = { departments: {}, currentDeptId: '' };
+    let activeView = 'dashboard';
 
     function init() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        try { app = JSON.parse(saved); } catch (e) { console.error(e); }
+        try { data = JSON.parse(saved); } catch (e) { console.error(e); }
       }
-      if (!app.passwordHash) {
-        document.getElementById('authSetupFields').style.display = 'block';
-        document.getElementById('authLoginFields').style.display = 'none';
-      }
-      if (!app.classes || Object.keys(app.classes).length === 0) {
-        const id = 'class_' + Date.now();
-        app.classes = {};
-        app.classes[id] = { id, name: 'B.Sc MPCs', academicYear: '2026-27', semester: 'I Semester', students: [], dates: [] };
-        app.currentClassKey = id;
+      if (!data.departments || Object.keys(data.departments).length === 0) {
+        const id = 'dept_' + Date.now();
+        data.departments = {};
+        data.departments[id] = {
+          id: id,
+          name: 'Computer Science',
+          academicYear: '2026-2027',
+          semester: 'I Semester',
+          students: [],
+          dates: []
+        };
+        data.currentDeptId = id;
         save();
+      }
+      showDashboard();
+    }
+
+    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+    function curDept() { return data.departments[data.currentDeptId]; }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // Department Management
+    function openAddDeptModal() { openModal('deptModal'); }
+    function saveDepartment() {
+      const name = document.getElementById('deptName').value.trim();
+      const year = document.getElementById('deptYear').value.trim();
+      const sem = document.getElementById('deptSem').value;
+      if (!name) { alert('Please enter department name'); return; }
+
+      const id = 'dept_' + Date.now();
+      data.departments[id] = { id, name, academicYear: year, semester: sem, students: [], dates: [] };
+      data.currentDeptId = id;
+      save();
+      closeModal('deptModal');
+      document.getElementById('deptName').value = '';
+      showDashboard();
+    }
+
+    function openSwitchDeptModal() {
+      const select = document.getElementById('switchDeptSelect');
+      select.innerHTML = '';
+      Object.values(data.departments).forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.id;
+        opt.innerText = `${d.name} (${d.academicYear} - ${d.semester})`;
+        if (d.id === data.currentDeptId) opt.selected = true;
+        select.appendChild(opt);
+      });
+      openModal('switchDeptModal');
+    }
+
+    function confirmSwitchDept() {
+      data.currentDeptId = document.getElementById('switchDeptSelect').value;
+      save();
+      closeModal('switchDeptModal');
+      showDashboard();
+    }
+
+    // Student Management
+    function openAddStudentModal() { openModal('studentModal'); }
+    function saveStudent() {
+      const hall = document.getElementById('stuHall').value.trim();
+      const name = document.getElementById('stuName').value.trim();
+      const phone = document.getElementById('stuPhone').value.replace(/\D/g, '');
+
+      if (!hall || !name || phone.length < 10) {
+        alert('Please provide valid Hall Ticket, Name, and a 10-digit Phone Number.');
+        return;
+      }
+      const dept = curDept();
+      if (dept.students.some(s => s.hall.toLowerCase() === hall.toLowerCase())) {
+        alert('Hall Ticket Number already exists.');
+        return;
+      }
+
+      dept.students.push({ hall, name, phone, attendance: {} });
+      save();
+      closeModal('studentModal');
+      document.getElementById('stuHall').value = '';
+      document.getElementById('stuName').value = '';
+      document.getElementById('stuPhone').value = '';
+      renderTable();
+      updateStats();
+    }
+
+    function deleteStudent(idx) {
+      if (confirm('Delete this student?')) {
+        curDept().students.splice(idx, 1);
+        save();
+        renderTable();
+        updateStats();
       }
     }
 
-    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(app)); }
-    function getCurrentClass() { return app.classes[app.currentClassKey]; }
+    // Attendance Management
+    function openMarkAttendanceModal() {
+      const dept = curDept();
+      if (dept.students.length === 0) { alert('Add students first.'); return; }
+      const container = document.getElementById('attendanceList');
+      container.innerHTML = '';
+      document.getElementById('attendDate').valueAsDate = new Date();
 
-    // Authentication
-    function handleAuth() {
-      if (!app.passwordHash) {
-        const p1 = document.getElementById('newPass').value;
-        const p2 = document.getElementById('confirmPass').value;
-        if (p1.length < 4 || p1 !== p2) { alert('Password must match and be at least 4 characters.'); return; }
-        app.passwordHash = btoa(p1);
-        save();
-        document.getElementById('authModal').style.display = 'none';
-        showDashboard();
-      } else {
-        const pass = document.getElementById('loginPass').value;
-        if (btoa(pass) === app.passwordHash) {
-          document.getElementById('authModal').style.display = 'none';
-          showDashboard();
+      dept.students.forEach((s, i) => {
+        const row = document.createElement('div');
+        row.style = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;';
+        row.innerHTML = `
+          <div style="font-size:13px; font-weight:600; width:45%;">${s.hall} - ${s.name}</div>
+          <select id="att_${i}" style="padding:4px 8px; border-radius:4px; border:1px solid #ccc; font-weight:600;">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+          </select>
+        `;
+        container.appendChild(row);
+      });
+      openModal('attendanceModal');
+    }
+
+    function saveAttendance() {
+      const dateVal = document.getElementById('attendDate').value;
+      if (!dateVal) { alert('Select a date.'); return; }
+      const dateParts = dateVal.split('-');
+      const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+      const dept = curDept();
+      if (!dept.dates.includes(formattedDate)) {
+        dept.dates.push(formattedDate);
+        // Sort dates chronologically
+        dept.dates.sort((a, b) => {
+          const [d1, m1, y1] = a.split('-').map(Number);
+          const [d2, m2, y2] = b.split('-').map(Number);
+          return new Date(y1, m1 - 1, d1) - new Date(y2, m2 - 1, d2);
+        });
+      }
+
+      dept.students.forEach((s, i) => {
+        const status = document.getElementById(`att_${i}`).value;
+        s.attendance[formattedDate] = status;
+      });
+
+      save();
+      closeModal('attendanceModal');
+      populateDateDropdown();
+      updateDateComparison();
+      updateStats();
+      renderTable();
+      alert('Attendance saved for ' + formattedDate);
+    }
+
+    // Date & Previous Date Comparison Calculation
+    function calculatePercentageForDate(dateStr) {
+      const dept = curDept();
+      if (!dateStr || dept.students.length === 0) return 0;
+      let present = 0;
+      dept.students.forEach(s => {
+        if (s.attendance[dateStr] === 'Present') present++;
+      });
+      return (present / dept.students.length) * 100;
+    }
+
+    function populateDateDropdown() {
+      const dept = curDept();
+      const dropdown = document.getElementById('selectedDateDropdown');
+      dropdown.innerHTML = '';
+
+      if (dept.dates.length === 0) {
+        dropdown.innerHTML = '<option value="">No dates available</option>';
+        return;
+      }
+
+      dept.dates.forEach((d, idx) => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.innerText = d;
+        if (idx === dept.dates.length - 1) opt.selected = true;
+        dropdown.appendChild(opt);
+      });
+    }
+
+    function updateDateComparison() {
+      const dept = curDept();
+      const dropdown = document.getElementById('selectedDateDropdown');
+      const selectedDate = dropdown.value;
+
+      if (!selectedDate || dept.dates.length === 0) {
+        document.getElementById('compCurrentPct').innerText = '-';
+        document.getElementById('compPrevDate').innerText = 'None';
+        document.getElementById('compPrevPct').innerText = '-';
+        document.getElementById('compTrend').innerText = '-';
+        return;
+      }
+
+      const currentIndex = dept.dates.indexOf(selectedDate);
+      const currentPct = calculatePercentageForDate(selectedDate);
+      document.getElementById('compCurrentPct').innerText = `${currentPct.toFixed(1)}%`;
+
+      if (currentIndex > 0) {
+        const prevDate = dept.dates[currentIndex - 1];
+        const prevPct = calculatePercentageForDate(prevDate);
+        const diff = currentPct - prevPct;
+
+        document.getElementById('compPrevDate').innerText = prevDate;
+        document.getElementById('compPrevPct').innerText = `${prevPct.toFixed(1)}%`;
+
+        if (diff > 0) {
+          document.getElementById('compTrend').innerHTML = `<span style="color: var(--green);">+${diff.toFixed(1)}% ↑</span>`;
+        } else if (diff < 0) {
+          document.getElementById('compTrend').innerHTML = `<span style="color: var(--red);">${diff.toFixed(1)}% ↓</span>`;
         } else {
-          alert('Incorrect password.');
+          document.getElementById('compTrend').innerHTML = `<span style="color: var(--text-secondary);">0.0% (Same)</span>`;
         }
+      } else {
+        document.getElementById('compPrevDate').innerText = 'First Entry';
+        document.getElementById('compPrevPct').innerText = 'N/A';
+        document.getElementById('compTrend').innerText = 'Baseline';
       }
     }
-    function logout() { location.reload(); }
 
-    // Navigation & Views
-    function updateContext() {
-      const c = getCurrentClass();
-      document.getElementById('contextLabel').innerHTML = `<b>${c.name}</b><br>${c.academicYear}<br>${c.semester}`;
-      document.getElementById('classBadge').innerHTML = `<b>${c.name}</b><br>${c.academicYear} | ${c.semester}`;
+    // Views & Layout
+    function setDeptHeader() {
+      const d = curDept();
+      document.getElementById('sidebarDeptInfo').innerHTML = `<b>${d.name}</b><br>${d.academicYear} | ${d.semester}`;
+      document.getElementById('deptBadge').innerHTML = `<b>${d.name}</b><br>${d.academicYear} | ${d.semester}`;
     }
 
     function showDashboard() {
-      currentView = 'dashboard';
+      activeView = 'dashboard';
+      setDeptHeader();
       document.getElementById('viewTitle').innerText = 'Dashboard';
-      document.getElementById('viewSubtitle').innerText = 'Overview of your selected class';
-      document.getElementById('metricsRow').style.display = 'grid';
-      document.getElementById('tableActions').innerHTML = `
+      document.getElementById('viewSubtitle').innerText = 'Daily and Previous Date Attendance Comparison';
+      document.getElementById('statsRow').style.display = 'grid';
+      document.getElementById('comparisonBanner').style.display = 'flex';
+      document.getElementById('topToolbarActions').innerHTML = `
         <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
         <button class="btn btn-green" onclick="openMarkAttendanceModal()">Mark Attendance</button>
       `;
-      updateContext();
-      updateMetrics();
+      populateDateDropdown();
+      updateDateComparison();
+      updateStats();
       renderTable();
     }
 
     function showStudents() {
-      currentView = 'students';
-      document.getElementById('viewTitle').innerText = 'Student Management';
-      document.getElementById('viewSubtitle').innerText = 'Manage, send WhatsApp notices, or review students';
-      document.getElementById('metricsRow').style.display = 'none';
-      document.getElementById('tableActions').innerHTML = `
+      activeView = 'students';
+      setDeptHeader();
+      document.getElementById('viewTitle').innerText = 'Manage Students';
+      document.getElementById('viewSubtitle').innerText = 'Add, view, and remove student profiles';
+      document.getElementById('statsRow').style.display = 'none';
+      document.getElementById('comparisonBanner').style.display = 'none';
+      document.getElementById('topToolbarActions').innerHTML = `
         <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
       `;
-      updateContext();
       renderTable();
     }
 
-    function updateMetrics() {
-      const c = getCurrentClass();
-      const total = c.students.length;
+    function updateStats() {
+      const dept = curDept();
+      const total = dept.students.length;
       let present = 0, absent = 0;
-      const latestDate = c.dates[c.dates.length - 1];
+      const latest = dept.dates[dept.dates.length - 1];
 
-      if (latestDate) {
-        c.students.forEach(s => {
-          if (s.attendance[latestDate] === 'Present') present++;
-          else if (s.attendance[latestDate] === 'Absent') absent++;
+      if (latest) {
+        dept.students.forEach(s => {
+          if (s.attendance[latest] === 'Present') present++;
+          else if (s.attendance[latest] === 'Absent') absent++;
         });
       }
-      document.getElementById('metricTotal').innerText = total;
-      document.getElementById('metricPresent').innerText = present;
-      document.getElementById('metricAbsent').innerText = absent;
-      document.getElementById('metricPercentage').innerText = total === 0 ? '0%' : ((present / total) * 100).toFixed(1) + '%';
+
+      let totalRecords = 0, totalPresents = 0;
+      dept.dates.forEach(d => {
+        dept.students.forEach(s => {
+          totalRecords++;
+          if (s.attendance[d] === 'Present') totalPresents++;
+        });
+      });
+
+      document.getElementById('statTotal').innerText = total;
+      document.getElementById('statPresent').innerText = present;
+      document.getElementById('statAbsent').innerText = absent;
+      document.getElementById('statPct').innerText = totalRecords === 0 ? '0%' : ((totalPresents / totalRecords) * 100).toFixed(1) + '%';
     }
 
-    // Table Rendering
     function renderTable() {
-      const c = getCurrentClass();
-      const query = document.getElementById('tableSearch').value.toLowerCase();
-      const thead = document.getElementById('tableHead');
-      const tbody = document.getElementById('tableBody');
+      const dept = curDept();
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const thead = document.getElementById('tblHead');
+      const tbody = document.getElementById('tblBody');
       thead.innerHTML = ''; tbody.innerHTML = '';
 
-      const filtered = c.students.filter(s =>
-        s.name.toLowerCase().includes(query) ||
-        s.hallTicket.toLowerCase().includes(query) ||
-        s.whatsapp.includes(query)
+      const filtered = dept.students.filter(s =>
+        s.name.toLowerCase().includes(q) ||
+        s.hall.toLowerCase().includes(q) ||
+        s.phone.includes(q)
       );
 
-      if (currentView === 'dashboard') {
-        let hHtml = `<tr><th>Hall Ticket No.</th><th>Student Name</th><th>WhatsApp</th>`;
-        c.dates.forEach(d => { hHtml += `<th>${d}</th>`; });
-        hHtml += `<th>Total</th><th>Present</th><th>Percentage</th></tr>`;
-        thead.innerHTML = hHtml;
+      if (activeView === 'dashboard') {
+        // Table Header
+        let th = `<tr><th>Hall Ticket</th><th>Name</th>`;
+        dept.dates.forEach(d => { th += `<th>${d}</th>`; });
+        th += `<th>Total</th><th>Present</th><th>%</th></tr>`;
+        thead.innerHTML = th;
 
+        // Table Rows
         filtered.forEach(s => {
-          const totalDays = c.dates.length;
-          let presentCount = 0;
-          c.dates.forEach(d => { if (s.attendance[d] === 'Present') presentCount++; });
-          const pct = totalDays === 0 ? '0.00%' : ((presentCount / totalDays) * 100).toFixed(2) + '%';
+          const totalDays = dept.dates.length;
+          let pCount = 0;
+          dept.dates.forEach(d => { if (s.attendance[d] === 'Present') pCount++; });
+          const pct = totalDays === 0 ? '0.00%' : ((pCount / totalDays) * 100).toFixed(2) + '%';
 
-          let rHtml = `<tr><td>${s.hallTicket}</td><td>${s.name}</td><td>${s.whatsapp}</td>`;
-          c.dates.forEach(d => {
-            const status = s.attendance[d] || '-';
-            const badge = status === 'Present' ? 'badge-present' : status === 'Absent' ? 'badge-absent' : '';
-            rHtml += `<td class="${badge}">${status}</td>`;
+          let tr = `<tr><td>${s.hall}</td><td>${s.name}</td>`;
+          dept.dates.forEach(d => {
+            const st = s.attendance[d] || '-';
+            const cls = st === 'Present' ? 'present' : st === 'Absent' ? 'absent' : '';
+            tr += `<td class="${cls}">${st}</td>`;
           });
-          rHtml += `<td>${totalDays}</td><td>${presentCount}</td><td>${pct}</td></tr>`;
-          tbody.innerHTML += rHtml;
+          tr += `<td>${totalDays}</td><td>${pCount}</td><td>${pct}</td></tr>`;
+          tbody.innerHTML += tr;
         });
+
+        // Summary Row at bottom displaying date %
+        if (dept.dates.length > 0) {
+          let summaryRow = `<tr style="background:#f1f5f9; font-weight:bold;"><td colspan="2">Daily Attendance %</td>`;
+          dept.dates.forEach(d => {
+            const pct = calculatePercentageForDate(d);
+            summaryRow += `<td>${pct.toFixed(1)}%</td>`;
+          });
+          summaryRow += `<td colspan="3">-</td></tr>`;
+          tbody.innerHTML += summaryRow;
+        }
+
       } else {
-        thead.innerHTML = `
-          <tr>
-            <th>Hall Ticket No.</th>
-            <th>Student Name</th>
-            <th>WhatsApp</th>
-            <th>Attendance %</th>
-            <th>Actions</th>
-          </tr>
-        `;
+        thead.innerHTML = `<tr><th>Hall Ticket</th><th>Name</th><th>WhatsApp</th><th>Attendance %</th><th>Action</th></tr>`;
         filtered.forEach((s, idx) => {
-          const totalDays = c.dates.length;
-          let presentCount = 0;
-          c.dates.forEach(d => { if (s.attendance[d] === 'Present') presentCount++; });
-          const pct = totalDays === 0 ? '0.00%' : ((presentCount / totalDays) * 100).toFixed(2) + '%';
+          const totalDays = dept.dates.length;
+          let pCount = 0;
+          dept.dates.forEach(d => { if (s.attendance[d] === 'Present') pCount++; });
+          const pct = totalDays === 0 ? '0.00%' : ((pCount / totalDays) * 100).toFixed(2) + '%';
 
           tbody.innerHTML += `
             <tr>
-              <td>${s.hallTicket}</td>
+              <td>${s.hall}</td>
               <td>${s.name}</td>
-              <td>${s.whatsapp}</td>
+              <td>${s.phone}</td>
               <td>${pct}</td>
-              <td>
-                <button class="btn btn-green" style="padding: 4px 8px; font-size:11px;" onclick="sendWhatsApp('${s.hallTicket}')">WhatsApp</button>
-                <button class="btn btn-red" style="padding: 4px 8px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
-              </td>
+              <td><button class="btn btn-red" style="padding:4px 8px;" onclick="deleteStudent(${idx})">Delete</button></td>
             </tr>
           `;
         });
       }
     }
 
-    // Student Actions
-    function openAddStudentModal() {
-      const hall = prompt('Enter Hall Ticket Number:');
-      if (!hall) return;
-      const name = prompt('Enter Student Name:');
-      if (!name) return;
-      const wa = prompt('Enter 10-digit WhatsApp Number:');
-      if (!wa) return;
+    // PDF & WhatsApp Integration
+    function openPdfModal() { openModal('pdfModal'); }
 
-      const c = getCurrentClass();
-      if (c.students.some(s => s.hallTicket.toLowerCase() === hall.toLowerCase())) {
-        alert('Hall Ticket Number already exists.');
+    function processPdfAndWhatsApp() {
+      const phoneInput = document.getElementById('targetWhatsApp').value.replace(/\D/g, '');
+      if (phoneInput.length < 10) {
+        alert('Please enter a valid phone number with country code (e.g. 919876543210).');
         return;
       }
-      c.students.push({ hallTicket: hall, name: name, whatsapp: wa.replace(/\D/g, ''), attendance: {} });
-      save();
-      updateMetrics();
-      renderTable();
-    }
 
-    function deleteStudent(index) {
-      if (confirm('Are you sure you want to delete this student?')) {
-        getCurrentClass().students.splice(index, 1);
-        save();
-        updateMetrics();
-        renderTable();
-      }
-    }
+      const dept = curDept();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('landscape');
 
-    // Attendance Marking
-    function openMarkAttendanceModal() {
-      const c = getCurrentClass();
-      if (c.students.length === 0) { alert('Please add students first.'); return; }
-      const today = new Date().toISOString().slice(0,10).split('-').reverse().join('-');
-      const date = prompt('Enter Date (DD-MM-YYYY):', today);
-      if (!date) return;
+      // PDF Title Header
+      doc.setFontSize(16);
+      doc.text(`${dept.name.toUpperCase()} - ATTENDANCE REGISTER`, 14, 15);
+      doc.setFontSize(10);
+      doc.text(`Academic Year: ${dept.academicYear} | Semester: ${dept.semester}`, 14, 22);
 
-      if (!c.dates.includes(date)) c.dates.push(date);
+      // Build Table Data
+      const headers = ['Hall Ticket', 'Name', ...dept.dates, 'Total', 'Present', '%'];
+      const body = dept.students.map(s => {
+        let pCount = 0;
+        dept.dates.forEach(d => { if (s.attendance[d] === 'Present') pCount++; });
+        const pct = dept.dates.length === 0 ? '0.00%' : ((pCount / dept.dates.length) * 100).toFixed(2) + '%';
 
-      c.students.forEach(s => {
-        const mark = confirm(`Mark PRESENT for ${s.name} (${s.hallTicket})?\n[OK = Present | Cancel = Absent]`);
-        s.attendance[date] = mark ? 'Present' : 'Absent';
+        return [
+          s.hall,
+          s.name,
+          ...dept.dates.map(d => s.attendance[d] || '-'),
+          dept.dates.length,
+          pCount,
+          pct
+        ];
       });
 
-      save();
-      updateMetrics();
-      renderTable();
-      alert('Attendance recorded successfully for ' + date);
-    }
-
-    // WhatsApp Dispatch
-    function sendWhatsApp(hallTicket) {
-      const c = getCurrentClass();
-      const s = c.students.find(x => x.hallTicket === hallTicket);
-      if (!s || s.whatsapp.length < 10) { alert('Valid WhatsApp number required.'); return; }
-
-      const totalDays = c.dates.length;
-      let present = 0;
-      c.dates.forEach(d => { if (s.attendance[d] === 'Present') present++; });
-      const absent = totalDays - present;
-      const pct = totalDays === 0 ? '0.00%' : ((present / totalDays) * 100).toFixed(2) + '%';
-
-      let msg = `*SARDAR PATEL COLLEGE*\n*STUDENT ATTENDANCE REPORT*\n\n` +
-        `👤 *Student Name:* ${s.name}\n🆔 *Hall Ticket:* ${s.hallTicket}\n📚 *Class:* ${c.name}\n` +
-        `🗓️ *Academic Year:* ${c.academicYear} (${c.semester})\n\n` +
-        `*ATTENDANCE SUMMARY*\n• Total Classes: ${totalDays}\n• Present: ${present}\n• Absent: ${absent}\n• Percentage: ${pct}\n\n`;
-
-      if ((present / (totalDays || 1)) < 0.75) {
-        msg += `⚠️ *ALERT:* Attendance is below 75%. Please attend classes regularly.\n\n`;
+      // Bottom Row for Date Percentages
+      if (dept.dates.length > 0) {
+        const bottomRow = ['DAILY %', '-', ...dept.dates.map(d => `${calculatePercentageForDate(d).toFixed(1)}%`), '-', '-', '-'];
+        body.push(bottomRow);
       }
-      msg += `Regards,\n*SARDAR PATEL COLLEGE*`;
 
-      window.open(`https://wa.me/${s.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-
-    // Class Management
-    function openAddClassModal() {
-      const name = prompt('Class / Department Name:');
-      if (!name) return;
-      const year = prompt('Academic Year (e.g. 2026-27):', '2026-27');
-      if (!year) return;
-      const sem = prompt('Semester:', 'I Semester');
-      if (!sem) return;
-
-      const id = 'class_' + Date.now();
-      app.classes[id] = { id, name, academicYear: year, semester: sem, students: [], dates: [] };
-      app.currentClassKey = id;
-      save();
-      showDashboard();
-    }
-
-    // CSV Export
-    function exportCSV() {
-      const c = getCurrentClass();
-      let csv = 'Hall Ticket Number,Student Name,WhatsApp,Total Days,Present,Percentage\n';
-      c.students.forEach(s => {
-        const total = c.dates.length;
-        let present = 0;
-        c.dates.forEach(d => { if (s.attendance[d] === 'Present') present++; });
-        const pct = total === 0 ? '0.00' : ((present / total) * 100).toFixed(2);
-        csv += `"${s.hallTicket}","${s.name}","${s.whatsapp}",${total},${present},${pct}%\n`;
+      doc.autoTable({
+        head: [headers],
+        body: body,
+        startY: 28,
+        theme: 'grid',
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [15, 23, 42] }
       });
 
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${c.name}_Attendance.csv`;
-      a.click();
+      const fileName = `${dept.name.replace(/\s+/g, '_')}_Attendance.pdf`;
+      doc.save(fileName);
+
+      // Comparative stats for WhatsApp
+      let dateComparisonText = '';
+      if (dept.dates.length >= 2) {
+        const curDate = dept.dates[dept.dates.length - 1];
+        const prevDate = dept.dates[dept.dates.length - 2];
+        const curPct = calculatePercentageForDate(curDate).toFixed(1);
+        const prevPct = calculatePercentageForDate(prevDate).toFixed(1);
+        dateComparisonText = `\n📊 *Date Comparison:*\n• Latest Date (${curDate}): ${curPct}%\n• Previous Date (${prevDate}): ${prevPct}%\n`;
+      }
+
+      const totalStudents = dept.students.length;
+      const totalClasses = dept.dates.length;
+      const message = `*ATTENDANCE REGISTER REPORT*\n\n` +
+        `*Department:* ${dept.name}\n` +
+        `*Academic Year:* ${dept.academicYear} (${dept.semester})\n` +
+        `*Total Students:* ${totalStudents}\n` +
+        `*Total Sessions Conducted:* ${totalClasses}\n` +
+        dateComparisonText +
+        `\n_The official PDF report has been downloaded to your device. Please attach it to complete submission._`;
+
+      closeModal('pdfModal');
+
+      // WhatsApp Web / Mobile URL
+      const waUrl = `https://wa.me/${phoneInput}?text=${encodeURIComponent(message)}`;
+      window.open(waUrl, '_blank');
     }
 
     init();
