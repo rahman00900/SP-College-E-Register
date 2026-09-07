@@ -1,1 +1,1 @@
-# SP-Collehe-E-Register
+# SP-College-E-Register
