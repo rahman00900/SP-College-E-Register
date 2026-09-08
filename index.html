@@ -41,6 +41,11 @@
     .auth-card h3 { font-size: 13px; color: var(--primary); margin-bottom: 18px; font-weight: 700; }
     .auth-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; }
 
+    .forgot-link {
+      display: inline-block; margin-top: 14px; font-size: 13px;
+      color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600;
+    }
+
     /* Modals */
     .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -107,7 +112,7 @@
     .class-badge { text-align: right; font-size: 12px; color: var(--text-secondary); }
     .class-badge b { color: var(--text); font-size: 14px; }
 
-    /* Stats Cards */
+    /* Summary Metrics */
     .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
     .card {
       background: var(--white); border: 1px solid var(--border); border-radius: 8px;
@@ -173,7 +178,7 @@
   <!-- Backdrop for Mobile -->
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
 
-  <!-- Login Gate -->
+  <!-- Login Screen -->
   <div id="authOverlay">
     <div class="auth-card">
       <h2>SARDAR PATEL COLLEGE</h2>
@@ -199,6 +204,10 @@
       </div>
 
       <button class="btn btn-primary" style="width:100%; padding:10px; margin-top:10px;" onclick="authenticateStaff()">STAFF LOGIN</button>
+      
+      <div>
+        <span class="forgot-link" onclick="forgotPassword()">Forgot Password?</span>
+      </div>
     </div>
   </div>
 
@@ -225,7 +234,7 @@
     </div>
   </div>
 
-  <!-- Content -->
+  <!-- Main View -->
   <div class="main">
     <div class="mobile-header-bar">
       <button class="menu-toggle-btn" onclick="toggleSidebar(true)">☰ Menu</button>
@@ -388,6 +397,20 @@
   <div id="settingsModal" class="overlay">
     <div class="modal">
       <h2>Settings</h2>
+      
+      <div style="border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 14px;">
+        <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--primary);">Default Report WhatsApp Number</h3>
+        <div class="form-group">
+          <label>Default Number for Class Reports:</label>
+          <div class="phone-group">
+            <span class="phone-prefix">+91</span>
+            <input type="text" id="defaultReportNumberInput" placeholder="10-digit mobile number">
+          </div>
+        </div>
+        <button class="btn btn-green" onclick="saveDefaultReportNumber()">Save WhatsApp Number</button>
+      </div>
+
+      <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--primary);">Change Password</h3>
       <div class="form-group">
         <label>Current Password:</label>
         <input type="password" id="currPassInput">
@@ -430,7 +453,7 @@
 
   <script>
     const STORAGE_KEY = 'college_attendance_db';
-    let data = { passwordHash: '', departments: {}, currentDeptId: '' };
+    let data = { passwordHash: '', defaultReportNumber: '', departments: {}, currentDeptId: '' };
     let activeView = 'dashboard';
 
     function toggleSidebar(open) {
@@ -504,9 +527,35 @@
       }
     }
 
+    function forgotPassword() {
+      if (confirm("Reset staff password to '1234'?")) {
+        data.passwordHash = btoa("1234");
+        save();
+        alert("Password restored successfully!\nYour new login password is: 1234");
+        document.getElementById('setupPassFields').style.display = 'none';
+        document.getElementById('loginPassField').style.display = 'block';
+        document.getElementById('loginPassInput').value = "1234";
+      }
+    }
+
     function logout() { location.reload(); }
 
-    function openSettingsModal() { openModal('settingsModal'); }
+    function openSettingsModal() { 
+      document.getElementById('defaultReportNumberInput').value = data.defaultReportNumber ? data.defaultReportNumber.replace(/^91/, '') : '';
+      openModal('settingsModal'); 
+    }
+
+    function saveDefaultReportNumber() {
+      const raw = document.getElementById('defaultReportNumberInput').value.replace(/\D/g, '');
+      if (raw.length < 10) {
+        alert('Please enter a valid 10-digit mobile number.');
+        return;
+      }
+      data.defaultReportNumber = '91' + raw.slice(-10);
+      save();
+      alert('Default report WhatsApp number saved successfully!');
+    }
+
     function updatePassword() {
       const curr = document.getElementById('currPassInput').value;
       const next = document.getElementById('changePassInput').value;
@@ -856,7 +905,6 @@
       }
     }
 
-    // Individual Student WhatsApp
     function sendSingleStudentWhatsApp(hall) {
       const dept = curDept();
       const s = dept.students.find(x => x.hall === hall);
@@ -888,9 +936,11 @@ ${status}`;
       window.open(`https://wa.me/${s.phone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    function openPdfModal() { openModal('pdfModal'); }
+    function openPdfModal() { 
+      document.getElementById('targetWhatsApp').value = data.defaultReportNumber ? data.defaultReportNumber.replace(/^91/, '') : '';
+      openModal('pdfModal'); 
+    }
 
-    // Full Class PDF + Updated WhatsApp Message
     function processPdfAndWhatsApp() {
       const rawInput = document.getElementById('targetWhatsApp').value.replace(/\D/g, '');
       if (rawInput.length < 10) {
@@ -941,7 +991,6 @@ ${status}`;
       const fileName = `${dept.name.replace(/\s+/g, '_')}_Attendance.pdf`;
       doc.save(fileName);
 
-      // Selected or latest date
       const dropdown = document.getElementById('selectedDateDropdown');
       let chosenDate = (dropdown && dropdown.value) ? dropdown.value : '';
       if (!chosenDate && dept.dates.length > 0) {
@@ -951,14 +1000,12 @@ ${status}`;
         chosenDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
       }
 
-      // Build each student line: Name, Hall Ticket, Present/Absent
       let studentEntries = '';
       dept.students.forEach(s => {
         const status = s.attendance[chosenDate] || 'Absent';
         studentEntries += `\n${s.name}\n${s.hall}\n${status}\n`;
       });
 
-      // EXACT Output Format
       const message = 
 `Sardar Patel College
 Attendance Register Report
