@@ -5,7 +5,7 @@
   <title>SARDAR PATEL COLLEGE - ATTENDANCE MANAGEMENT SYSTEM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- PDF Libraries loaded with defer to prevent render-blocking -->
+  <!-- PDF Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" defer></script>
 
@@ -64,6 +64,15 @@
       width: 100%; padding: 10px; border: 1px solid var(--border);
       border-radius: 6px; font-size: 14px;
     }
+
+    /* Class List Row in Management */
+    .class-item-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px; border: 1px solid var(--border); border-radius: 6px;
+      margin-bottom: 8px; background: #fff;
+    }
+    .class-info-col b { font-size: 14px; color: var(--text); }
+    .class-info-col p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
 
     /* Attendance Slider UI */
     .attendance-row {
@@ -254,6 +263,7 @@
         <button class="sidebar-btn" onclick="navAction(openMarkAttendanceModal)">Mark Attendance</button>
         <button class="sidebar-btn" onclick="navAction(openPdfModal)">Reports & PDF</button>
         <button class="sidebar-btn" onclick="navAction(openSettingsModal)">Settings</button>
+        <button class="sidebar-btn" onclick="navAction(openManageClassesModal)">Manage Classes</button>
         <button class="sidebar-btn" onclick="navAction(openSwitchDeptModal)">Switch Class</button>
         <button class="sidebar-btn" onclick="navAction(openAddDeptModal)">+ Add Class</button>
       </div>
@@ -339,7 +349,7 @@
     </div>
   </div>
 
-  <!-- Modal: Add Department -->
+  <!-- Modal: Add Class -->
   <div id="deptModal" class="overlay">
     <div class="modal">
       <h2>Add Department / Class</h2>
@@ -362,6 +372,49 @@
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('deptModal')">Cancel</button>
         <button class="btn btn-primary" onclick="saveDepartment()">Save Class</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Class -->
+  <div id="editClassModal" class="overlay">
+    <div class="modal">
+      <h2>Edit Class Details</h2>
+      <input type="hidden" id="editClassId">
+      <div class="form-group">
+        <label>Class / Department Name:</label>
+        <input type="text" id="editDeptName">
+      </div>
+      <div class="form-group">
+        <label>Academic Year:</label>
+        <input type="text" id="editDeptYear">
+      </div>
+      <div class="form-group">
+        <label>Semester:</label>
+        <select id="editDeptSem">
+          <option>I Semester</option><option>II Semester</option>
+          <option>III Semester</option><option>IV Semester</option>
+          <option>V Semester</option><option>VI Semester</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-red" onclick="closeModal('editClassModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveEditedClass()">Update Class</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Manage Classes (List, Edit, Delete) -->
+  <div id="manageClassesModal" class="overlay">
+    <div class="modal" style="max-width: 640px;">
+      <h2>Manage Classes</h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+        Edit existing classes, delete classes, or add new batches.
+      </p>
+      <div id="classesListContainer" style="max-height: 50vh; overflow-y: auto; margin-bottom: 15px;"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="closeModal('manageClassesModal'); openAddDeptModal();">+ Add New Class</button>
+        <button class="btn btn-red" onclick="closeModal('manageClassesModal')">Close</button>
       </div>
     </div>
   </div>
@@ -650,6 +703,7 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
+    // Class Management (Add, Edit, Delete)
     function openAddDeptModal() { openModal('deptModal'); }
     function saveDepartment() {
       const name = document.getElementById('deptName').value.trim();
@@ -664,6 +718,87 @@
       closeModal('deptModal');
       document.getElementById('deptName').value = '';
       showDashboard();
+    }
+
+    function openManageClassesModal() {
+      const container = document.getElementById('classesListContainer');
+      let html = '';
+      const deptList = Object.values(data.departments);
+
+      for (let i = 0; i < deptList.length; i++) {
+        const d = deptList[i];
+        const isCurrent = d.id === data.currentDeptId;
+        html += `
+          <div class="class-item-row" style="${isCurrent ? 'border-left: 4px solid var(--primary);' : ''}">
+            <div class="class-info-col">
+              <b>${d.name} ${isCurrent ? '<span style="font-size:11px; color:var(--primary); font-weight:bold;">(Active)</span>' : ''}</b>
+              <p>${d.academicYear} | ${d.semester} • ${d.students.length} Students</p>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="openEditClassModal('${d.id}')">Edit</button>
+              <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteClass('${d.id}')">Delete</button>
+            </div>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+      openModal('manageClassesModal');
+    }
+
+    function openEditClassModal(deptId) {
+      const d = data.departments[deptId];
+      if (!d) return;
+      document.getElementById('editClassId').value = d.id;
+      document.getElementById('editDeptName').value = d.name;
+      document.getElementById('editDeptYear').value = d.academicYear;
+      document.getElementById('editDeptSem').value = d.semester;
+      closeModal('manageClassesModal');
+      openModal('editClassModal');
+    }
+
+    function saveEditedClass() {
+      const deptId = document.getElementById('editClassId').value;
+      const name = document.getElementById('editDeptName').value.trim();
+      const year = document.getElementById('editDeptYear').value.trim();
+      const sem = document.getElementById('editDeptSem').value;
+
+      if (!name || !year) {
+        alert('Please provide class name and academic year.');
+        return;
+      }
+
+      if (data.departments[deptId]) {
+        data.departments[deptId].name = name;
+        data.departments[deptId].academicYear = year;
+        data.departments[deptId].semester = sem;
+        save();
+        closeModal('editClassModal');
+        setDeptHeader();
+        showDashboard();
+        alert('Class details updated successfully!');
+      }
+    }
+
+    function deleteClass(deptId) {
+      const deptKeys = Object.keys(data.departments);
+      if (deptKeys.length <= 1) {
+        alert('At least one class must remain. You cannot delete the only existing class.');
+        return;
+      }
+
+      const d = data.departments[deptId];
+      if (!d) return;
+
+      if (confirm(`Are you sure you want to delete class "${d.name}"?\nAll students and attendance records for this class will be permanently removed.`)) {
+        delete data.departments[deptId];
+        // If deleted current class, switch active to another one
+        if (data.currentDeptId === deptId) {
+          data.currentDeptId = Object.keys(data.departments)[0];
+        }
+        save();
+        openManageClassesModal();
+        showDashboard();
+      }
     }
 
     function openSwitchDeptModal() {
@@ -683,6 +818,7 @@
       showDashboard();
     }
 
+    // Student Operations
     function openAddStudentModal() { openModal('studentModal'); }
     function saveStudent() {
       const hall = document.getElementById('stuHall').value.trim();
