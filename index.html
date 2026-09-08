@@ -5,9 +5,9 @@
   <title>SARDAR PATEL COLLEGE - ATTENDANCE MANAGEMENT SYSTEM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- PDF Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <!-- PDF Libraries loaded with defer to prevent render-blocking -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" defer></script>
 
   <style>
     :root {
@@ -87,18 +87,14 @@
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider-round {
       position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ef4444; transition: .3s; border-radius: 28px;
+      background-color: #ef4444; transition: .2s; border-radius: 28px;
     }
     .slider-round:before {
       position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px;
-      background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      background-color: white; transition: .2s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    input:checked + .slider-round {
-      background-color: #16a34a;
-    }
-    input:checked + .slider-round:before {
-      transform: translateX(24px);
-    }
+    input:checked + .slider-round { background-color: #16a34a; }
+    input:checked + .slider-round:before { transform: translateX(24px); }
 
     /* Fixed +91 Group */
     .phone-group { display: flex; align-items: center; }
@@ -119,7 +115,7 @@
     .sidebar {
       width: 260px; background-color: var(--navy); color: white;
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
-      transition: transform 0.3s ease; z-index: 250;
+      transition: transform 0.25s ease; z-index: 250;
     }
     .sidebar-header { padding: 22px 18px; border-bottom: 1px solid var(--navy-light); }
     .sidebar-header h2 { font-size: 17px; }
@@ -210,7 +206,6 @@
 </head>
 <body>
 
-  <!-- Backdrop for Mobile -->
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
 
   <!-- Login Screen -->
@@ -332,7 +327,7 @@
     <!-- Table -->
     <div class="table-container">
       <div class="table-toolbar">
-        <input type="text" id="searchInput" placeholder="Search by name, hall ticket..." oninput="renderTable()">
+        <input type="text" id="searchInput" placeholder="Search by name, hall ticket..." oninput="debouncedRenderTable()">
         <div class="btn-group" id="topToolbarActions"></div>
       </div>
       <div class="table-scroll">
@@ -439,7 +434,7 @@
     </div>
   </div>
 
-  <!-- Modal: Mark Attendance with Sliding Toggle -->
+  <!-- Modal: Mark Attendance -->
   <div id="attendanceModal" class="overlay">
     <div class="modal" style="max-width: 680px;">
       <h2>Mark Attendance</h2>
@@ -520,6 +515,7 @@
     const STORAGE_KEY = 'college_attendance_db';
     let data = { passwordHash: '', defaultReportNumber: '', departments: {}, currentDeptId: '' };
     let activeView = 'dashboard';
+    let renderDebounceTimer = null;
 
     function toggleSidebar(open) {
       const sidebar = document.getElementById('appSidebar');
@@ -535,7 +531,7 @@
 
     function navAction(callback) {
       toggleSidebar(false);
-      callback();
+      requestAnimationFrame(callback);
     }
 
     function init() {
@@ -566,7 +562,14 @@
       }
     }
 
-    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+    function save() { 
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); 
+      } catch (e) {
+        console.error("Local storage error:", e);
+      }
+    }
+    
     function curDept() { return data.departments[data.currentDeptId]; }
 
     function authenticateStaff() {
@@ -665,14 +668,11 @@
 
     function openSwitchDeptModal() {
       const select = document.getElementById('switchDeptSelect');
-      select.innerHTML = '';
+      let optionsHtml = '';
       Object.values(data.departments).forEach(d => {
-        const opt = document.createElement('option');
-        opt.value = d.id;
-        opt.innerText = `${d.name} (${d.academicYear} - ${d.semester})`;
-        if (d.id === data.currentDeptId) opt.selected = true;
-        select.appendChild(opt);
+        optionsHtml += `<option value="${d.id}" ${d.id === data.currentDeptId ? 'selected' : ''}>${d.name} (${d.academicYear} - ${d.semester})</option>`;
       });
+      select.innerHTML = optionsHtml;
       openModal('switchDeptModal');
     }
 
@@ -756,42 +756,36 @@
       }
     }
 
-    // Interactive Sliding Toggle Attendance List
     function openMarkAttendanceModal() {
       const dept = curDept();
       if (dept.students.length === 0) { alert('Please add students first.'); return; }
-      const container = document.getElementById('attendanceList');
-      container.innerHTML = '';
+      
       document.getElementById('attendDate').valueAsDate = new Date();
-
-      dept.students.forEach((s, i) => {
-        const row = document.createElement('div');
-        row.className = 'attendance-row';
-        row.innerHTML = `
-          <div class="student-label">${s.name} <span style="font-size:11px; color:var(--text-secondary);">(${s.hall})</span></div>
-          <div class="slider-control">
-            <span class="status-tag absent" id="status_label_${i}">Absent</span>
-            <label class="switch">
-              <input type="checkbox" id="slider_${i}" onchange="updateSliderLabel(${i})">
-              <span class="slider-round"></span>
-            </label>
+      let listHtml = '';
+      for (let i = 0; i < dept.students.length; i++) {
+        const s = dept.students[i];
+        listHtml += `
+          <div class="attendance-row">
+            <div class="student-label">${s.name} <span style="font-size:11px; color:var(--text-secondary);">(${s.hall})</span></div>
+            <div class="slider-control">
+              <span class="status-tag absent" id="status_label_${i}">Absent</span>
+              <label class="switch">
+                <input type="checkbox" id="slider_${i}" onchange="updateSliderLabel(${i})">
+                <span class="slider-round"></span>
+              </label>
+            </div>
           </div>
         `;
-        container.appendChild(row);
-      });
+      }
+      document.getElementById('attendanceList').innerHTML = listHtml;
       openModal('attendanceModal');
     }
 
     function updateSliderLabel(i) {
       const isChecked = document.getElementById(`slider_${i}`).checked;
       const label = document.getElementById(`status_label_${i}`);
-      if (isChecked) {
-        label.innerText = 'Present';
-        label.className = 'status-tag present';
-      } else {
-        label.innerText = 'Absent';
-        label.className = 'status-tag absent';
-      }
+      label.innerText = isChecked ? 'Present' : 'Absent';
+      label.className = isChecked ? 'status-tag present' : 'status-tag absent';
     }
 
     function saveAttendance() {
@@ -810,10 +804,10 @@
         });
       }
 
-      dept.students.forEach((s, i) => {
-        const isPresent = document.getElementById(`slider_${i}`).checked;
-        s.attendance[formattedDate] = isPresent ? 'Present' : 'Absent';
-      });
+      for (let i = 0; i < dept.students.length; i++) {
+        const input = document.getElementById(`slider_${i}`);
+        dept.students[i].attendance[formattedDate] = (input && input.checked) ? 'Present' : 'Absent';
+      }
 
       save();
       closeModal('attendanceModal');
@@ -826,37 +820,33 @@
 
     function calculatePercentageForDate(dateStr) {
       const dept = curDept();
-      if (!dateStr || dept.students.length === 0) return 0;
+      if (!dateStr || !dept || dept.students.length === 0) return 0;
       let present = 0;
-      dept.students.forEach(s => {
-        if (s.attendance[dateStr] === 'Present') present++;
-      });
+      for (let i = 0; i < dept.students.length; i++) {
+        if (dept.students[i].attendance[dateStr] === 'Present') present++;
+      }
       return (present / dept.students.length) * 100;
     }
 
     function populateDateDropdown() {
       const dept = curDept();
       const dropdown = document.getElementById('selectedDateDropdown');
-      dropdown.innerHTML = '';
-
       if (dept.dates.length === 0) {
         dropdown.innerHTML = '<option value="">No dates recorded</option>';
         return;
       }
-
-      dept.dates.forEach((d, idx) => {
-        const opt = document.createElement('option');
-        opt.value = d;
-        opt.innerText = d;
-        if (idx === dept.dates.length - 1) opt.selected = true;
-        dropdown.appendChild(opt);
-      });
+      let opts = '';
+      for (let i = 0; i < dept.dates.length; i++) {
+        const d = dept.dates[i];
+        opts += `<option value="${d}" ${i === dept.dates.length - 1 ? 'selected' : ''}>${d}</option>`;
+      }
+      dropdown.innerHTML = opts;
     }
 
     function updateDateComparison() {
       const dept = curDept();
       const dropdown = document.getElementById('selectedDateDropdown');
-      const selectedDate = dropdown.value;
+      const selectedDate = dropdown ? dropdown.value : '';
 
       if (!selectedDate || dept.dates.length === 0) {
         document.getElementById('compCurrentPct').innerText = '-';
@@ -932,22 +922,20 @@
       const dept = curDept();
       const total = dept.students.length;
       let present = 0, absent = 0;
-      const latest = dept.dates[dept.dates.length - 1];
-
-      if (latest) {
-        dept.students.forEach(s => {
-          if (s.attendance[latest] === 'Present') present++;
-          else if (s.attendance[latest] === 'Absent') absent++;
-        });
-      }
+      const latest = dept.dates.length > 0 ? dept.dates[dept.dates.length - 1] : null;
 
       let totalEntries = 0, totalPresents = 0;
-      dept.dates.forEach(d => {
-        dept.students.forEach(s => {
+      for (let i = 0; i < dept.students.length; i++) {
+        const s = dept.students[i];
+        if (latest) {
+          if (s.attendance[latest] === 'Present') present++;
+          else if (s.attendance[latest] === 'Absent') absent++;
+        }
+        for (let j = 0; j < dept.dates.length; j++) {
           totalEntries++;
-          if (s.attendance[d] === 'Present') totalPresents++;
-        });
-      });
+          if (s.attendance[dept.dates[j]] === 'Present') totalPresents++;
+        }
+      }
 
       document.getElementById('statTotal').innerText = total;
       document.getElementById('statPresent').innerText = present;
@@ -955,60 +943,72 @@
       document.getElementById('statPct').innerText = totalEntries === 0 ? '0%' : ((totalPresents / totalEntries) * 100).toFixed(1) + '%';
     }
 
+    function debouncedRenderTable() {
+      clearTimeout(renderDebounceTimer);
+      renderDebounceTimer = setTimeout(renderTable, 120);
+    }
+
     function renderTable() {
       const dept = curDept();
-      const q = document.getElementById('searchInput').value.toLowerCase();
+      const q = (document.getElementById('searchInput').value || '').toLowerCase();
       const thead = document.getElementById('tblHead');
       const tbody = document.getElementById('tblBody');
-      thead.innerHTML = ''; tbody.innerHTML = '';
 
-      const filtered = dept.students.filter(s =>
-        s.name.toLowerCase().includes(q) ||
-        s.hall.toLowerCase().includes(q) ||
-        s.phone.includes(q)
-      );
+      let matchingStudents = [];
+      for (let i = 0; i < dept.students.length; i++) {
+        const s = dept.students[i];
+        if (!q || s.name.toLowerCase().includes(q) || s.hall.toLowerCase().includes(q) || s.phone.includes(q)) {
+          matchingStudents.push({ student: s, index: i });
+        }
+      }
 
       if (activeView === 'dashboard') {
-        let th = `<tr><th>Hall Ticket</th><th>Student Name</th>`;
-        dept.dates.forEach(d => { th += `<th>${d}</th>`; });
-        th += `<th>Total</th><th>Present</th><th>%</th></tr>`;
+        let th = '<tr><th>Hall Ticket</th><th>Student Name</th>';
+        for (let j = 0; j < dept.dates.length; j++) {
+          th += `<th>${dept.dates[j]}</th>`;
+        }
+        th += '<th>Total</th><th>Present</th><th>%</th></tr>';
         thead.innerHTML = th;
 
-        filtered.forEach(s => {
-          const totalDays = dept.dates.length;
+        let rowsHtml = '';
+        const totalDays = dept.dates.length;
+        for (let i = 0; i < matchingStudents.length; i++) {
+          const s = matchingStudents[i].student;
           let pCount = 0;
-          dept.dates.forEach(d => { if (s.attendance[d] === 'Present') pCount++; });
-          const pct = totalDays === 0 ? '0.00%' : ((pCount / totalDays) * 100).toFixed(2) + '%';
-
-          let tr = `<tr><td>${s.hall}</td><td>${s.name}</td>`;
-          dept.dates.forEach(d => {
-            const st = s.attendance[d] || '-';
+          let cellCols = '';
+          for (let j = 0; j < totalDays; j++) {
+            const st = s.attendance[dept.dates[j]] || '-';
+            if (st === 'Present') pCount++;
             const cls = st === 'Present' ? 'present' : st === 'Absent' ? 'absent' : '';
-            tr += `<td class="${cls}">${st}</td>`;
-          });
-          tr += `<td>${totalDays}</td><td>${pCount}</td><td>${pct}</td></tr>`;
-          tbody.innerHTML += tr;
-        });
-
-        if (dept.dates.length > 0) {
-          let summaryRow = `<tr style="background:#f1f5f9; font-weight:bold;"><td colspan="2">Daily Attendance %</td>`;
-          dept.dates.forEach(d => {
-            const pct = calculatePercentageForDate(d);
-            summaryRow += `<td>${pct.toFixed(1)}%</td>`;
-          });
-          summaryRow += `<td colspan="3">-</td></tr>`;
-          tbody.innerHTML += summaryRow;
+            cellCols += `<td class="${cls}">${st}</td>`;
+          }
+          const pct = totalDays === 0 ? '0.00%' : ((pCount / totalDays) * 100).toFixed(2) + '%';
+          rowsHtml += `<tr><td>${s.hall}</td><td>${s.name}</td>${cellCols}<td>${totalDays}</td><td>${pCount}</td><td>${pct}</td></tr>`;
         }
 
-      } else {
-        thead.innerHTML = `<tr><th>Hall Ticket</th><th>Student Name</th><th>WhatsApp</th><th>Attendance %</th><th>Actions</th></tr>`;
-        filtered.forEach((s, idx) => {
-          const totalDays = dept.dates.length;
-          let pCount = 0;
-          dept.dates.forEach(d => { if (s.attendance[d] === 'Present') pCount++; });
-          const pct = totalDays === 0 ? '0.00%' : ((pCount / totalDays) * 100).toFixed(2) + '%';
+        if (totalDays > 0) {
+          let summaryRow = '<tr style="background:#f1f5f9; font-weight:bold;"><td colspan="2">Daily Attendance %</td>';
+          for (let j = 0; j < totalDays; j++) {
+            summaryRow += `<td>${calculatePercentageForDate(dept.dates[j]).toFixed(1)}%</td>`;
+          }
+          summaryRow += '<td colspan="3">-</td></tr>';
+          rowsHtml += summaryRow;
+        }
+        tbody.innerHTML = rowsHtml;
 
-          tbody.innerHTML += `
+      } else {
+        thead.innerHTML = '<tr><th>Hall Ticket</th><th>Student Name</th><th>WhatsApp</th><th>Attendance %</th><th>Actions</th></tr>';
+        let rowsHtml = '';
+        const totalDays = dept.dates.length;
+        for (let i = 0; i < matchingStudents.length; i++) {
+          const s = matchingStudents[i].student;
+          const idx = matchingStudents[i].index;
+          let pCount = 0;
+          for (let j = 0; j < totalDays; j++) {
+            if (s.attendance[dept.dates[j]] === 'Present') pCount++;
+          }
+          const pct = totalDays === 0 ? '0.00%' : ((pCount / totalDays) * 100).toFixed(2) + '%';
+          rowsHtml += `
             <tr>
               <td>${s.hall}</td>
               <td>${s.name}</td>
@@ -1021,7 +1021,8 @@
               </td>
             </tr>
           `;
-        });
+        }
+        tbody.innerHTML = rowsHtml;
       }
     }
 
@@ -1063,6 +1064,11 @@ ${status}`;
     }
 
     function processPdfAndWhatsApp() {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert('PDF library is loading. Please wait a couple seconds and try again.');
+        return;
+      }
+
       const rawInput = document.getElementById('targetWhatsApp').value.replace(/\D/g, '');
       if (rawInput.length < 10) {
         alert('Please enter a valid 10-digit WhatsApp number.');
@@ -1080,23 +1086,29 @@ ${status}`;
       doc.text(`Academic Year: ${dept.academicYear} | Semester: ${dept.semester}`, 14, 22);
 
       const headers = ['Hall Ticket', 'Name', ...dept.dates, 'Total', 'Present', '%'];
-      const body = dept.students.map(s => {
+      const body = [];
+      const totalDays = dept.dates.length;
+
+      for (let i = 0; i < dept.students.length; i++) {
+        const s = dept.students[i];
         let pCount = 0;
-        dept.dates.forEach(d => { if (s.attendance[d] === 'Present') pCount++; });
-        const pct = dept.dates.length === 0 ? '0.00%' : ((pCount / dept.dates.length) * 100).toFixed(2) + '%';
+        const row = [s.hall, s.name];
+        for (let j = 0; j < totalDays; j++) {
+          const st = s.attendance[dept.dates[j]] || '-';
+          if (st === 'Present') pCount++;
+          row.push(st);
+        }
+        const pct = totalDays === 0 ? '0.00%' : ((pCount / totalDays) * 100).toFixed(2) + '%';
+        row.push(totalDays, pCount, pct);
+        body.push(row);
+      }
 
-        return [
-          s.hall,
-          s.name,
-          ...dept.dates.map(d => s.attendance[d] || '-'),
-          dept.dates.length,
-          pCount,
-          pct
-        ];
-      });
-
-      if (dept.dates.length > 0) {
-        const bottomRow = ['DAILY %', '-', ...dept.dates.map(d => `${calculatePercentageForDate(d).toFixed(1)}%`), '-', '-', '-'];
+      if (totalDays > 0) {
+        const bottomRow = ['DAILY %', '-'];
+        for (let j = 0; j < totalDays; j++) {
+          bottomRow.push(`${calculatePercentageForDate(dept.dates[j]).toFixed(1)}%`);
+        }
+        bottomRow.push('-', '-', '-');
         body.push(bottomRow);
       }
 
@@ -1114,18 +1126,19 @@ ${status}`;
 
       const dropdown = document.getElementById('selectedDateDropdown');
       let chosenDate = (dropdown && dropdown.value) ? dropdown.value : '';
-      if (!chosenDate && dept.dates.length > 0) {
-        chosenDate = dept.dates[dept.dates.length - 1];
+      if (!chosenDate && totalDays > 0) {
+        chosenDate = dept.dates[totalDays - 1];
       }
       if (!chosenDate) {
         chosenDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
       }
 
       let studentEntries = '';
-      dept.students.forEach(s => {
+      for (let i = 0; i < dept.students.length; i++) {
+        const s = dept.students[i];
         const status = s.attendance[chosenDate] || 'Absent';
         studentEntries += `\n${s.name}\n${s.hall}\n${status}\n`;
-      });
+      }
 
       const message = 
 `Sardar Patel College
