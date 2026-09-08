@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SARDAR PATEL COLLEGE - ATTENDANCE MANAGEMENT SYSTEM</title>
+  <title>SARDAR PATEL COLLEGE - ATTENDANCE SYSTEM v2.1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- PDF Libraries -->
@@ -16,7 +16,6 @@
       --navy: #0f172a;
       --navy-light: #1e293b;
       --primary: #2563eb;
-      --primary-dark: #1d4ed8;
       --green: #16a34a;
       --red: #dc2626;
       --orange: #ea580c;
@@ -28,7 +27,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; position: relative; }
 
-    /* Welcome / Login Gate */
+    /* Login Screen */
     #authOverlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000;
@@ -42,7 +41,7 @@
     .auth-card h3 { font-size: 13px; color: var(--primary); margin-bottom: 18px; font-weight: 700; }
     .auth-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; }
 
-    /* Modals */
+    /* Popups / Modals */
     .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.6); display: none; align-items: center;
@@ -61,7 +60,7 @@
       border-radius: 6px; font-size: 14px;
     }
 
-    /* Fixed +91 Group */
+    /* Fixed +91 Field */
     .phone-group { display: flex; align-items: center; }
     .phone-prefix {
       background: #f1f5f9; border: 1px solid var(--border); border-right: none;
@@ -72,7 +71,7 @@
 
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
 
-    /* Sidebar / Drawer Navigation */
+    /* Mobile Drawer */
     .sidebar-backdrop {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5); z-index: 200;
@@ -94,14 +93,14 @@
     .sidebar-btn:hover { background-color: var(--navy-light); }
     .sidebar-footer { padding: 15px; border-top: 1px solid var(--navy-light); font-size: 12px; color: #cbd5e1; }
 
-    /* Main Content */
+    /* Main Area */
     .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 15px 20px; }
     .mobile-header-bar {
       display: none; align-items: center; justify-content: space-between; margin-bottom: 15px;
     }
     .menu-toggle-btn {
-      background: var(--navy); color: white; border: none; font-size: 20px;
-      padding: 6px 12px; border-radius: 6px; cursor: pointer;
+      background: var(--navy); color: white; border: none; font-size: 16px;
+      padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600;
     }
     .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .page-title h1 { font-size: 22px; }
@@ -156,7 +155,7 @@
     .present { color: var(--green); font-weight: 600; }
     .absent { color: var(--red); font-weight: 600; }
 
-    /* Mobile Adaptations */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
       .sidebar {
         position: fixed; top: 0; left: 0; height: 100%;
@@ -172,10 +171,10 @@
 </head>
 <body>
 
-  <!-- Backdrop overlay for mobile drawer -->
+  <!-- Backdrop for Mobile Drawer -->
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
 
-  <!-- Fullscreen Login Gate -->
+  <!-- Fullscreen Login Screen -->
   <div id="authOverlay">
     <div class="auth-card">
       <h2>SARDAR PATEL COLLEGE</h2>
@@ -227,7 +226,7 @@
     </div>
   </div>
 
-  <!-- Main Content Area -->
+  <!-- Main View -->
   <div class="main">
     <div class="mobile-header-bar">
       <button class="menu-toggle-btn" onclick="toggleSidebar(true)">☰ Menu</button>
@@ -242,7 +241,7 @@
       <div class="class-badge" id="deptBadge"></div>
     </div>
 
-    <!-- Summary Metrics -->
+    <!-- Metrics -->
     <div class="cards-row" id="statsRow">
       <div class="card">
         <div class="card-info">
@@ -274,7 +273,7 @@
       </div>
     </div>
 
-    <!-- Comparison Banner -->
+    <!-- Date Comparison -->
     <div class="comparison-banner" id="comparisonBanner">
       <div class="comparison-controls">
         <label>Selected Date:</label>
@@ -409,7 +408,7 @@
     </div>
   </div>
 
-  <!-- Modal: PDF & WhatsApp Export -->
+  <!-- Modal: PDF & WhatsApp -->
   <div id="pdfModal" class="overlay">
     <div class="modal">
       <h2>Generate PDF & Send to WhatsApp</h2>
@@ -435,7 +434,6 @@
     let data = { passwordHash: '', departments: {}, currentDeptId: '' };
     let activeView = 'dashboard';
 
-    // Mobile Sidebar controls
     function toggleSidebar(open) {
       const sidebar = document.getElementById('appSidebar');
       const backdrop = document.getElementById('sidebarBackdrop');
@@ -536,7 +534,6 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Department Management
     function openAddDeptModal() { openModal('deptModal'); }
     function saveDepartment() {
       const name = document.getElementById('deptName').value.trim();
@@ -573,7 +570,6 @@
       showDashboard();
     }
 
-    // Student Management
     function openAddStudentModal() { openModal('studentModal'); }
     function saveStudent() {
       const hall = document.getElementById('stuHall').value.trim();
@@ -609,7 +605,6 @@
       }
     }
 
-    // Attendance Operations
     function openMarkAttendanceModal() {
       const dept = curDept();
       if (dept.students.length === 0) { alert('Please add students first.'); return; }
@@ -853,7 +848,7 @@
               <td>+${s.phone}</td>
               <td>${pct}</td>
               <td>
-                <button class="btn btn-green" style="padding:4px 8px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
+                <button class="btn btn-green" style="padding:4px 8px; font-size:11px;" onclick="sendExactFormatWhatsApp('${s.hall}')">WhatsApp</button>
                 <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
               </td>
             </tr>
@@ -862,23 +857,38 @@
       }
     }
 
-    // Exact Format WhatsApp Dispatcher
-    function sendSingleStudentWhatsApp(hall) {
+    // EXACT TEMPLATE DISPATCHER
+    function sendExactFormatWhatsApp(hall) {
       const dept = curDept();
       const s = dept.students.find(x => x.hall === hall);
       if (!s) return;
 
-      const latestDate = dept.dates.length > 0 ? dept.dates[dept.dates.length - 1] : new Date().toLocaleDateString('en-GB');
-      const status = s.attendance[latestDate] || 'Not Marked';
+      const dropdown = document.getElementById('selectedDateDropdown');
+      let chosenDate = (dropdown && dropdown.value) ? dropdown.value : '';
+      if (!chosenDate && dept.dates.length > 0) {
+        chosenDate = dept.dates[dept.dates.length - 1];
+      }
+      if (!chosenDate) {
+        chosenDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+      }
 
-      const msg = `Sardar Patel College\n` +
-        `Student Attendance Report\n\n` +
-        `Dept: ${dept.name}\n\n` +
-        `Date: ${latestDate}\n\n` +
-        `Student: ${s.name} (${s.hall})\n\n` +
-        `Status: ${status}`;
+      const status = s.attendance[chosenDate] || 'Absent';
 
-      window.open(`https://wa.me/${s.phone}?text=${encodeURIComponent(msg)}`, '_blank');
+      // Exact output format requested
+      const message = 
+`Sardar Patel College 
+Student Attendance Report
+
+Dept: ${dept.name}
+
+Date: ${chosenDate}
+
+Student: ${s.name} (${s.hall})
+
+${status}`;
+
+      const waUrl = `https://wa.me/${s.phone}?text=${encodeURIComponent(message)}`;
+      window.open(waUrl, '_blank');
     }
 
     function openPdfModal() { openModal('pdfModal'); }
@@ -933,17 +943,21 @@
       const fileName = `${dept.name.replace(/\s+/g, '_')}_Attendance.pdf`;
       doc.save(fileName);
 
-      const latestDate = dept.dates.length > 0 ? dept.dates[dept.dates.length - 1] : new Date().toLocaleDateString('en-GB');
-      const message = `Sardar Patel College\n` +
-        `Attendance Register Report\n\n` +
-        `Dept: ${dept.name}\n\n` +
-        `Date: ${latestDate}\n\n` +
-        `Total Students: ${dept.students.length}\n` +
-        `Total Classes: ${dept.dates.length}\n\n` +
-        `_The official PDF report has been downloaded to your device. Please attach it._`;
+      const latestDate = dept.dates.length > 0 ? dept.dates[dept.dates.length - 1] : new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+      const message = 
+`Sardar Patel College 
+Student Attendance Report
+
+Dept: ${dept.name}
+
+Date: ${latestDate}
+
+Student: Complete Class (${dept.students.length} Students)
+
+PDF Register Attached`;
 
       closeModal('pdfModal');
-      window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(message)}`, '_blank');
+      window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(message)}`;
     }
 
     init();
