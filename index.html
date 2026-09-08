@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Attendance Management System</title>
+  <title>SARDAR PATEL COLLEGE - ATTENDANCE MANAGEMENT SYSTEM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- PDF Libraries -->
@@ -16,6 +16,7 @@
       --navy: #0f172a;
       --navy-light: #1e293b;
       --primary: #2563eb;
+      --primary-dark: #1d4ed8;
       --green: #16a34a;
       --red: #dc2626;
       --orange: #ea580c;
@@ -27,11 +28,25 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-    /* Modal / Popups */
+    /* Welcome / Login Gate */
+    #authOverlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .auth-card {
+      background: var(--white); padding: 40px 30px; border-radius: 12px;
+      width: 90%; max-width: 440px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 1px solid var(--border); text-align: center;
+    }
+    .auth-card h2 { font-size: 22px; color: var(--text); margin-bottom: 4px; }
+    .auth-card h3 { font-size: 14px; color: var(--primary); margin-bottom: 20px; font-weight: 700; }
+    .auth-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+
+    /* Generic Modal Popup */
     .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.6); display: none; align-items: center;
-      justify-content: center; z-index: 100;
+      justify-content: center; z-index: 500;
     }
     .modal {
       background: var(--white); padding: 25px; border-radius: 8px;
@@ -39,39 +54,50 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     .modal h2 { margin-bottom: 12px; font-size: 20px; }
-    .form-group { margin-bottom: 12px; }
+    .form-group { margin-bottom: 12px; text-align: left; }
     .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 13px; }
     .form-group input, .form-group select {
-      width: 100%; padding: 8px 10px; border: 1px solid var(--border);
+      width: 100%; padding: 10px; border: 1px solid var(--border);
       border-radius: 6px; font-size: 14px;
     }
+
+    /* Fixed +91 Input Group */
+    .phone-group { display: flex; align-items: center; }
+    .phone-prefix {
+      background: #f1f5f9; border: 1px solid var(--border); border-right: none;
+      padding: 10px 12px; font-weight: 700; font-size: 14px; color: var(--text-secondary);
+      border-radius: 6px 0 0 6px;
+    }
+    .phone-group input { border-radius: 0 6px 6px 0 !important; }
+
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
 
     /* Sidebar */
     .sidebar {
       width: 260px; background-color: var(--navy); color: white;
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
+      transition: all 0.3s;
     }
     .sidebar-header { padding: 25px 20px; border-bottom: 1px solid var(--navy-light); }
-    .sidebar-header h2 { font-size: 18px; }
-    .sidebar-header h3 { font-size: 15px; color: #93c5fd; }
+    .sidebar-header h2 { font-size: 18px; letter-spacing: 0.5px; }
+    .sidebar-header h3 { font-size: 14px; color: #93c5fd; }
     .sidebar-menu { display: flex; flex-direction: column; gap: 6px; padding: 15px 10px; flex-grow: 1; }
     .sidebar-btn {
-      background: transparent; border: none; color: white; padding: 10px 14px;
+      background: transparent; border: none; color: white; padding: 11px 14px;
       text-align: left; font-size: 13px; font-weight: 600; border-radius: 6px;
-      cursor: pointer;
+      cursor: pointer; display: flex; align-items: center; gap: 10px;
     }
-    .sidebar-btn:hover { background-color: var(--navy-light); }
+    .sidebar-btn:hover, .sidebar-btn.active { background-color: var(--navy-light); }
     .sidebar-footer { padding: 15px 20px; border-top: 1px solid var(--navy-light); font-size: 12px; color: #cbd5e1; }
 
-    /* Main Area */
+    /* Content Area */
     .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 20px 25px; }
-    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
     .page-title h1 { font-size: 24px; }
     .class-badge { text-align: right; font-size: 13px; color: var(--text-secondary); }
     .class-badge b { color: var(--text); font-size: 15px; }
 
-    /* Summary Stats */
+    /* Metrics Cards */
     .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px; }
     .card {
       background: var(--white); border: 1px solid var(--border); border-radius: 8px;
@@ -89,7 +115,7 @@
     }
     .comparison-controls { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
     .comparison-controls select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); font-weight: 600; }
-    .comparison-stats { display: flex; gap: 20px; font-size: 13px; }
+    .comparison-stats { display: flex; gap: 15px; font-size: 13px; }
     .stat-pill { background: #f8fafc; border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; }
 
     /* Table Container */
@@ -103,7 +129,7 @@
     }
     .btn-group { display: flex; gap: 8px; }
     .btn {
-      padding: 8px 14px; border: none; border-radius: 6px; font-size: 12px;
+      padding: 8px 14px; border: none; border-radius: 6px; font-size: 13px;
       font-weight: 600; cursor: pointer; color: white;
     }
     .btn-primary { background: var(--primary); }
@@ -122,6 +148,35 @@
 </head>
 <body>
 
+  <!-- Fullscreen Login / Setup Gate -->
+  <div id="authOverlay">
+    <div class="auth-card">
+      <h2>SARDAR PATEL COLLEGE</h2>
+      <h3>ATTENDANCE MANAGEMENT SYSTEM</h3>
+      <p id="authDesc">Enter staff password to continue</p>
+      
+      <div id="setupPassFields" style="display: none;">
+        <div class="form-group">
+          <label>Create Staff Password:</label>
+          <input type="password" id="createPassInput" placeholder="Minimum 4 characters">
+        </div>
+        <div class="form-group">
+          <label>Confirm Password:</label>
+          <input type="password" id="confirmPassInput">
+        </div>
+      </div>
+
+      <div id="loginPassField">
+        <div class="form-group">
+          <label>Staff Password:</label>
+          <input type="password" id="loginPassInput" placeholder="Enter password">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%; padding:11px; margin-top:10px;" onclick="authenticateStaff()">STAFF LOGIN</button>
+    </div>
+  </div>
+
   <!-- Sidebar -->
   <div class="sidebar">
     <div>
@@ -131,19 +186,21 @@
       </div>
       <div class="sidebar-menu">
         <button class="sidebar-btn" onclick="showDashboard()">Dashboard</button>
-        <button class="sidebar-btn" onclick="showStudents()">Manage Students</button>
+        <button class="sidebar-btn" onclick="showStudents()">Students</button>
         <button class="sidebar-btn" onclick="openMarkAttendanceModal()">Mark Attendance</button>
-        <button class="sidebar-btn" onclick="openPdfModal()">Generate & Send PDF</button>
-        <button class="sidebar-btn" onclick="openAddDeptModal()">+ Add Department</button>
-        <button class="sidebar-btn" onclick="openSwitchDeptModal()">Switch Department</button>
+        <button class="sidebar-btn" onclick="openPdfModal()">Reports & PDF</button>
+        <button class="sidebar-btn" onclick="openSettingsModal()">Settings</button>
+        <button class="sidebar-btn" onclick="openSwitchDeptModal()">Switch Class</button>
+        <button class="sidebar-btn" onclick="openAddDeptModal()">+ Add Class</button>
       </div>
     </div>
     <div class="sidebar-footer">
       <div id="sidebarDeptInfo">Loading...</div>
+      <button class="sidebar-btn" style="margin-top: 10px; padding: 6px 0; color:#ef4444;" onclick="logout()">Logout</button>
     </div>
   </div>
 
-  <!-- Content Screen -->
+  <!-- Main Content -->
   <div class="main">
     <div class="top-header">
       <div class="page-title">
@@ -178,7 +235,7 @@
       </div>
       <div class="card">
         <div class="card-info">
-          <h4>Overall Percentage</h4>
+          <h4>Attendance</h4>
           <span id="statPct" style="color: var(--orange);">0%</span>
         </div>
         <div class="card-bar" style="background: var(--orange);"></div>
@@ -188,12 +245,12 @@
     <!-- Date Comparison Banner -->
     <div class="comparison-banner" id="comparisonBanner">
       <div class="comparison-controls">
-        <label>Select Date:</label>
+        <label>Selected Date:</label>
         <select id="selectedDateDropdown" onchange="updateDateComparison()"></select>
       </div>
       <div class="comparison-stats">
         <div class="stat-pill">
-          Selected Date: <b id="compCurrentPct">-</b>
+          Attendance: <b id="compCurrentPct">-</b>
         </div>
         <div class="stat-pill">
           Previous Date (<span id="compPrevDate">-</span>): <b id="compPrevPct">-</b>
@@ -207,7 +264,7 @@
     <!-- Attendance Table -->
     <div class="table-container">
       <div class="table-toolbar">
-        <input type="text" id="searchInput" placeholder="Search student name or hall ticket..." oninput="renderTable()">
+        <input type="text" id="searchInput" placeholder="Search by name, hall ticket..." oninput="renderTable()">
         <div class="btn-group" id="topToolbarActions"></div>
       </div>
       <div class="table-scroll">
@@ -219,20 +276,20 @@
     </div>
   </div>
 
-  <!-- Modal: Add Department -->
+  <!-- Modal: Add Department/Class -->
   <div id="deptModal" class="overlay">
     <div class="modal">
       <h2>Add Department / Class</h2>
       <div class="form-group">
-        <label>Department / Class Name</label>
-        <input type="text" id="deptName" placeholder="e.g., Computer Science (MPCs)">
+        <label>Class / Department Name:</label>
+        <input type="text" id="deptName" placeholder="e.g., B.Sc MPCs">
       </div>
       <div class="form-group">
-        <label>Academic Year</label>
+        <label>Academic Year:</label>
         <input type="text" id="deptYear" value="2026-2027">
       </div>
       <div class="form-group">
-        <label>Semester</label>
+        <label>Semester:</label>
         <select id="deptSem">
           <option>I Semester</option><option>II Semester</option>
           <option>III Semester</option><option>IV Semester</option>
@@ -241,17 +298,17 @@
       </div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('deptModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveDepartment()">Save</button>
+        <button class="btn btn-primary" onclick="saveDepartment()">Save Class</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Switch Department -->
+  <!-- Modal: Switch Class -->
   <div id="switchDeptModal" class="overlay">
     <div class="modal">
-      <h2>Switch Department</h2>
+      <h2>Switch Class</h2>
       <div class="form-group">
-        <label>Select Department</label>
+        <label>Select Active Class:</label>
         <select id="switchDeptSelect"></select>
       </div>
       <div class="modal-actions">
@@ -266,20 +323,23 @@
     <div class="modal">
       <h2>Add New Student</h2>
       <div class="form-group">
-        <label>Hall Ticket Number</label>
+        <label>Hall Ticket Number:</label>
         <input type="text" id="stuHall" placeholder="e.g., 1051-24-468-001">
       </div>
       <div class="form-group">
-        <label>Student Name</label>
+        <label>Student Name:</label>
         <input type="text" id="stuName" placeholder="e.g., Mohammed Rahman">
       </div>
       <div class="form-group">
-        <label>WhatsApp Number (10 digits)</label>
-        <input type="text" id="stuPhone" placeholder="9876543210">
+        <label>WhatsApp Number:</label>
+        <div class="phone-group">
+          <span class="phone-prefix">+91</span>
+          <input type="text" id="stuPhone" placeholder="10-digit mobile number">
+        </div>
       </div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('studentModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveStudent()">Add</button>
+        <button class="btn btn-primary" onclick="saveStudent()">Add Student</button>
       </div>
     </div>
   </div>
@@ -289,7 +349,7 @@
     <div class="modal" style="max-width: 680px;">
       <h2>Mark Attendance</h2>
       <div class="form-group">
-        <label>Attendance Date</label>
+        <label>Attendance Date:</label>
         <input type="date" id="attendDate">
       </div>
       <div id="attendanceList" style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px;"></div>
@@ -300,27 +360,53 @@
     </div>
   </div>
 
+  <!-- Modal: Settings / Change Password -->
+  <div id="settingsModal" class="overlay">
+    <div class="modal">
+      <h2>Settings</h2>
+      <div class="form-group">
+        <label>Current Password:</label>
+        <input type="password" id="currPassInput">
+      </div>
+      <div class="form-group">
+        <label>New Password:</label>
+        <input type="password" id="changePassInput">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password:</label>
+        <input type="password" id="confirmChangePassInput">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-red" onclick="closeModal('settingsModal')">Close</button>
+        <button class="btn btn-primary" onclick="updatePassword()">Update Password</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal: PDF & WhatsApp Export -->
   <div id="pdfModal" class="overlay">
     <div class="modal">
       <h2>Generate PDF & Send to WhatsApp</h2>
       <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-        Downloads the full attendance register with date-wise comparative statistics and opens WhatsApp.
+        Downloads the class register PDF and opens WhatsApp with your summary.
       </p>
       <div class="form-group">
-        <label>Recipient WhatsApp Number (with country code, e.g., 916305262256)</label>
-        <input type="text" id="targetWhatsApp" placeholder="e.g., 919876543210">
+        <label>Recipient WhatsApp Number:</label>
+        <div class="phone-group">
+          <span class="phone-prefix">+91</span>
+          <input type="text" id="targetWhatsApp" placeholder="10-digit mobile number">
+        </div>
       </div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('pdfModal')">Cancel</button>
-        <button class="btn btn-green" onclick="processPdfAndWhatsApp()">Download PDF & Send</button>
+        <button class="btn btn-green" onclick="processPdfAndWhatsApp()">Download PDF & Open WhatsApp</button>
       </div>
     </div>
   </div>
 
   <script>
     const STORAGE_KEY = 'college_attendance_db';
-    let data = { departments: {}, currentDeptId: '' };
+    let data = { passwordHash: '', departments: {}, currentDeptId: '' };
     let activeView = 'dashboard';
 
     function init() {
@@ -328,12 +414,19 @@
       if (saved) {
         try { data = JSON.parse(saved); } catch (e) { console.error(e); }
       }
+
+      if (!data.passwordHash) {
+        document.getElementById('authDesc').innerText = "Create initial staff password to get started";
+        document.getElementById('setupPassFields').style.display = 'block';
+        document.getElementById('loginPassField').style.display = 'none';
+      }
+
       if (!data.departments || Object.keys(data.departments).length === 0) {
         const id = 'dept_' + Date.now();
         data.departments = {};
         data.departments[id] = {
           id: id,
-          name: 'Computer Science',
+          name: 'B.Sc MPCs',
           academicYear: '2026-2027',
           semester: 'I Semester',
           students: [],
@@ -342,12 +435,62 @@
         data.currentDeptId = id;
         save();
       }
-      showDashboard();
     }
 
     function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
     function curDept() { return data.departments[data.currentDeptId]; }
 
+    // Authentication & Editable Password
+    function authenticateStaff() {
+      if (!data.passwordHash) {
+        const p1 = document.getElementById('createPassInput').value;
+        const p2 = document.getElementById('confirmPassInput').value;
+        if (p1.length < 4 || p1 !== p2) {
+          alert('Password must match and be at least 4 characters long.');
+          return;
+        }
+        data.passwordHash = btoa(p1);
+        save();
+        document.getElementById('authOverlay').style.display = 'none';
+        showDashboard();
+      } else {
+        const pass = document.getElementById('loginPassInput').value;
+        if (btoa(pass) === data.passwordHash) {
+          document.getElementById('authOverlay').style.display = 'none';
+          showDashboard();
+        } else {
+          alert('Incorrect staff password.');
+        }
+      }
+    }
+
+    function logout() { location.reload(); }
+
+    function openSettingsModal() { openModal('settingsModal'); }
+    function updatePassword() {
+      const curr = document.getElementById('currPassInput').value;
+      const next = document.getElementById('changePassInput').value;
+      const conf = document.getElementById('confirmChangePassInput').value;
+
+      if (btoa(curr) !== data.passwordHash) {
+        alert('Current password is incorrect.');
+        return;
+      }
+      if (next.length < 4 || next !== conf) {
+        alert('New passwords must match and be at least 4 characters long.');
+        return;
+      }
+
+      data.passwordHash = btoa(next);
+      save();
+      closeModal('settingsModal');
+      document.getElementById('currPassInput').value = '';
+      document.getElementById('changePassInput').value = '';
+      document.getElementById('confirmChangePassInput').value = '';
+      alert('Password changed successfully.');
+    }
+
+    // Modal Helpers
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -357,7 +500,7 @@
       const name = document.getElementById('deptName').value.trim();
       const year = document.getElementById('deptYear').value.trim();
       const sem = document.getElementById('deptSem').value;
-      if (!name) { alert('Please enter department name'); return; }
+      if (!name) { alert('Please enter class/department name.'); return; }
 
       const id = 'dept_' + Date.now();
       data.departments[id] = { id, name, academicYear: year, semester: sem, students: [], dates: [] };
@@ -393,10 +536,10 @@
     function saveStudent() {
       const hall = document.getElementById('stuHall').value.trim();
       const name = document.getElementById('stuName').value.trim();
-      const phone = document.getElementById('stuPhone').value.replace(/\D/g, '');
+      const phoneDigits = document.getElementById('stuPhone').value.replace(/\D/g, '');
 
-      if (!hall || !name || phone.length < 10) {
-        alert('Please provide valid Hall Ticket, Name, and a 10-digit Phone Number.');
+      if (!hall || !name || phoneDigits.length < 10) {
+        alert('Please enter valid Hall Ticket, Name, and a 10-digit Phone Number.');
         return;
       }
       const dept = curDept();
@@ -405,7 +548,8 @@
         return;
       }
 
-      dept.students.push({ hall, name, phone, attendance: {} });
+      // Stored with standard +91 prefix
+      dept.students.push({ hall, name, phone: '91' + phoneDigits.slice(-10), attendance: {} });
       save();
       closeModal('studentModal');
       document.getElementById('stuHall').value = '';
@@ -427,7 +571,7 @@
     // Attendance Management
     function openMarkAttendanceModal() {
       const dept = curDept();
-      if (dept.students.length === 0) { alert('Add students first.'); return; }
+      if (dept.students.length === 0) { alert('Please add students first.'); return; }
       const container = document.getElementById('attendanceList');
       container.innerHTML = '';
       document.getElementById('attendDate').valueAsDate = new Date();
@@ -436,8 +580,8 @@
         const row = document.createElement('div');
         row.style = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;';
         row.innerHTML = `
-          <div style="font-size:13px; font-weight:600; width:45%;">${s.hall} - ${s.name}</div>
-          <select id="att_${i}" style="padding:4px 8px; border-radius:4px; border:1px solid #ccc; font-weight:600;">
+          <div style="font-size:13px; font-weight:600; width:50%;">${s.hall} - ${s.name}</div>
+          <select id="att_${i}" style="padding:5px 8px; border-radius:4px; border:1px solid #ccc; font-weight:600;">
             <option value="Present">Present</option>
             <option value="Absent">Absent</option>
           </select>
@@ -456,7 +600,6 @@
       const dept = curDept();
       if (!dept.dates.includes(formattedDate)) {
         dept.dates.push(formattedDate);
-        // Sort dates chronologically
         dept.dates.sort((a, b) => {
           const [d1, m1, y1] = a.split('-').map(Number);
           const [d2, m2, y2] = b.split('-').map(Number);
@@ -478,7 +621,7 @@
       alert('Attendance saved for ' + formattedDate);
     }
 
-    // Date & Previous Date Comparison Calculation
+    // Date & Comparison Metrics
     function calculatePercentageForDate(dateStr) {
       const dept = curDept();
       if (!dateStr || dept.students.length === 0) return 0;
@@ -495,7 +638,7 @@
       dropdown.innerHTML = '';
 
       if (dept.dates.length === 0) {
-        dropdown.innerHTML = '<option value="">No dates available</option>';
+        dropdown.innerHTML = '<option value="">No dates recorded</option>';
         return;
       }
 
@@ -547,7 +690,7 @@
       }
     }
 
-    // Views & Layout
+    // Views
     function setDeptHeader() {
       const d = curDept();
       document.getElementById('sidebarDeptInfo').innerHTML = `<b>${d.name}</b><br>${d.academicYear} | ${d.semester}`;
@@ -574,8 +717,8 @@
     function showStudents() {
       activeView = 'students';
       setDeptHeader();
-      document.getElementById('viewTitle').innerText = 'Manage Students';
-      document.getElementById('viewSubtitle').innerText = 'Add, view, and remove student profiles';
+      document.getElementById('viewTitle').innerText = 'Student Management';
+      document.getElementById('viewSubtitle').innerText = 'Direct WhatsApp notifications and student list';
       document.getElementById('statsRow').style.display = 'none';
       document.getElementById('comparisonBanner').style.display = 'none';
       document.getElementById('topToolbarActions').innerHTML = `
@@ -597,10 +740,10 @@
         });
       }
 
-      let totalRecords = 0, totalPresents = 0;
+      let totalEntries = 0, totalPresents = 0;
       dept.dates.forEach(d => {
         dept.students.forEach(s => {
-          totalRecords++;
+          totalEntries++;
           if (s.attendance[d] === 'Present') totalPresents++;
         });
       });
@@ -608,7 +751,7 @@
       document.getElementById('statTotal').innerText = total;
       document.getElementById('statPresent').innerText = present;
       document.getElementById('statAbsent').innerText = absent;
-      document.getElementById('statPct').innerText = totalRecords === 0 ? '0%' : ((totalPresents / totalRecords) * 100).toFixed(1) + '%';
+      document.getElementById('statPct').innerText = totalEntries === 0 ? '0%' : ((totalPresents / totalEntries) * 100).toFixed(1) + '%';
     }
 
     function renderTable() {
@@ -625,13 +768,11 @@
       );
 
       if (activeView === 'dashboard') {
-        // Table Header
-        let th = `<tr><th>Hall Ticket</th><th>Name</th>`;
+        let th = `<tr><th>Hall Ticket</th><th>Student Name</th>`;
         dept.dates.forEach(d => { th += `<th>${d}</th>`; });
         th += `<th>Total</th><th>Present</th><th>%</th></tr>`;
         thead.innerHTML = th;
 
-        // Table Rows
         filtered.forEach(s => {
           const totalDays = dept.dates.length;
           let pCount = 0;
@@ -648,7 +789,6 @@
           tbody.innerHTML += tr;
         });
 
-        // Summary Row at bottom displaying date %
         if (dept.dates.length > 0) {
           let summaryRow = `<tr style="background:#f1f5f9; font-weight:bold;"><td colspan="2">Daily Attendance %</td>`;
           dept.dates.forEach(d => {
@@ -660,7 +800,7 @@
         }
 
       } else {
-        thead.innerHTML = `<tr><th>Hall Ticket</th><th>Name</th><th>WhatsApp</th><th>Attendance %</th><th>Action</th></tr>`;
+        thead.innerHTML = `<tr><th>Hall Ticket</th><th>Student Name</th><th>WhatsApp</th><th>Attendance %</th><th>Actions</th></tr>`;
         filtered.forEach((s, idx) => {
           const totalDays = dept.dates.length;
           let pCount = 0;
@@ -671,36 +811,63 @@
             <tr>
               <td>${s.hall}</td>
               <td>${s.name}</td>
-              <td>${s.phone}</td>
+              <td>+${s.phone}</td>
               <td>${pct}</td>
-              <td><button class="btn btn-red" style="padding:4px 8px;" onclick="deleteStudent(${idx})">Delete</button></td>
+              <td>
+                <button class="btn btn-green" style="padding:4px 8px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
+                <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
+              </td>
             </tr>
           `;
         });
       }
     }
 
-    // PDF & WhatsApp Integration
+    // Individual WhatsApp
+    function sendSingleStudentWhatsApp(hall) {
+      const dept = curDept();
+      const s = dept.students.find(x => x.hall === hall);
+      if (!s) return;
+
+      const totalDays = dept.dates.length;
+      let present = 0;
+      dept.dates.forEach(d => { if (s.attendance[d] === 'Present') present++; });
+      const absent = totalDays - present;
+      const pct = totalDays === 0 ? '0.00%' : ((present / totalDays) * 100).toFixed(2) + '%';
+
+      let msg = `*SARDAR PATEL COLLEGE*\n*STUDENT ATTENDANCE REPORT*\n\n` +
+        `👤 *Student Name:* ${s.name}\n🆔 *Hall Ticket:* ${s.hall}\n📚 *Class:* ${dept.name}\n` +
+        `🗓️ *Academic Year:* ${dept.academicYear} (${dept.semester})\n\n` +
+        `*ATTENDANCE SUMMARY*\n• Total Classes: ${totalDays}\n• Present: ${present}\n• Absent: ${absent}\n• Percentage: ${pct}\n\n`;
+
+      if ((present / (totalDays || 1)) < 0.75) {
+        msg += `⚠️ *ALERT:* Attendance is below 75%. Please attend classes regularly.\n\n`;
+      }
+      msg += `Regards,\n*SARDAR PATEL COLLEGE*`;
+
+      window.open(`https://wa.me/${s.phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // PDF & WhatsApp Export
     function openPdfModal() { openModal('pdfModal'); }
 
     function processPdfAndWhatsApp() {
-      const phoneInput = document.getElementById('targetWhatsApp').value.replace(/\D/g, '');
-      if (phoneInput.length < 10) {
-        alert('Please enter a valid phone number with country code (e.g. 919876543210).');
+      const rawInput = document.getElementById('targetWhatsApp').value.replace(/\D/g, '');
+      if (rawInput.length < 10) {
+        alert('Please enter a valid 10-digit WhatsApp number.');
         return;
       }
+      const fullPhone = '91' + rawInput.slice(-10);
 
       const dept = curDept();
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('landscape');
 
-      // PDF Title Header
       doc.setFontSize(16);
       doc.text(`${dept.name.toUpperCase()} - ATTENDANCE REGISTER`, 14, 15);
       doc.setFontSize(10);
       doc.text(`Academic Year: ${dept.academicYear} | Semester: ${dept.semester}`, 14, 22);
 
-      // Build Table Data
       const headers = ['Hall Ticket', 'Name', ...dept.dates, 'Total', 'Present', '%'];
       const body = dept.students.map(s => {
         let pCount = 0;
@@ -717,7 +884,6 @@
         ];
       });
 
-      // Bottom Row for Date Percentages
       if (dept.dates.length > 0) {
         const bottomRow = ['DAILY %', '-', ...dept.dates.map(d => `${calculatePercentageForDate(d).toFixed(1)}%`), '-', '-', '-'];
         body.push(bottomRow);
@@ -735,14 +901,13 @@
       const fileName = `${dept.name.replace(/\s+/g, '_')}_Attendance.pdf`;
       doc.save(fileName);
 
-      // Comparative stats for WhatsApp
       let dateComparisonText = '';
       if (dept.dates.length >= 2) {
         const curDate = dept.dates[dept.dates.length - 1];
         const prevDate = dept.dates[dept.dates.length - 2];
         const curPct = calculatePercentageForDate(curDate).toFixed(1);
         const prevPct = calculatePercentageForDate(prevDate).toFixed(1);
-        dateComparisonText = `\n📊 *Date Comparison:*\n• Latest Date (${curDate}): ${curPct}%\n• Previous Date (${prevDate}): ${prevPct}%\n`;
+        dateComparisonText = `\n📊 *Attendance Comparison:*\n• Latest (${curDate}): ${curPct}%\n• Previous (${prevDate}): ${prevPct}%\n`;
       }
 
       const totalStudents = dept.students.length;
@@ -751,15 +916,12 @@
         `*Department:* ${dept.name}\n` +
         `*Academic Year:* ${dept.academicYear} (${dept.semester})\n` +
         `*Total Students:* ${totalStudents}\n` +
-        `*Total Sessions Conducted:* ${totalClasses}\n` +
+        `*Total Classes Conducted:* ${totalClasses}\n` +
         dateComparisonText +
         `\n_The official PDF report has been downloaded to your device. Please attach it to complete submission._`;
 
       closeModal('pdfModal');
-
-      // WhatsApp Web / Mobile URL
-      const waUrl = `https://wa.me/${phoneInput}?text=${encodeURIComponent(message)}`;
-      window.open(waUrl, '_blank');
+      window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(message)}`, '_blank');
     }
 
     init();
