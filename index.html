@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>SARDAR PATEL COLLEGE - ATTENDANCE MANAGEMENT SYSTEM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" defer></script>
@@ -32,35 +32,44 @@
       --radius-sm: 8px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; position: relative; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+    
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    body { display: flex; position: relative; }
 
     #authOverlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(ellipse at 80% 0%, #1e1b4b 0%, #090d16 100%);
-      display: flex; align-items: center; justify-content: center; z-index: 1000;
+      background: #090d16; display: flex; align-items: center; justify-content: center; z-index: 1000;
     }
     .auth-card {
-      background: rgba(255, 255, 255, 0.98); padding: 40px 30px; border-radius: 18px;
-      width: 92%; max-width: 420px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35); text-align: center;
+      background: #ffffff; padding: 35px 25px; border-radius: 18px;
+      width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
-    .auth-card h2 { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
-    .auth-card h3 { font-size: 13px; color: var(--primary); margin-bottom: 20px; font-weight: 700; }
+    .auth-card h2 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
+    .auth-card h3 { font-size: 13px; color: var(--primary); margin-bottom: 18px; font-weight: 700; }
     .forgot-link { display: inline-block; margin-top: 14px; font-size: 12px; color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
 
     .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px);
       display: none; align-items: center; justify-content: center; z-index: 500;
     }
     .modal {
-      background: var(--surface); padding: 24px; border-radius: 16px;
-      width: 92%; max-width: 760px; max-height: 88vh; overflow-y: auto;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid var(--border);
+      background: var(--surface); padding: 22px; border-radius: 16px;
+      width: 92%; max-width: 720px; max-height: 85dvh; overflow-y: auto;
+      border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      contain: content;
     }
-    .modal h2 { font-size: 20px; font-weight: 800; margin-bottom: 12px; }
-    .form-group { margin-bottom: 14px; text-align: left; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; }
+    .modal h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+    .form-group { margin-bottom: 12px; text-align: left; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; }
     .form-group input, .form-group select {
       width: 100%; padding: 10px 12px; border: 1px solid var(--border);
       border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; background: #f8fafc;
@@ -68,26 +77,27 @@
 
     .class-item-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm);
       margin-bottom: 8px; background: #fff;
     }
 
     .student-attendance-card {
-      border: 1px solid var(--border); border-radius: 12px;
-      padding: 14px; margin-bottom: 12px; background: #ffffff; box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px; margin-bottom: 10px; background: #ffffff;
+      contain: content;
     }
-    .student-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .student-card-title b { font-size: 14px; color: var(--text); font-weight: 700; }
+    .student-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .student-card-title b { font-size: 14px; }
     .student-card-title span { font-size: 12px; color: var(--text-secondary); margin-left: 6px; }
 
     .master-switch-box {
-      display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
-      background: #f8fafc; padding: 4px 10px; border-radius: 50px; border: 1px solid var(--border);
+      display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+      background: #f8fafc; padding: 4px 8px; border-radius: 20px; border: 1px solid var(--border);
     }
 
     .subject-chips-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
-      padding-top: 8px; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px;
+      padding-top: 8px; border-top: 1px solid #f1f5f9;
     }
     .subject-chip {
       display: flex; justify-content: space-between; align-items: center;
@@ -95,24 +105,24 @@
       background: #f8fafc; font-size: 11px; font-weight: 600;
     }
     .chip-toggle {
-      font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+      font-size: 11px; font-weight: 700; padding: 3px 6px; border-radius: 4px;
       cursor: pointer; border: none;
     }
     .chip-toggle.present { background: var(--green-light); color: var(--green); }
     .chip-toggle.absent { background: var(--red-light); color: var(--red); }
 
-    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider-round {
       position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #cbd5e1; transition: .2s; border-radius: 24px;
+      background-color: #cbd5e1; transition: .15s; border-radius: 22px;
     }
     .slider-round:before {
-      position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-      background-color: white; transition: .2s; border-radius: 50%;
+      position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+      background-color: white; transition: .15s; border-radius: 50%;
     }
     input:checked + .slider-round { background-color: var(--green); }
-    input:checked + .slider-round:before { transform: translateX(20px); }
+    input:checked + .slider-round:before { transform: translateX(18px); }
 
     .phone-group { display: flex; align-items: center; }
     .phone-prefix {
@@ -122,118 +132,126 @@
     }
     .phone-group input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important; }
 
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
 
-    /* Sliding Drawer / Sidebar */
+    /* Sidebar */
     .sidebar-backdrop {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5); z-index: 200;
     }
     .sidebar {
-      width: 270px; background-color: var(--navy-sidebar); color: white;
+      width: 260px; background-color: var(--navy-sidebar); color: white;
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
-      transition: transform 0.25s ease; z-index: 250; border-right: 1px solid #1e293b;
+      transition: transform 0.2s ease-out; z-index: 250;
     }
-    .sidebar-header { padding: 24px 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .sidebar-header h2 { font-size: 16px; font-weight: 800; color: #fff; }
-    .sidebar-header h3 { font-size: 12px; color: #818cf8; font-weight: 600; margin-top: 2px; }
-    .sidebar-menu { display: flex; flex-direction: column; gap: 6px; padding: 16px 12px; flex-grow: 1; overflow-y: auto; }
+    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .sidebar-header h2 { font-size: 15px; font-weight: 800; color: #fff; }
+    .sidebar-header h3 { font-size: 12px; color: #818cf8; font-weight: 600; }
+    .sidebar-menu { display: flex; flex-direction: column; gap: 4px; padding: 12px 8px; flex-grow: 1; overflow-y: auto; }
     .sidebar-btn {
-      background: transparent; border: none; color: #cbd5e1; padding: 11px 14px;
-      text-align: left; font-size: 13px; font-weight: 600; border-radius: 8px;
-      cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 10px;
+      background: transparent; border: none; color: #cbd5e1; padding: 10px 12px;
+      text-align: left; font-size: 13px; font-weight: 600; border-radius: 6px;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
     }
     .sidebar-btn:hover { background-color: #1e293b; color: #fff; }
-    .sidebar-footer { padding: 16px 18px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: #94a3b8; }
+    .sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: #94a3b8; }
 
-    .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 18px 24px; background: var(--bg); }
+    /* Main Scrollable Viewport with Sticky Header */
+    .main {
+      flex-grow: 1;
+      height: 100dvh;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      padding: 0 16px 20px 16px;
+      background: var(--bg);
+    }
     
-    /* Top Header with Hamburger Toggle for desktop & mobile */
     .top-header-bar {
-      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--bg);
+      padding: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
     }
+
     .menu-toggle-btn {
-      background: var(--navy-sidebar); color: white; border: 1px solid #334155; font-size: 14px;
-      padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
+      background: var(--navy-sidebar); color: white; border: 1px solid #334155; font-size: 13px;
+      padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 700;
     }
-    .menu-toggle-btn:hover { background: #1e293b; }
-    
-    .page-title h1 { font-size: 22px; font-weight: 800; }
-    .page-title p { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
-    .class-badge { text-align: right; font-size: 12px; color: var(--text-secondary); background: #fff; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); }
-    .class-badge b { color: var(--text); font-size: 13px; }
+
+    .page-title h1 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+    .class-badge { text-align: right; font-size: 11px; color: var(--text-secondary); background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); }
+    .class-badge b { color: var(--text); font-size: 12px; }
 
     .subject-strip {
-      background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 10px;
-      padding: 8px 14px; margin-bottom: 14px; display: flex; align-items: center;
-      justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px; font-weight: 600; color: #3730a3;
+      background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px;
+      padding: 8px 12px; margin-bottom: 12px; display: flex; align-items: center;
+      justify-content: space-between; font-size: 12px; font-weight: 600; color: #3730a3;
     }
     .subject-strip select {
-      padding: 6px 10px; border-radius: 6px; border: 1px solid #a5b4fc; font-weight: 700; background: #fff; color: #1e1b4b; cursor: pointer;
+      padding: 4px 8px; border-radius: 4px; border: 1px solid #a5b4fc; font-weight: 700; background: #fff; color: #1e1b4b;
     }
 
-    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
     .card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;
-      box-shadow: var(--shadow-sm);
+      padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
     }
-    .card-info h4 { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
-    .card-info span { font-size: 22px; font-weight: 800; }
-    .card-bar { width: 4px; height: 32px; border-radius: 4px; }
+    .card-info h4 { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2px; font-weight: 700; }
+    .card-info span { font-size: 20px; font-weight: 800; }
+    .card-bar { width: 4px; height: 28px; border-radius: 4px; }
 
     .comparison-banner {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius); padding: 8px 12px; margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
     }
-    .comparison-controls { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
-    .comparison-controls select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); font-weight: 600; background: #f8fafc; }
-    .comparison-stats { display: flex; gap: 8px; font-size: 12px; flex-wrap: wrap; }
-    .stat-pill { background: #f8fafc; border: 1px solid var(--border); padding: 4px 10px; border-radius: 50px; font-weight: 500; }
+    .comparison-controls { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
+    .comparison-controls select { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); font-weight: 600; background: #f8fafc; font-size: 12px; }
+    .comparison-stats { display: flex; gap: 6px; font-size: 11px; flex-wrap: wrap; }
+    .stat-pill { background: #f8fafc; border: 1px solid var(--border); padding: 3px 8px; border-radius: 30px; font-weight: 600; }
 
     .table-container {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 16px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
-      box-shadow: var(--shadow-sm);
+      padding: 14px; display: flex; flex-direction: column; overflow: hidden;
     }
-    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .table-toolbar input[type="text"] {
-      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 260px;
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 100%;
       font-size: 13px; background: #f8fafc;
     }
 
     .btn {
-      padding: 8px 14px; border: none; border-radius: 6px; font-size: 12px;
-      font-weight: 700; cursor: pointer; color: white; transition: all 0.15s;
+      padding: 7px 12px; border: none; border-radius: 6px; font-size: 12px;
+      font-weight: 700; cursor: pointer; color: white;
     }
     .btn-primary { background: var(--primary); }
     .btn-green { background: var(--green); }
     .btn-red { background: var(--red); }
-    .btn-orange { background: var(--orange); }
     .btn-dark { background: #334155; }
 
-    .table-scroll { overflow: auto; flex-grow: 1; border: 1px solid var(--border); border-radius: var(--radius-sm); }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 450px; }
     th {
-      background: #f8fafc; padding: 10px 12px; border-bottom: 1px solid var(--border);
+      background: #f8fafc; padding: 8px 10px; border-bottom: 1px solid var(--border);
       color: var(--text-secondary); font-weight: 700; font-size: 11px; text-transform: uppercase;
       white-space: nowrap;
     }
-    td { padding: 9px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
-    tr:hover { background-color: #f8fafc; }
+    td { padding: 8px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
     .present { color: var(--green); font-weight: 700; }
     .absent { color: var(--red); font-weight: 700; }
 
-    /* Default: Slide-bar drawer closed on smaller screens, standard layout on wide screens */
     @media (max-width: 900px) {
-      .sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); }
+      .sidebar { position: fixed; top: 0; left: 0; height: 100%; height: 100dvh; transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
       .sidebar-backdrop.active { display: block; }
       .cards-row { grid-template-columns: repeat(2, 1fr); }
-      .table-toolbar input[type="text"] { width: 100%; }
-      .main { padding: 12px; }
+      .main { padding: 0 12px 20px 12px; }
     }
   </style>
 </head>
@@ -246,12 +264,12 @@
     <div class="auth-card">
       <h2>SARDAR PATEL COLLEGE</h2>
       <h3>ATTENDANCE MANAGEMENT SYSTEM</h3>
-      <p id="authDesc">Authenticate with your staff password to continue</p>
+      <p id="authDesc" style="font-size:12px; color:#64748b; margin-bottom:15px;">Enter staff password to continue</p>
       
       <div id="setupPassFields" style="display: none;">
         <div class="form-group">
           <label>Create Staff Password:</label>
-          <input type="password" id="createPassInput" placeholder="Minimum 4 characters">
+          <input type="password" id="createPassInput">
         </div>
         <div class="form-group">
           <label>Confirm Password:</label>
@@ -266,7 +284,7 @@
         </div>
       </div>
 
-      <button class="btn btn-primary" style="width:100%; padding:11px; margin-top:8px;" onclick="authenticateStaff()">STAFF LOGIN</button>
+      <button class="btn btn-primary" style="width:100%; padding:10px; margin-top:5px;" onclick="authenticateStaff()">LOGIN</button>
       <div><span class="forgot-link" onclick="forgotPassword()">Forgot Password?</span></div>
     </div>
   </div>
@@ -279,7 +297,7 @@
           <h2>ATTENDANCE</h2>
           <h3>MANAGEMENT</h3>
         </div>
-        <button style="background:transparent; border:none; color:#cbd5e1; font-size:18px; cursor:pointer;" onclick="toggleSidebar(false)">✕</button>
+        <button style="background:transparent; border:none; color:#cbd5e1; font-size:16px; cursor:pointer;" onclick="toggleSidebar(false)">✕</button>
       </div>
       <div class="sidebar-menu">
         <button class="sidebar-btn" onclick="navAction(showDashboard)">📊 Dashboard</button>
@@ -296,7 +314,7 @@
     </div>
     <div class="sidebar-footer">
       <div id="sidebarDeptInfo">Loading...</div>
-      <button class="sidebar-btn" style="margin-top: 10px; padding: 6px 0; color:#f87171;" onclick="logout()">Logout</button>
+      <button class="sidebar-btn" style="margin-top: 8px; padding: 4px 0; color:#f87171;" onclick="logout()">Logout</button>
     </div>
   </div>
 
@@ -307,26 +325,18 @@
       <div class="class-badge" id="deptBadge"></div>
     </div>
 
-    <div class="top-header">
-      <div class="page-title">
-        <h1 id="viewTitle">Dashboard</h1>
-        <p id="viewSubtitle">Consolidated and Subject-Wise Class Overview</p>
-      </div>
+    <div class="page-title">
+      <h1 id="viewTitle">Dashboard</h1>
     </div>
 
-    <!-- Active Subject Selector -->
     <div class="subject-strip" id="subjectStrip">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span>Select Subject:</span>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span>Subject:</span>
         <select id="activeSubjectSelect" onchange="changeActiveSubject()"></select>
       </div>
-      <div style="display:flex; gap:6px;">
-        <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" onclick="openAddSubjectPrompt()">+ Add Subject</button>
-        <button class="btn btn-dark" style="padding:5px 10px; font-size:11px;" onclick="openManageSubjectsModal()">Manage Subjects</button>
-      </div>
+      <button class="btn btn-dark" style="padding:3px 8px; font-size:11px;" onclick="openManageSubjectsModal()">Manage</button>
     </div>
 
-    <!-- Metric Cards -->
     <div class="cards-row" id="statsRow">
       <div class="card">
         <div class="card-info">
@@ -358,26 +368,21 @@
       </div>
     </div>
 
-    <!-- Comparison Bar -->
     <div class="comparison-banner" id="comparisonBanner">
       <div class="comparison-controls">
-        <label>Selected Date:</label>
+        <label>Date:</label>
         <select id="selectedDateDropdown" onchange="updateDateComparison()"></select>
       </div>
       <div class="comparison-stats">
-        <div class="stat-pill">Attendance: <b id="compCurrentPct">-</b></div>
-        <div class="stat-pill">Previous (<span id="compPrevDate">-</span>): <b id="compPrevPct">-</b></div>
+        <div class="stat-pill">Attended: <b id="compCurrentPct">-</b></div>
+        <div class="stat-pill">Prev: <b id="compPrevPct">-</b></div>
         <div class="stat-pill">Trend: <b id="compTrend">-</b></div>
       </div>
     </div>
 
-    <!-- Table Container -->
     <div class="table-container">
       <div class="table-toolbar">
-        <input type="text" id="searchInput" placeholder="Search by name, roll number..." oninput="debouncedRenderTable()">
-        <div style="font-size:12px; color:var(--text-secondary);">
-          Open the <b>Menu (Slide Bar)</b> to access all actions.
-        </div>
+        <input type="text" id="searchInput" placeholder="Search student name or roll..." oninput="debouncedRenderTable()">
       </div>
       <div class="table-scroll">
         <table>
@@ -388,16 +393,13 @@
     </div>
   </div>
 
-  <!-- Modal: Manage Subjects (Add, Edit, Delete) -->
+  <!-- Modal: Manage Subjects -->
   <div id="manageSubjectsModal" class="overlay">
-    <div class="modal" style="max-width: 600px;">
+    <div class="modal" style="max-width: 500px;">
       <h2>Manage Subjects</h2>
-      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-        Add, edit (rename), or delete subjects for the current class.
-      </p>
-      <div id="subjectsListContainer" style="max-height: 50vh; overflow-y: auto; margin-bottom: 15px;"></div>
+      <div id="subjectsListContainer" style="max-height: 45dvh; overflow-y: auto; margin-bottom: 12px;"></div>
       <div class="modal-actions">
-        <button class="btn btn-primary" onclick="openAddSubjectPrompt()">+ Add New Subject</button>
+        <button class="btn btn-primary" onclick="openAddSubjectPrompt()">+ New Subject</button>
         <button class="btn btn-red" onclick="closeModal('manageSubjectsModal')">Close</button>
       </div>
     </div>
@@ -405,11 +407,11 @@
 
   <!-- Modal: Add Class -->
   <div id="deptModal" class="overlay">
-    <div class="modal">
-      <h2>Add Department / Class</h2>
+    <div class="modal" style="max-width: 450px;">
+      <h2>Add Class</h2>
       <div class="form-group">
-        <label>Class / Department Name:</label>
-        <input type="text" id="deptName" placeholder="e.g., B.Sc MPCs">
+        <label>Class Name:</label>
+        <input type="text" id="deptName" placeholder="B.Sc MPCs">
       </div>
       <div class="form-group">
         <label>Academic Year:</label>
@@ -425,18 +427,18 @@
       </div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('deptModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveDepartment()">Save Class</button>
+        <button class="btn btn-primary" onclick="saveDepartment()">Save</button>
       </div>
     </div>
   </div>
 
   <!-- Modal: Edit Class -->
   <div id="editClassModal" class="overlay">
-    <div class="modal">
+    <div class="modal" style="max-width: 450px;">
       <h2>Edit Class Details</h2>
       <input type="hidden" id="editClassId">
       <div class="form-group">
-        <label>Class / Department Name:</label>
+        <label>Class Name:</label>
         <input type="text" id="editDeptName">
       </div>
       <div class="form-group">
@@ -453,21 +455,18 @@
       </div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('editClassModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveEditedClass()">Update Class</button>
+        <button class="btn btn-primary" onclick="saveEditedClass()">Update</button>
       </div>
     </div>
   </div>
 
   <!-- Modal: Manage Classes -->
   <div id="manageClassesModal" class="overlay">
-    <div class="modal" style="max-width: 640px;">
+    <div class="modal" style="max-width: 580px;">
       <h2>Manage Classes</h2>
-      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-        Add new classes, edit names and semesters, or delete batches[span_0](start_span)[span_0](end_span).
-      </p>
-      <div id="classesListContainer" style="max-height: 50vh; overflow-y: auto; margin-bottom: 15px;"></div>
+      <div id="classesListContainer" style="max-height: 45dvh; overflow-y: auto; margin-bottom: 12px;"></div>
       <div class="modal-actions">
-        <button class="btn btn-primary" onclick="closeModal('manageClassesModal'); openAddDeptModal();">+ Add New Class</button>
+        <button class="btn btn-primary" onclick="closeModal('manageClassesModal'); openAddDeptModal();">+ Add Class</button>
         <button class="btn btn-red" onclick="closeModal('manageClassesModal')">Close</button>
       </div>
     </div>
@@ -475,10 +474,9 @@
 
   <!-- Modal: Switch Class -->
   <div id="switchDeptModal" class="overlay">
-    <div class="modal">
+    <div class="modal" style="max-width: 420px;">
       <h2>Switch Class</h2>
       <div class="form-group">
-        <label>Select Active Class:</label>
         <select id="switchDeptSelect"></select>
       </div>
       <div class="modal-actions">
@@ -490,37 +488,37 @@
 
   <!-- Modal: Add Student -->
   <div id="studentModal" class="overlay">
-    <div class="modal">
+    <div class="modal" style="max-width: 450px;">
       <h2>Add New Student</h2>
       <div class="form-group">
-        <label>Hall Ticket Number:</label>
-        <input type="text" id="stuHall" placeholder="e.g., 1051-24-468-001">
+        <label>Hall Ticket:</label>
+        <input type="text" id="stuHall">
       </div>
       <div class="form-group">
         <label>Student Name:</label>
-        <input type="text" id="stuName" placeholder="e.g., Mohammed Rahman">
+        <input type="text" id="stuName">
       </div>
       <div class="form-group">
         <label>WhatsApp Number:</label>
         <div class="phone-group">
           <span class="phone-prefix">+91</span>
-          <input type="text" id="stuPhone" placeholder="10-digit mobile number">
+          <input type="text" id="stuPhone" placeholder="10 digits">
         </div>
       </div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('studentModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveStudent()">Add Student</button>
+        <button class="btn btn-primary" onclick="saveStudent()">Add</button>
       </div>
     </div>
   </div>
 
   <!-- Modal: Edit Student -->
   <div id="editStudentModal" class="overlay">
-    <div class="modal">
-      <h2>Edit Student Details</h2>
+    <div class="modal" style="max-width: 450px;">
+      <h2>Edit Student</h2>
       <input type="hidden" id="editStudentIdx">
       <div class="form-group">
-        <label>Hall Ticket Number:</label>
+        <label>Hall Ticket:</label>
         <input type="text" id="editStuHall">
       </div>
       <div class="form-group">
@@ -531,12 +529,12 @@
         <label>WhatsApp Number:</label>
         <div class="phone-group">
           <span class="phone-prefix">+91</span>
-          <input type="text" id="editStuPhone" placeholder="10-digit mobile number">
+          <input type="text" id="editStuPhone">
         </div>
       </div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('editStudentModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveEditedStudent()">Update Details</button>
+        <button class="btn btn-primary" onclick="saveEditedStudent()">Update</button>
       </div>
     </div>
   </div>
@@ -545,18 +543,13 @@
   <div id="attendanceModal" class="overlay">
     <div class="modal">
       <h2>Mark Attendance</h2>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
-        <div class="form-group" style="margin-bottom:0; flex:1; min-width:200px;">
-          <label>Attendance Date:</label>
+      <div style="margin-bottom:10px;">
+        <div class="form-group">
+          <label>Date:</label>
           <input type="date" id="attendDate">
         </div>
-        <div style="font-size:12px; color:var(--text-secondary); background:#f8fafc; padding:8px 12px; border-radius:8px; border:1px solid var(--border);">
-          Toggle <b>"All Present"</b> or tap subject chips individually to override.
-        </div>
       </div>
-
-      <div id="attendanceList" style="max-height:56vh; overflow-y:auto; padding-top:4px;"></div>
-
+      <div id="attendanceList" style="max-height:50dvh; overflow-y:auto;"></div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('attendanceModal')">Cancel</button>
         <button class="btn btn-green" onclick="saveAttendance()">Save Attendance</button>
@@ -566,22 +559,16 @@
 
   <!-- Modal: Settings -->
   <div id="settingsModal" class="overlay">
-    <div class="modal">
+    <div class="modal" style="max-width: 450px;">
       <h2>Settings</h2>
-      
-      <div style="border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px;">
-        <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--primary); font-weight: 700;">Default Report WhatsApp Number</h3>
-        <div class="form-group">
-          <label>Default Number for Class Reports:</label>
-          <div class="phone-group">
-            <span class="phone-prefix">+91</span>
-            <input type="text" id="defaultReportNumberInput" placeholder="10-digit mobile number">
-          </div>
+      <div style="border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+        <label style="font-weight:700; font-size:12px;">DEFAULT WHATSAPP NUMBER</label>
+        <div class="phone-group" style="margin-top:6px;">
+          <span class="phone-prefix">+91</span>
+          <input type="text" id="defaultReportNumberInput">
         </div>
-        <button class="btn btn-green" onclick="saveDefaultReportNumber()">Save WhatsApp Number</button>
+        <button class="btn btn-green" style="margin-top:8px; width:100%;" onclick="saveDefaultReportNumber()">Save Number</button>
       </div>
-
-      <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--primary); font-weight: 700;">Change Password</h3>
       <div class="form-group">
         <label>Current Password:</label>
         <input type="password" id="currPassInput">
@@ -591,7 +578,7 @@
         <input type="password" id="changePassInput">
       </div>
       <div class="form-group">
-        <label>Confirm New Password:</label>
+        <label>Confirm Password:</label>
         <input type="password" id="confirmChangePassInput">
       </div>
       <div class="modal-actions">
@@ -603,39 +590,33 @@
 
   <!-- Modal: PDF Reports -->
   <div id="pdfModal" class="overlay">
-    <div class="modal">
-      <h2>Attendance Reports & Executive PDF</h2>
-      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
-        Generates a consolidated, multi-subject institutional register report with signature validation lines[span_1](start_span)[span_1](end_span).
-      </p>
-      
+    <div class="modal" style="max-width: 480px;">
+      <h2>Reports & PDF Export</h2>
       <div class="form-group">
-        <label>Report Timeframe:</label>
+        <label>Timeframe:</label>
         <select id="reportTimeframeSelect">
-          <option value="all">Full Semester Register (All Dates)</option>
-          <option value="weekly">Weekly Report (Past 7 Days)</option>
-          <option value="monthly">Monthly Report (Current Month)</option>
-          <option value="daily">Selected Date Daily Summary</option>
+          <option value="all">Full Semester Register</option>
+          <option value="weekly">Weekly (Past 7 Days)</option>
+          <option value="monthly">Monthly (Current Month)</option>
+          <option value="daily">Daily Summary</option>
         </select>
       </div>
-
       <div class="form-group">
-        <label>Recipient WhatsApp Number (Editable):</label>
+        <label>Recipient WhatsApp Number:</label>
         <div class="phone-group">
           <span class="phone-prefix">+91</span>
-          <input type="text" id="targetWhatsApp" placeholder="10-digit mobile number">
+          <input type="text" id="targetWhatsApp">
         </div>
       </div>
-
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('pdfModal')">Cancel</button>
-        <button class="btn btn-green" onclick="processPdfAndWhatsApp()">Download PDF & Open WhatsApp</button>
+        <button class="btn btn-green" onclick="processPdfAndWhatsApp()">Download & WhatsApp</button>
       </div>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'college_attendance_db';
+    const STORAGE_KEY = 'spc_attendance_v4';
     let data = { passwordHash: '', defaultReportNumber: '', departments: {}, currentDeptId: '' };
     let activeView = 'dashboard';
     let activeSubject = 'Maths';
@@ -656,7 +637,7 @@
 
     function navAction(callback) {
       toggleSidebar(false);
-      requestAnimationFrame(callback);
+      setTimeout(callback, 50);
     }
 
     function init() {
@@ -666,7 +647,6 @@
       }
 
       if (!data.passwordHash) {
-        document.getElementById('authDesc').innerText = "Create initial staff password to get started";
         document.getElementById('setupPassFields').style.display = 'block';
         document.getElementById('loginPassField').style.display = 'none';
       }
@@ -729,7 +709,7 @@
       if (confirm("Reset staff password to '1234'?")) {
         data.passwordHash = btoa("1234");
         save();
-        alert("Password restored successfully!\nYour new login password is: 1234");
+        alert("Password restored! Your password is now: 1234");
         document.getElementById('setupPassFields').style.display = 'none';
         document.getElementById('loginPassField').style.display = 'block';
         document.getElementById('loginPassInput').value = "1234";
@@ -745,13 +725,10 @@
 
     function saveDefaultReportNumber() {
       const raw = document.getElementById('defaultReportNumberInput').value.replace(/\D/g, '');
-      if (raw.length < 10) {
-        alert('Please enter a valid 10-digit mobile number.');
-        return;
-      }
+      if (raw.length < 10) { alert('Enter valid 10-digit number.'); return; }
       data.defaultReportNumber = '91' + raw.slice(-10);
       save();
-      alert('Default report WhatsApp number saved successfully!');
+      alert('Default report WhatsApp number saved!');
     }
 
     function updatePassword() {
@@ -759,14 +736,8 @@
       const next = document.getElementById('changePassInput').value;
       const conf = document.getElementById('confirmChangePassInput').value;
 
-      if (btoa(curr) !== data.passwordHash) {
-        alert('Current password is incorrect.');
-        return;
-      }
-      if (next.length < 4 || next !== conf) {
-        alert('New passwords must match and be at least 4 characters.');
-        return;
-      }
+      if (btoa(curr) !== data.passwordHash) { alert('Current password incorrect.'); return; }
+      if (next.length < 4 || next !== conf) { alert('New passwords must match (min 4 chars).'); return; }
 
       data.passwordHash = btoa(next);
       save();
@@ -774,13 +745,12 @@
       document.getElementById('currPassInput').value = '';
       document.getElementById('changePassInput').value = '';
       document.getElementById('confirmChangePassInput').value = '';
-      alert('Password updated successfully.');
+      alert('Password updated.');
     }
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Subjects Controls: Add, Edit, Delete
     function populateSubjectSelects() {
       const dept = curDept();
       const activeSelect = document.getElementById('activeSubjectSelect');
@@ -794,26 +764,20 @@
     function changeActiveSubject() {
       activeSubject = document.getElementById('activeSubjectSelect').value;
       updateDateComparison();
-      updateStats();
       renderTable();
     }
 
     function openAddSubjectPrompt() {
-      const sub = prompt('Enter new subject name:');
+      const sub = prompt('Enter new subject:');
       if (sub && sub.trim()) {
         const name = sub.trim();
         const dept = curDept();
-        if (dept.subjects.some(s => s.toLowerCase() === name.toLowerCase())) {
-          alert('Subject already exists.');
-          return;
-        }
-        dept.subjects.push(name);
-        activeSubject = name;
-        save();
-        populateSubjectSelects();
-        showDashboard();
-        if (document.getElementById('manageSubjectsModal').style.display === 'flex') {
-          openManageSubjectsModal();
+        if (!dept.subjects.includes(name)) {
+          dept.subjects.push(name);
+          activeSubject = name;
+          save();
+          populateSubjectSelects();
+          showDashboard();
         }
       }
     }
@@ -839,15 +803,10 @@
     }
 
     function editSubject(oldName) {
-      const newName = prompt(`Rename subject "${oldName}" to:`, oldName);
+      const newName = prompt(`Rename "${oldName}" to:`, oldName);
       if (!newName || !newName.trim() || newName.trim() === oldName) return;
       const cleanName = newName.trim();
       const dept = curDept();
-
-      if (dept.subjects.some(s => s.toLowerCase() === cleanName.toLowerCase() && s.toLowerCase() !== oldName.toLowerCase())) {
-        alert('A subject with this name already exists.');
-        return;
-      }
 
       const idx = dept.subjects.indexOf(oldName);
       if (idx !== -1) dept.subjects[idx] = cleanName;
@@ -868,31 +827,21 @@
       populateSubjectSelects();
       openManageSubjectsModal();
       showDashboard();
-      alert('Subject renamed successfully!');
     }
 
     function deleteSubject(subName) {
       const dept = curDept();
-      if (dept.subjects.length <= 1) {
-        alert('At least one subject must remain in the class.');
-        return;
-      }
+      if (dept.subjects.length <= 1) { alert('At least one subject must remain.'); return; }
 
-      if (confirm(`Are you sure you want to delete subject "${subName}"?\nAttendance records for this subject will be removed.`)) {
+      if (confirm(`Delete subject "${subName}"?`)) {
         dept.subjects = dept.subjects.filter(s => s !== subName);
-        
         dept.students.forEach(student => {
           Object.keys(student.attendance).forEach(key => {
-            if (key.endsWith(`_${subName}`)) {
-              delete student.attendance[key];
-            }
+            if (key.endsWith(`_${subName}`)) delete student.attendance[key];
           });
         });
 
-        if (activeSubject === subName) {
-          activeSubject = dept.subjects[0];
-        }
-
+        if (activeSubject === subName) activeSubject = dept.subjects[0];
         save();
         populateSubjectSelects();
         openManageSubjectsModal();
@@ -900,13 +849,12 @@
       }
     }
 
-    // Class Management (Add, Edit, Delete)
     function openAddDeptModal() { openModal('deptModal'); }
     function saveDepartment() {
       const name = document.getElementById('deptName').value.trim();
       const year = document.getElementById('deptYear').value.trim();
       const sem = document.getElementById('deptSem').value;
-      if (!name) { alert('Please enter class/department name.'); return; }
+      if (!name) return;
 
       const id = 'dept_' + Date.now();
       data.departments[id] = { 
@@ -932,13 +880,13 @@
         const isCurrent = d.id === data.currentDeptId;
         html += `
           <div class="class-item-row" style="${isCurrent ? 'border-left: 4px solid var(--primary);' : ''}">
-            <div class="class-info-col">
-              <b>${d.name} ${isCurrent ? '<span style="font-size:11px; color:var(--primary); font-weight:bold;">(Active)</span>' : ''}</b>
-              <p>${d.academicYear} | ${d.semester} • ${d.students.length} Students • ${d.subjects.length} Subjects</p>
+            <div>
+              <b>${d.name}</b>
+              <p style="font-size:11px; color:#64748b;">${d.academicYear} | ${d.semester}</p>
             </div>
             <div style="display:flex; gap:6px;">
-              <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" onclick="openEditClassModal('${d.id}')">Edit</button>
-              <button class="btn btn-red" style="padding:5px 10px; font-size:11px;" onclick="deleteClass('${d.id}')">Delete</button>
+              <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="openEditClassModal('${d.id}')">Edit</button>
+              <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteClass('${d.id}')">Delete</button>
             </div>
           </div>
         `;
@@ -964,10 +912,7 @@
       const year = document.getElementById('editDeptYear').value.trim();
       const sem = document.getElementById('editDeptSem').value;
 
-      if (!name || !year) {
-        alert('Please provide class name and academic year.');
-        return;
-      }
+      if (!name || !year) return;
 
       if (data.departments[deptId]) {
         data.departments[deptId].name = name;
@@ -981,18 +926,13 @@
     }
 
     function deleteClass(deptId) {
-      if (Object.keys(data.departments).length <= 1) {
-        alert('At least one class must remain.');
-        return;
-      }
+      if (Object.keys(data.departments).length <= 1) { alert('Cannot delete the only remaining class.'); return; }
       const d = data.departments[deptId];
       if (!d) return;
 
-      if (confirm(`Delete class "${d.name}" and all its records?`)) {
+      if (confirm(`Delete class "${d.name}"?`)) {
         delete data.departments[deptId];
-        if (data.currentDeptId === deptId) {
-          data.currentDeptId = Object.keys(data.departments)[0];
-        }
+        if (data.currentDeptId === deptId) data.currentDeptId = Object.keys(data.departments)[0];
         save();
         openManageClassesModal();
         showDashboard();
@@ -1003,7 +943,7 @@
       const select = document.getElementById('switchDeptSelect');
       let optionsHtml = '';
       Object.values(data.departments).forEach(d => {
-        optionsHtml += `<option value="${d.id}" ${d.id === data.currentDeptId ? 'selected' : ''}>${d.name} (${d.academicYear} - ${d.semester})</option>`;
+        optionsHtml += `<option value="${d.id}" ${d.id === data.currentDeptId ? 'selected' : ''}>${d.name} (${d.academicYear})</option>`;
       });
       select.innerHTML = optionsHtml;
       openModal('switchDeptModal');
@@ -1017,22 +957,15 @@
       showDashboard();
     }
 
-    // Student Operations
     function openAddStudentModal() { openModal('studentModal'); }
     function saveStudent() {
       const hall = document.getElementById('stuHall').value.trim();
       const name = document.getElementById('stuName').value.trim();
       const phoneDigits = document.getElementById('stuPhone').value.replace(/\D/g, '');
 
-      if (!hall || !name || phoneDigits.length < 10) {
-        alert('Please enter valid Hall Ticket, Name, and a 10-digit Phone Number.');
-        return;
-      }
+      if (!hall || !name || phoneDigits.length < 10) { alert('Please enter valid student details.'); return; }
       const dept = curDept();
-      if (dept.students.some(s => s.hall.toLowerCase() === hall.toLowerCase())) {
-        alert('Hall Ticket Number already exists.');
-        return;
-      }
+      if (dept.students.some(s => s.hall.toLowerCase() === hall.toLowerCase())) { alert('Hall ticket exists.'); return; }
 
       dept.students.push({ hall, name, phone: '91' + phoneDigits.slice(-10), attendance: {} });
       save();
@@ -1060,17 +993,9 @@
       const name = document.getElementById('editStuName').value.trim();
       const phoneDigits = document.getElementById('editStuPhone').value.replace(/\D/g, '');
 
-      if (!hall || !name || phoneDigits.length < 10) {
-        alert('Please enter a valid Hall Ticket, Name, and 10-digit Mobile Number.');
-        return;
-      }
+      if (!hall || !name || phoneDigits.length < 10) return;
 
       const dept = curDept();
-      if (dept.students.some((s, i) => i !== idx && s.hall.toLowerCase() === hall.toLowerCase())) {
-        alert('Another student already has this Hall Ticket Number.');
-        return;
-      }
-
       dept.students[idx].hall = hall;
       dept.students[idx].name = name;
       dept.students[idx].phone = '91' + phoneDigits.slice(-10);
@@ -1079,11 +1004,10 @@
       closeModal('editStudentModal');
       renderTable();
       updateStats();
-      alert('Student updated successfully!');
     }
 
     function deleteStudent(idx) {
-      if (confirm('Delete this student?')) {
+      if (confirm('Delete student?')) {
         curDept().students.splice(idx, 1);
         save();
         renderTable();
@@ -1091,53 +1015,51 @@
       }
     }
 
-    // Attendance Operations
     function openMarkAttendanceModal() {
       const dept = curDept();
-      if (dept.students.length === 0) { alert('Please add students first.'); return; }
+      if (dept.students.length === 0) { alert('Add students first.'); return; }
       
       document.getElementById('attendDate').valueAsDate = new Date();
       sessionAttendanceStaging = {};
 
-      let listHtml = '';
+      const frag = document.createDocumentFragment();
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
         sessionAttendanceStaging[s.hall] = {};
-        
-        let chipsHtml = '';
+
+        const card = document.createElement('div');
+        card.className = 'student-attendance-card';
+
+        let chips = '';
         dept.subjects.forEach(sub => {
           sessionAttendanceStaging[s.hall][sub] = 'Absent';
-          chipsHtml += `
+          chips += `
             <div class="subject-chip">
               <span>${sub}</span>
-              <button type="button" class="chip-toggle absent" id="chip_${i}_${encodeURIComponent(sub)}" onclick="toggleIndividualSubject('${s.hall}', '${sub}', ${i})">
-                Absent
-              </button>
+              <button type="button" class="chip-toggle absent" id="chip_${i}_${encodeURIComponent(sub)}" onclick="toggleIndividualSubject('${s.hall}', '${sub}', ${i})">Absent</button>
             </div>
           `;
         });
 
-        listHtml += `
-          <div class="student-attendance-card">
-            <div class="student-card-header">
-              <div class="student-card-title">
-                <b>${s.name}</b> <span>(${s.hall})</span>
-              </div>
-              <div class="master-switch-box">
-                <span>All Present:</span>
-                <label class="switch">
-                  <input type="checkbox" id="master_${i}" onchange="toggleMasterStudentAttendance('${s.hall}', ${i})">
-                  <span class="slider-round"></span>
-                </label>
-              </div>
-            </div>
-            <div class="subject-chips-grid">
-              ${chipsHtml}
+        card.innerHTML = `
+          <div class="student-card-header">
+            <div class="student-card-title"><b>${s.name}</b> <span>(${s.hall})</span></div>
+            <div class="master-switch-box">
+              <span>All Present:</span>
+              <label class="switch">
+                <input type="checkbox" id="master_${i}" onchange="toggleMasterStudentAttendance('${s.hall}', ${i})">
+                <span class="slider-round"></span>
+              </label>
             </div>
           </div>
+          <div class="subject-chips-grid">${chips}</div>
         `;
+        frag.appendChild(card);
       }
-      document.getElementById('attendanceList').innerHTML = listHtml;
+
+      const container = document.getElementById('attendanceList');
+      container.innerHTML = '';
+      container.appendChild(frag);
       openModal('attendanceModal');
     }
 
@@ -1170,7 +1092,7 @@
 
     function saveAttendance() {
       const dateVal = document.getElementById('attendDate').value;
-      if (!dateVal) { alert('Select a date.'); return; }
+      if (!dateVal) return;
       const dateParts = dateVal.split('-');
       const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
@@ -1188,21 +1110,18 @@
         const s = dept.students[i];
         dept.subjects.forEach(sub => {
           const key = `${formattedDate}_${sub}`;
-          const status = (sessionAttendanceStaging[s.hall] && sessionAttendanceStaging[s.hall][sub]) 
+          s.attendance[key] = (sessionAttendanceStaging[s.hall] && sessionAttendanceStaging[s.hall][sub]) 
             ? sessionAttendanceStaging[s.hall][sub] 
             : 'Absent';
-          s.attendance[key] = status;
         });
       }
 
       save();
       closeModal('attendanceModal');
-      populateSubjectSelects();
       populateDateDropdown();
       updateDateComparison();
       updateStats();
       renderTable();
-      alert(`Attendance recorded for all subjects on ${formattedDate}`);
     }
 
     function calculatePercentageForDateAndSubject(dateStr, subject) {
@@ -1220,7 +1139,7 @@
       const dept = curDept();
       const dropdown = document.getElementById('selectedDateDropdown');
       if (dept.dates.length === 0) {
-        dropdown.innerHTML = '<option value="">No dates recorded</option>';
+        dropdown.innerHTML = '<option value="">No dates</option>';
         return;
       }
       let opts = '';
@@ -1238,7 +1157,6 @@
 
       if (!selectedDate || dept.dates.length === 0) {
         document.getElementById('compCurrentPct').innerText = '-';
-        document.getElementById('compPrevDate').innerText = 'None';
         document.getElementById('compPrevPct').innerText = '-';
         document.getElementById('compTrend').innerText = '-';
         return;
@@ -1246,34 +1164,27 @@
 
       const currentIndex = dept.dates.indexOf(selectedDate);
       const currentPct = calculatePercentageForDateAndSubject(selectedDate, activeSubject);
-      document.getElementById('compCurrentPct').innerText = `${currentPct.toFixed(1)}%`;
+      document.getElementById('compCurrentPct').innerText = `${currentPct.toFixed(0)}%`;
 
       if (currentIndex > 0) {
         const prevDate = dept.dates[currentIndex - 1];
         const prevPct = calculatePercentageForDateAndSubject(prevDate, activeSubject);
         const diff = currentPct - prevPct;
 
-        document.getElementById('compPrevDate').innerText = prevDate;
-        document.getElementById('compPrevPct').innerText = `${prevPct.toFixed(1)}%`;
-
-        if (diff > 0) {
-          document.getElementById('compTrend').innerHTML = `<span style="color: var(--green);">+${diff.toFixed(1)}% ↑</span>`;
-        } else if (diff < 0) {
-          document.getElementById('compTrend').innerHTML = `<span style="color: var(--red);">${diff.toFixed(1)}% ↓</span>`;
-        } else {
-          document.getElementById('compTrend').innerHTML = `<span style="color: var(--text-secondary);">0.0% (Same)</span>`;
-        }
+        document.getElementById('compPrevPct').innerText = `${prevPct.toFixed(0)}%`;
+        if (diff > 0) document.getElementById('compTrend').innerHTML = `<span style="color:var(--green);">+${diff.toFixed(0)}% ↑</span>`;
+        else if (diff < 0) document.getElementById('compTrend').innerHTML = `<span style="color:var(--red);">${diff.toFixed(0)}% ↓</span>`;
+        else document.getElementById('compTrend').innerHTML = `0%`;
       } else {
-        document.getElementById('compPrevDate').innerText = 'First Entry';
         document.getElementById('compPrevPct').innerText = 'N/A';
-        document.getElementById('compTrend').innerText = 'Baseline';
+        document.getElementById('compTrend').innerText = 'Base';
       }
     }
 
     function setDeptHeader() {
       const d = curDept();
-      document.getElementById('sidebarDeptInfo').innerHTML = `<b>${d.name}</b><br>${d.academicYear} | ${d.semester}`;
-      document.getElementById('deptBadge').innerHTML = `<b>${d.name}</b><br>${d.academicYear} | ${d.semester}`;
+      document.getElementById('sidebarDeptInfo').innerHTML = `<b>${d.name}</b><br>${d.academicYear}`;
+      document.getElementById('deptBadge').innerHTML = `<b>${d.name}</b><br>${d.academicYear}`;
     }
 
     function showDashboard() {
@@ -1281,7 +1192,6 @@
       setDeptHeader();
       populateSubjectSelects();
       document.getElementById('viewTitle').innerText = 'Dashboard';
-      document.getElementById('viewSubtitle').innerText = 'Consolidated and Subject-Wise Class Overview';
       document.getElementById('subjectStrip').style.display = 'flex';
       document.getElementById('statsRow').style.display = 'grid';
       document.getElementById('comparisonBanner').style.display = 'flex';
@@ -1295,7 +1205,6 @@
       activeView = 'students';
       setDeptHeader();
       document.getElementById('viewTitle').innerText = 'Students Management';
-      document.getElementById('viewSubtitle').innerText = 'Add, edit, remove students or send WhatsApp reports';
       document.getElementById('subjectStrip').style.display = 'none';
       document.getElementById('statsRow').style.display = 'none';
       document.getElementById('comparisonBanner').style.display = 'none';
@@ -1308,32 +1217,23 @@
       let present = 0, absent = 0;
       const latest = dept.dates.length > 0 ? dept.dates[dept.dates.length - 1] : null;
 
-      let totalEntries = 0, totalPresents = 0;
-      for (let i = 0; i < dept.students.length; i++) {
-        const s = dept.students[i];
-        if (latest) {
+      if (latest) {
+        for (let i = 0; i < total; i++) {
           const key = `${latest}_${activeSubject}`;
-          if (s.attendance[key] === 'Present') present++;
-          else if (s.attendance[key] === 'Absent') absent++;
-        }
-        for (let j = 0; j < dept.dates.length; j++) {
-          const key = `${dept.dates[j]}_${activeSubject}`;
-          if (s.attendance[key]) {
-            totalEntries++;
-            if (s.attendance[key] === 'Present') totalPresents++;
-          }
+          if (dept.students[i].attendance[key] === 'Present') present++;
+          else if (dept.students[i].attendance[key] === 'Absent') absent++;
         }
       }
 
       document.getElementById('statTotal').innerText = total;
       document.getElementById('statPresent').innerText = present;
       document.getElementById('statAbsent').innerText = absent;
-      document.getElementById('statPct').innerText = totalEntries === 0 ? '0%' : ((totalPresents / totalEntries) * 100).toFixed(1) + '%';
+      document.getElementById('statPct').innerText = total === 0 ? '0%' : ((present / total) * 100).toFixed(0) + '%';
     }
 
     function debouncedRenderTable() {
       clearTimeout(renderDebounceTimer);
-      renderDebounceTimer = setTimeout(renderTable, 120);
+      renderDebounceTimer = setTimeout(renderTable, 80);
     }
 
     function renderTable() {
@@ -1342,167 +1242,98 @@
       const thead = document.getElementById('tblHead');
       const tbody = document.getElementById('tblBody');
 
-      let matchingStudents = [];
+      let matching = [];
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
-        if (!q || s.name.toLowerCase().includes(q) || s.hall.toLowerCase().includes(q) || s.phone.includes(q)) {
-          matchingStudents.push({ student: s, index: i });
+        if (!q || s.name.toLowerCase().includes(q) || s.hall.toLowerCase().includes(q)) {
+          matching.push({ s, idx: i });
         }
       }
 
       if (activeView === 'dashboard') {
-        let th = `<tr><th>Hall Ticket</th><th>Student Name</th>`;
-        for (let j = 0; j < dept.dates.length; j++) {
-          th += `<th>${dept.dates[j]}</th>`;
-        }
-        th += `<th>Held (${activeSubject})</th><th>Attended</th><th>%</th></tr>`;
+        let th = '<tr><th>Hall Ticket</th><th>Name</th>';
+        for (let j = 0; j < dept.dates.length; j++) th += `<th>${dept.dates[j]}</th>`;
+        th += '<th>Attended</th><th>%</th></tr>';
         thead.innerHTML = th;
 
-        let rowsHtml = '';
+        let rows = '';
         const totalDays = dept.dates.length;
-        for (let i = 0; i < matchingStudents.length; i++) {
-          const s = matchingStudents[i].student;
+        for (let i = 0; i < matching.length; i++) {
+          const s = matching[i].s;
           let pCount = 0;
-          let heldCount = 0;
-          let cellCols = '';
-
+          let cols = '';
           for (let j = 0; j < totalDays; j++) {
-            const key = `${dept.dates[j]}_${activeSubject}`;
-            const st = s.attendance[key] || '-';
-            if (st === 'Present') { pCount++; heldCount++; }
-            else if (st === 'Absent') { heldCount++; }
-            const cls = st === 'Present' ? 'present' : st === 'Absent' ? 'absent' : '';
-            cellCols += `<td class="${cls}">${st}</td>`;
+            const st = s.attendance[`${dept.dates[j]}_${activeSubject}`] || '-';
+            if (st === 'Present') pCount++;
+            cols += `<td class="${st === 'Present' ? 'present' : st === 'Absent' ? 'absent' : ''}">${st}</td>`;
           }
-          const pct = heldCount === 0 ? '0.00%' : ((pCount / heldCount) * 100).toFixed(2) + '%';
-          rowsHtml += `<tr><td>${s.hall}</td><td>${s.name}</td>${cellCols}<td>${heldCount}</td><td>${pCount}</td><td>${pct}</td></tr>`;
+          const pct = totalDays === 0 ? '0%' : `${((pCount / totalDays) * 100).toFixed(0)}%`;
+          rows += `<tr><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${pCount}/${totalDays}</td><td>${pct}</td></tr>`;
         }
-
-        if (totalDays > 0) {
-          let summaryRow = `<tr style="background:#f8fafc; font-weight:bold;"><td colspan="2">${activeSubject} Daily %</td>`;
-          for (let j = 0; j < totalDays; j++) {
-            summaryRow += `<td>${calculatePercentageForDateAndSubject(dept.dates[j], activeSubject).toFixed(1)}%</td>`;
-          }
-          summaryRow += '<td colspan="3">-</td></tr>';
-          rowsHtml += summaryRow;
-        }
-        tbody.innerHTML = rowsHtml;
-
+        tbody.innerHTML = rows;
       } else {
-        thead.innerHTML = '<tr><th>Hall Ticket</th><th>Student Name</th><th>WhatsApp</th><th>Overall Attendance</th><th>Actions</th></tr>';
-        let rowsHtml = '';
-
-        for (let i = 0; i < matchingStudents.length; i++) {
-          const s = matchingStudents[i].student;
-          const idx = matchingStudents[i].index;
-
-          let totalLectures = 0;
-          let attendedLectures = 0;
-          dept.dates.forEach(d => {
-            dept.subjects.forEach(sub => {
-              const key = `${d}_${sub}`;
-              const st = s.attendance[key];
-              if (st === 'Present') { totalLectures++; attendedLectures++; }
-              else if (st === 'Absent') { totalLectures++; }
-            });
-          });
-          const overallPct = totalLectures === 0 ? '0.00%' : ((attendedLectures / totalLectures) * 100).toFixed(2) + '%';
-
-          rowsHtml += `
+        thead.innerHTML = '<tr><th>Hall Ticket</th><th>Name</th><th>WhatsApp</th><th>Actions</th></tr>';
+        let rows = '';
+        for (let i = 0; i < matching.length; i++) {
+          const s = matching[i].s;
+          const idx = matching[i].idx;
+          rows += `
             <tr>
               <td>${s.hall}</td>
               <td>${s.name}</td>
               <td>+${s.phone}</td>
-              <td><b>${overallPct}</b> (${attendedLectures}/${totalLectures})</td>
               <td>
-                <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="openEditStudentModal(${idx})">Edit</button>
-                <button class="btn btn-green" style="padding:4px 8px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
-                <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
+                <button class="btn btn-primary" style="padding:3px 6px; font-size:11px;" onclick="openEditStudentModal(${idx})">Edit</button>
+                <button class="btn btn-green" style="padding:3px 6px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
+                <button class="btn btn-red" style="padding:3px 6px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
               </td>
             </tr>
           `;
         }
-        tbody.innerHTML = rowsHtml;
+        tbody.innerHTML = rows;
       }
     }
 
-    // Individual Student Clean WhatsApp Dispatcher
     function sendSingleStudentWhatsApp(hall) {
       const dept = curDept();
       const s = dept.students.find(x => x.hall === hall);
       if (!s) return;
 
       const dropdown = document.getElementById('selectedDateDropdown');
-      let chosenDate = (dropdown && dropdown.value) ? dropdown.value : '';
-      if (!chosenDate && dept.dates.length > 0) {
-        chosenDate = dept.dates[dept.dates.length - 1];
-      }
-      if (!chosenDate) {
-        chosenDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
-      }
+      let chosenDate = (dropdown && dropdown.value) ? dropdown.value : (dept.dates[dept.dates.length - 1] || '');
 
-      let presentSubjects = [];
-      let absentSubjects = [];
+      let presentSubs = [];
+      let absentSubs = [];
 
       dept.subjects.forEach(sub => {
         const key = `${chosenDate}_${sub}`;
-        const st = s.attendance[key];
-        if (st === 'Present') {
-          presentSubjects.push(sub);
-        } else {
-          absentSubjects.push(sub);
-        }
+        if (s.attendance[key] === 'Present') presentSubs.push(sub);
+        else absentSubs.push(sub);
       });
 
-      const totalSubs = dept.subjects.length;
-      const attendedCount = presentSubjects.length;
-
-      let attendanceStatusBlock = '';
-
-      if (attendedCount === totalSubs) {
-        // Attended all subjects
-        attendanceStatusBlock = `Present: (${totalSubs}/${totalSubs})`;
-      } else if (attendedCount === 0) {
-        // Missed all subjects
-        attendanceStatusBlock = `Absent: (0/${totalSubs})`;
+      const total = dept.subjects.length;
+      let statusText = '';
+      if (presentSubs.length === total) {
+        statusText = `Present: (${total}/${total})`;
+      } else if (presentSubs.length === 0) {
+        statusText = `Absent: (0/${total})`;
       } else {
-        // Mixed attendance
-        attendanceStatusBlock = `Present: ${presentSubjects.join(', ')} (${attendedCount}/${totalSubs})\nAbsent: ${absentSubjects.join(', ')}`;
+        statusText = `Present: ${presentSubs.join(', ')} (${presentSubs.length}/${total})\nAbsent: ${absentSubs.join(', ')}`;
       }
 
-      const msg = 
-`Sardar Patel College
-Attendance Register Report
-
-Dept: ${dept.name}
-Date: ${chosenDate}
-
-${s.name}
-${s.hall}
-
-${attendanceStatusBlock}`;
-
+      const msg = `Sardar Patel College\nAttendance Register Report\n\nDept: ${dept.name}\nDate: ${chosenDate}\n\n${s.name}\n${s.hall}\n\n${statusText}`;
       window.open(`https://wa.me/${s.phone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function openPdfModal() { 
-      const input = document.getElementById('targetWhatsApp');
-      input.value = data.defaultReportNumber ? data.defaultReportNumber.replace(/^91/, '') : '';
+      document.getElementById('targetWhatsApp').value = data.defaultReportNumber ? data.defaultReportNumber.replace(/^91/, '') : '';
       openModal('pdfModal'); 
     }
 
-    // Consolidated Class Report & PDF Dispatcher
     function processPdfAndWhatsApp() {
-      if (!window.jspdf || !window.jspdf.jsPDF) {
-        alert('PDF engine is loading. Please wait a couple seconds and try again.');
-        return;
-      }
-
+      if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF Engine loading...'); return; }
       const rawInput = document.getElementById('targetWhatsApp').value.replace(/\D/g, '');
-      if (rawInput.length < 10) {
-        alert('Please enter a valid 10-digit WhatsApp number.');
-        return;
-      }
+      if (rawInput.length < 10) { alert('Enter valid 10-digit number.'); return; }
       const fullPhone = '91' + rawInput.slice(-10);
       const timeframe = document.getElementById('reportTimeframeSelect').value;
 
@@ -1514,169 +1345,75 @@ ${attendanceStatusBlock}`;
       let filteredDates = [...dept.dates];
 
       if (timeframe === 'weekly') {
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(now.getDate() - 7);
+        const weekAgo = new Date();
+        weekAgo.setDate(now.getDate() - 7);
         filteredDates = dept.dates.filter(d => {
           const [day, m, y] = d.split('-').map(Number);
-          return new Date(y, m - 1, day) >= oneWeekAgo;
+          return new Date(y, m - 1, day) >= weekAgo;
         });
       } else if (timeframe === 'monthly') {
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
         filteredDates = dept.dates.filter(d => {
           const [day, m, y] = d.split('-').map(Number);
-          return (m - 1) === currentMonth && y === currentYear;
+          return (m - 1) === now.getMonth() && y === now.getFullYear();
         });
       } else if (timeframe === 'daily') {
-        const dropdown = document.getElementById('selectedDateDropdown');
-        const d = (dropdown && dropdown.value) ? dropdown.value : dept.dates[dept.dates.length - 1];
+        const d = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1];
         filteredDates = d ? [d] : [];
       }
 
-      const timeframeTitle = timeframe === 'weekly' ? 'WEEKLY CONSOLIDATED REPORT' 
-        : timeframe === 'monthly' ? 'MONTHLY CONSOLIDATED REPORT'
-        : timeframe === 'daily' ? 'DAILY ATTENDANCE SUMMARY'
-        : 'SEMESTER CUMULATIVE REGISTER';
-
-      doc.setFillColor(15, 23, 42);
-      doc.rect(0, 0, 297, 28, 'F');
-
-      doc.setFillColor(59, 130, 246);
-      doc.rect(0, 28, 297, 2, 'F');
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.setTextColor(255, 255, 255);
-      doc.text('SARDAR PATEL COLLEGE', 14, 11);
-
+      doc.setFontSize(14);
+      doc.text(`SARDAR PATEL COLLEGE - ${dept.name.toUpperCase()}`, 14, 15);
       doc.setFontSize(9);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(203, 213, 225);
-      doc.text('AFFILIATED TO OSMANIA UNIVERSITY • ATTENDANCE MANAGEMENT SYSTEM', 14, 17);
-      doc.text(`REPORT TYPE: ${timeframeTitle}`, 14, 23);
+      doc.text(`Timeframe: ${timeframe.toUpperCase()} | Generated: ${now.toLocaleDateString()}`, 14, 21);
 
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(255, 255, 255);
-      doc.text(`CLASS: ${dept.name.toUpperCase()}`, 283, 11, { align: 'right' });
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(203, 213, 225);
-      doc.text(`AY: ${dept.academicYear} | ${dept.semester}`, 283, 17, { align: 'right' });
-      doc.text(`DATE GENERATED: ${now.toLocaleDateString('en-GB')}`, 283, 23, { align: 'right' });
-
-      const headers = ['Roll No.', 'Student Name'];
-      dept.subjects.forEach(sub => headers.push(sub.toUpperCase()));
-      headers.push('TOTAL ATTENDED', 'TOTAL HELD', 'PERCENTAGE');
-
+      const headers = ['Roll No', 'Name', ...dept.subjects, 'Attended', '%'];
       const body = [];
+
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
         const row = [s.hall, s.name];
-        let studentTotalAttended = 0;
-        let studentTotalHeld = 0;
+        let totalP = 0;
+        let totalH = filteredDates.length * dept.subjects.length;
 
         dept.subjects.forEach(sub => {
-          let subPresent = 0;
-          let subHeld = 0;
+          let p = 0;
           filteredDates.forEach(d => {
-            const key = `${d}_${sub}`;
-            const st = s.attendance[key];
-            if (st === 'Present') { subPresent++; subHeld++; }
-            else if (st === 'Absent') { subHeld++; }
+            if (s.attendance[`${d}_${sub}`] === 'Present') p++;
           });
-          studentTotalAttended += subPresent;
-          studentTotalHeld += subHeld;
-          row.push(`${subPresent} / ${subHeld}`);
+          totalP += p;
+          row.push(`${p}/${filteredDates.length}`);
         });
 
-        const overallPct = studentTotalHeld === 0 ? '0.00%' : `${((studentTotalAttended / studentTotalHeld) * 100).toFixed(2)}%`;
-        row.push(studentTotalAttended, studentTotalHeld, overallPct);
+        row.push(`${totalP}/${totalH}`);
+        row.push(totalH === 0 ? '0%' : `${((totalP / totalH) * 100).toFixed(0)}%`);
         body.push(row);
       }
 
       doc.autoTable({
         head: [headers],
         body: body,
-        startY: 34,
+        startY: 26,
         theme: 'striped',
-        styles: { fontSize: 8, cellPadding: 3, font: 'helvetica', lineColor: [226, 232, 240], lineWidth: 0.1 },
-        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
-        alternateRowStyles: { fillColor: [248, 250, 252] },
-        columnStyles: {
-          0: { halign: 'left', fontStyle: 'bold', cellWidth: 32 },
-          1: { halign: 'left', fontStyle: 'bold', cellWidth: 50 },
-          [headers.length - 3]: { halign: 'center', fontStyle: 'bold' },
-          [headers.length - 2]: { halign: 'center', fontStyle: 'bold' },
-          [headers.length - 1]: { halign: 'center', fontStyle: 'bold', textColor: [37, 99, 235] }
-        },
-        didDrawPage: function(tableData) {
-          const finalY = tableData.cursor.y + 16;
-          if (finalY < 185) {
-            doc.setFontSize(8.5);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(71, 85, 105);
-            doc.setDrawColor(203, 213, 225);
-            doc.line(14, finalY + 12, 65, finalY + 12);
-            doc.text('Signature of Faculty', 14, finalY + 16);
-            doc.line(125, finalY + 12, 175, finalY + 12);
-            doc.text('Head of Department (HOD)', 125, finalY + 16);
-            doc.line(230, finalY + 12, 283, finalY + 12);
-            doc.text('Principal / Vice-Principal', 230, finalY + 16);
-          }
-          const pageStr = `Page ${doc.internal.getNumberOfPages()}`;
-          doc.setFontSize(8);
-          doc.setTextColor(148, 163, 184);
-          doc.text(pageStr, 283, 204, { align: 'right' });
-          doc.text('Generated automatically by Sardar Patel College E-Register System', 14, 204);
-        }
+        styles: { fontSize: 8, cellPadding: 2 },
+        headStyles: { fillColor: [15, 23, 42] }
       });
 
-      const fileName = `${dept.name.replace(/\s+/g, '_')}_${timeframe}_Register.pdf`;
-      doc.save(fileName);
+      doc.save(`${dept.name}_Attendance.pdf`);
 
-      const dropdown = document.getElementById('selectedDateDropdown');
-      let chosenDate = (dropdown && dropdown.value) ? dropdown.value : '';
-      if (!chosenDate && dept.dates.length > 0) {
-        chosenDate = dept.dates[dept.dates.length - 1];
-      }
-
-      // Clean Class Overview WhatsApp message
+      const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1];
       let studentEntries = '';
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
         let pSubs = [];
-        let aSubs = [];
-
         dept.subjects.forEach(sub => {
-          const key = `${chosenDate}_${sub}`;
-          if (s.attendance[key] === 'Present') pSubs.push(sub);
-          else aSubs.push(sub);
+          if (s.attendance[`${chosenDate}_${sub}`] === 'Present') pSubs.push(sub);
         });
-
-        const total = dept.subjects.length;
-        let line = '';
-        if (pSubs.length === total) {
-          line = `Present (${total}/${total})`;
-        } else if (pSubs.length === 0) {
-          line = `Absent (0/${total})`;
-        } else {
-          line = `Present: ${pSubs.join(', ')} (${pSubs.length}/${total})\nAbsent: ${aSubs.join(', ')}`;
-        }
-
-        studentEntries += `\n${s.name} (${s.hall})\n${line}\n`;
+        studentEntries += `\n${s.name} (${s.hall}): ${pSubs.length === dept.subjects.length ? 'Present' : pSubs.length + '/' + dept.subjects.length}\n`;
       }
 
-      const message = 
-`Sardar Patel College
-Attendance Register Report (${timeframeTitle})
-
-Dept: ${dept.name}
-Date: ${chosenDate}
-${studentEntries}`;
-
+      const msg = `Sardar Patel College\nReport: ${timeframe.toUpperCase()}\nDate: ${chosenDate}\n${studentEntries}`;
       closeModal('pdfModal');
-      window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(message)}`, '_blank');
+      window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     init();
