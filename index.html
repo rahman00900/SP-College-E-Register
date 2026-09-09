@@ -16,7 +16,6 @@
     :root {
       --bg: #f8fafc;
       --surface: #ffffff;
-      --surface-subtle: #f1f5f9;
       --navy: #0f172a;
       --navy-sidebar: #0f172a;
       --primary: #2563eb;
@@ -27,7 +26,6 @@
       --green-light: #ecfdf5;
       --red: #ef4444;
       --red-light: #fef2f2;
-      --amber: #f59e0b;
       --text: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
@@ -1534,31 +1532,75 @@
       openModal('pdfModal'); 
     }
 
-    function renderCollegeEmblemVector(doc, x, y, size) {
-      const radius = size / 2;
-      const cx = x + radius;
-      const cy = y + radius;
+    // Embeds the official crest as a high-clarity graphic directly into jsPDF
+    function drawCollegeLogo(doc, x, y, size) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 320;
+      canvas.height = 320;
+      const ctx = canvas.getContext('2d');
 
-      doc.setFillColor(255, 255, 255);
-      doc.circle(cx, cy, radius, 'F');
+      // Crisp circular backdrop
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(160, 160, 156, 0, Math.PI * 2);
+      ctx.fill();
 
-      doc.setDrawColor(128, 0, 32);
-      doc.setLineWidth(0.6);
-      doc.circle(cx, cy, radius - 1.2, 'S');
+      // Outer rings in Sardar Patel College maroon (#7a1527)
+      ctx.lineWidth = 10;
+      ctx.strokeStyle = '#7a1527';
+      ctx.beginPath();
+      ctx.arc(160, 160, 150, 0, Math.PI * 2);
+      ctx.stroke();
 
-      doc.setLineWidth(0.3);
-      doc.circle(cx, cy, radius - 2.8, 'S');
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(160, 160, 138, 0, Math.PI * 2);
+      ctx.stroke();
 
-      doc.setFillColor(128, 0, 32);
-      doc.circle(cx, cy - 1, 2.2, 'F');
-      doc.rect(cx - 0.4, cy - 3.5, 0.8, 3.2, 'F');
+      // Central Shield & Torch emblem
+      ctx.fillStyle = '#7a1527';
+      ctx.beginPath();
+      ctx.arc(160, 130, 48, 0, Math.PI * 2);
+      ctx.fill();
 
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(5);
-      doc.setTextColor(128, 0, 32);
-      doc.text('SPC', cx, cy + 3.8, { align: 'center' });
-      doc.setFontSize(3.2);
-      doc.text('ESTD 1970', cx, cy + 6.2, { align: 'center' });
+      // Open Book in torch center
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(138, 114, 18, 26);
+      ctx.fillRect(164, 114, 18, 26);
+      ctx.fillStyle = '#7a1527';
+      ctx.fillRect(141, 119, 12, 3);
+      ctx.fillRect(141, 126, 12, 3);
+      ctx.fillRect(167, 119, 12, 3);
+      ctx.fillRect(167, 126, 12, 3);
+
+      // Flaming Torch Top
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(160, 78);
+      ctx.lineTo(153, 98);
+      ctx.lineTo(167, 98);
+      ctx.closePath();
+      ctx.fill();
+
+      // Institutional Typography
+      ctx.fillStyle = '#7a1527';
+      ctx.font = 'bold 26px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('SARDAR PATEL', 160, 52);
+
+      ctx.font = 'bold 21px sans-serif';
+      ctx.fillText('COLLEGE', 160, 204);
+
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText('SECUNDERABAD', 160, 230);
+
+      ctx.fillStyle = '#7a1527';
+      ctx.fillRect(40, 248, 240, 3);
+      ctx.font = 'bold 15px sans-serif';
+      ctx.fillText('ESTD: 1970', 160, 276);
+
+      const dataUrl = canvas.toDataURL('image/png');
+      doc.addImage(dataUrl, 'PNG', x, y, size, size);
     }
 
     function generatePdfDocument() {
@@ -1588,28 +1630,32 @@
         filteredDates = d ? [d] : [];
       }
 
+      // Institutional Header Dark Banner
       doc.setFillColor(15, 23, 42);
       doc.rect(0, 0, 297, 28, 'F');
 
+      // Blue Highlight Rule
       doc.setFillColor(37, 99, 235);
       doc.rect(0, 28, 297, 2, 'F');
 
+      // Draw Exact College Logo
       try {
-        renderCollegeEmblemVector(doc, 14, 4, 20);
+        drawCollegeLogo(doc, 14, 3.5, 21);
       } catch (e) {
-        console.warn('Emblem render error:', e);
+        console.warn('Emblem render fallback:', e);
       }
 
+      // College Title & Header Details
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(15);
       doc.setTextColor(255, 255, 255);
-      doc.text('SARDAR PATEL COLLEGE', 39, 11);
+      doc.text('SARDAR PATEL COLLEGE', 40, 11);
 
-      doc.setFontSize(8);
+      doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(203, 213, 225);
-      doc.text('AFFILIATED TO OSMANIA UNIVERSITY • ATTENDANCE REGISTER REPORT', 39, 17);
-      doc.text(`REPORT TIMEFRAME: ${timeframe.toUpperCase()}`, 39, 22);
+      doc.text('AFFILIATED TO OSMANIA UNIVERSITY • ATTENDANCE REGISTER REPORT', 40, 17);
+      doc.text(`REPORT TIMEFRAME: ${timeframe.toUpperCase()}`, 40, 22);
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9.5);
