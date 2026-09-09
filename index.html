@@ -124,35 +124,42 @@
 
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
 
+    /* Sliding Drawer / Sidebar */
     .sidebar-backdrop {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5); z-index: 200;
     }
     .sidebar {
-      width: 250px; background-color: var(--navy-sidebar); color: white;
+      width: 270px; background-color: var(--navy-sidebar); color: white;
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
       transition: transform 0.25s ease; z-index: 250; border-right: 1px solid #1e293b;
     }
     .sidebar-header { padding: 24px 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .sidebar-header h2 { font-size: 15px; font-weight: 800; color: #fff; }
+    .sidebar-header h2 { font-size: 16px; font-weight: 800; color: #fff; }
     .sidebar-header h3 { font-size: 12px; color: #818cf8; font-weight: 600; margin-top: 2px; }
-    .sidebar-menu { display: flex; flex-direction: column; gap: 4px; padding: 14px 10px; flex-grow: 1; }
+    .sidebar-menu { display: flex; flex-direction: column; gap: 6px; padding: 16px 12px; flex-grow: 1; overflow-y: auto; }
     .sidebar-btn {
-      background: transparent; border: none; color: #cbd5e1; padding: 10px 12px;
+      background: transparent; border: none; color: #cbd5e1; padding: 11px 14px;
       text-align: left; font-size: 13px; font-weight: 600; border-radius: 8px;
-      cursor: pointer; transition: all 0.15s;
+      cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 10px;
     }
     .sidebar-btn:hover { background-color: #1e293b; color: #fff; }
     .sidebar-footer { padding: 16px 18px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: #94a3b8; }
 
     .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 18px 24px; background: var(--bg); }
-    .mobile-header-bar { display: none; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+    
+    /* Top Header with Hamburger Toggle for desktop & mobile */
+    .top-header-bar {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+    }
     .menu-toggle-btn {
       background: var(--navy-sidebar); color: white; border: 1px solid #334155; font-size: 14px;
-      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;
+      padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
     }
-    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .menu-toggle-btn:hover { background: #1e293b; }
+    
     .page-title h1 { font-size: 22px; font-weight: 800; }
+    .page-title p { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
     .class-badge { text-align: right; font-size: 12px; color: var(--text-secondary); background: #fff; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); }
     .class-badge b { color: var(--text); font-size: 13px; }
 
@@ -193,10 +200,10 @@
     }
     .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
     .table-toolbar input[type="text"] {
-      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 220px;
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 260px;
       font-size: 13px; background: #f8fafc;
     }
-    .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
     .btn {
       padding: 8px 14px; border: none; border-radius: 6px; font-size: 12px;
       font-weight: 700; cursor: pointer; color: white; transition: all 0.15s;
@@ -219,11 +226,11 @@
     .present { color: var(--green); font-weight: 700; }
     .absent { color: var(--red); font-weight: 700; }
 
-    @media (max-width: 768px) {
+    /* Default: Slide-bar drawer closed on smaller screens, standard layout on wide screens */
+    @media (max-width: 900px) {
       .sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
       .sidebar-backdrop.active { display: block; }
-      .mobile-header-bar { display: flex; }
       .cards-row { grid-template-columns: repeat(2, 1fr); }
       .table-toolbar input[type="text"] { width: 100%; }
       .main { padding: 12px; }
@@ -264,23 +271,27 @@
     </div>
   </div>
 
-  <!-- Sidebar -->
+  <!-- Slide Bar / Drawer -->
   <div class="sidebar" id="appSidebar">
     <div>
-      <div class="sidebar-header">
-        <h2>ATTENDANCE</h2>
-        <h3>MANAGEMENT</h3>
+      <div class="sidebar-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2>ATTENDANCE</h2>
+          <h3>MANAGEMENT</h3>
+        </div>
+        <button style="background:transparent; border:none; color:#cbd5e1; font-size:18px; cursor:pointer;" onclick="toggleSidebar(false)">✕</button>
       </div>
       <div class="sidebar-menu">
-        <button class="sidebar-btn" onclick="navAction(showDashboard)">Dashboard</button>
-        <button class="sidebar-btn" onclick="navAction(showStudents)">Students Management</button>
-        <button class="sidebar-btn" onclick="navAction(openMarkAttendanceModal)">Mark Attendance</button>
-        <button class="sidebar-btn" onclick="navAction(openPdfModal)">Reports & PDF</button>
-        <button class="sidebar-btn" onclick="navAction(openManageSubjectsModal)">Manage Subjects</button>
-        <button class="sidebar-btn" onclick="navAction(openManageClassesModal)">Manage Classes</button>
-        <button class="sidebar-btn" onclick="navAction(openSwitchDeptModal)">Switch Class</button>
-        <button class="sidebar-btn" onclick="navAction(openAddDeptModal)">+ Add Class</button>
-        <button class="sidebar-btn" onclick="navAction(openSettingsModal)">Settings</button>
+        <button class="sidebar-btn" onclick="navAction(showDashboard)">📊 Dashboard</button>
+        <button class="sidebar-btn" onclick="navAction(showStudents)">👥 Manage Students</button>
+        <button class="sidebar-btn" onclick="navAction(openAddStudentModal)">➕ Add Student</button>
+        <button class="sidebar-btn" onclick="navAction(openMarkAttendanceModal)">✅ Mark Attendance</button>
+        <button class="sidebar-btn" onclick="navAction(openPdfModal)">📄 Reports & PDF</button>
+        <button class="sidebar-btn" onclick="navAction(openManageSubjectsModal)">📚 Manage Subjects</button>
+        <button class="sidebar-btn" onclick="navAction(openManageClassesModal)">🏫 Manage Classes</button>
+        <button class="sidebar-btn" onclick="navAction(openSwitchDeptModal)">🔄 Switch Class</button>
+        <button class="sidebar-btn" onclick="navAction(openAddDeptModal)">➕ Add Class</button>
+        <button class="sidebar-btn" onclick="navAction(openSettingsModal)">⚙️ Settings</button>
       </div>
     </div>
     <div class="sidebar-footer">
@@ -291,9 +302,9 @@
 
   <!-- Main View -->
   <div class="main">
-    <div class="mobile-header-bar">
-      <button class="menu-toggle-btn" onclick="toggleSidebar(true)">☰ Menu</button>
-      <div style="font-weight:800; font-size:14px; color:var(--primary);">SP COLLEGE</div>
+    <div class="top-header-bar">
+      <button class="menu-toggle-btn" onclick="toggleSidebar(true)">☰ Menu (Slide Bar)</button>
+      <div class="class-badge" id="deptBadge"></div>
     </div>
 
     <div class="top-header">
@@ -301,10 +312,9 @@
         <h1 id="viewTitle">Dashboard</h1>
         <p id="viewSubtitle">Consolidated and Subject-Wise Class Overview</p>
       </div>
-      <div class="class-badge" id="deptBadge"></div>
     </div>
 
-    <!-- Active Subject Selector & Subject Controls -->
+    <!-- Active Subject Selector -->
     <div class="subject-strip" id="subjectStrip">
       <div style="display:flex; align-items:center; gap:8px;">
         <span>Select Subject:</span>
@@ -361,19 +371,12 @@
       </div>
     </div>
 
-    <!-- Table Container & Toolbar -->
+    <!-- Table Container -->
     <div class="table-container">
       <div class="table-toolbar">
         <input type="text" id="searchInput" placeholder="Search by name, roll number..." oninput="debouncedRenderTable()">
-        
-        <div class="btn-group" id="topToolbarActions">
-          <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
-          <button class="btn btn-dark" onclick="showStudents()">Manage Students</button>
-          <button class="btn btn-green" onclick="openMarkAttendanceModal()">Mark Attendance</button>
-          <button class="btn btn-dark" onclick="openManageSubjectsModal()">Manage Subjects</button>
-          <button class="btn btn-orange" onclick="openManageClassesModal()">Manage Classes</button>
-          <button class="btn btn-dark" onclick="openSwitchDeptModal()">Switch Class</button>
-          <button class="btn btn-primary" onclick="openPdfModal()">Class Report & PDF</button>
+        <div style="font-size:12px; color:var(--text-secondary);">
+          Open the <b>Menu (Slide Bar)</b> to access all actions.
         </div>
       </div>
       <div class="table-scroll">
@@ -846,11 +849,9 @@
         return;
       }
 
-      // Rename in subjects list
       const idx = dept.subjects.indexOf(oldName);
       if (idx !== -1) dept.subjects[idx] = cleanName;
 
-      // Update in all student attendance records
       dept.students.forEach(student => {
         Object.keys(student.attendance).forEach(key => {
           if (key.endsWith(`_${oldName}`)) {
@@ -880,7 +881,6 @@
       if (confirm(`Are you sure you want to delete subject "${subName}"?\nAttendance records for this subject will be removed.`)) {
         dept.subjects = dept.subjects.filter(s => s !== subName);
         
-        // Remove from student attendance records
         dept.students.forEach(student => {
           Object.keys(student.attendance).forEach(key => {
             if (key.endsWith(`_${subName}`)) {
@@ -1426,6 +1426,7 @@
       }
     }
 
+    // Individual Student Clean WhatsApp Dispatcher
     function sendSingleStudentWhatsApp(hall) {
       const dept = curDept();
       const s = dept.students.find(x => x.hall === hall);
@@ -1440,12 +1441,34 @@
         chosenDate = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
       }
 
-      let subjectsStatusSummary = '';
+      let presentSubjects = [];
+      let absentSubjects = [];
+
       dept.subjects.forEach(sub => {
         const key = `${chosenDate}_${sub}`;
-        const st = s.attendance[key] || 'Absent';
-        subjectsStatusSummary += `• ${sub}: ${st}\n`;
+        const st = s.attendance[key];
+        if (st === 'Present') {
+          presentSubjects.push(sub);
+        } else {
+          absentSubjects.push(sub);
+        }
       });
+
+      const totalSubs = dept.subjects.length;
+      const attendedCount = presentSubjects.length;
+
+      let attendanceStatusBlock = '';
+
+      if (attendedCount === totalSubs) {
+        // Attended all subjects
+        attendanceStatusBlock = `Present: (${totalSubs}/${totalSubs})`;
+      } else if (attendedCount === 0) {
+        // Missed all subjects
+        attendanceStatusBlock = `Absent: (0/${totalSubs})`;
+      } else {
+        // Mixed attendance
+        attendanceStatusBlock = `Present: ${presentSubjects.join(', ')} (${attendedCount}/${totalSubs})\nAbsent: ${absentSubjects.join(', ')}`;
+      }
 
       const msg = 
 `Sardar Patel College
@@ -1457,8 +1480,7 @@ Date: ${chosenDate}
 ${s.name}
 ${s.hall}
 
-Subjects Status:
-${subjectsStatusSummary}`;
+${attendanceStatusBlock}`;
 
       window.open(`https://wa.me/${s.phone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
@@ -1469,6 +1491,7 @@ ${subjectsStatusSummary}`;
       openModal('pdfModal'); 
     }
 
+    // Consolidated Class Report & PDF Dispatcher
     function processPdfAndWhatsApp() {
       if (!window.jspdf || !window.jspdf.jsPDF) {
         alert('PDF engine is loading. Please wait a couple seconds and try again.');
@@ -1618,15 +1641,30 @@ ${subjectsStatusSummary}`;
         chosenDate = dept.dates[dept.dates.length - 1];
       }
 
+      // Clean Class Overview WhatsApp message
       let studentEntries = '';
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
-        let subDetails = [];
+        let pSubs = [];
+        let aSubs = [];
+
         dept.subjects.forEach(sub => {
           const key = `${chosenDate}_${sub}`;
-          subDetails.push(`${sub}: ${s.attendance[key] || 'Absent'}`);
+          if (s.attendance[key] === 'Present') pSubs.push(sub);
+          else aSubs.push(sub);
         });
-        studentEntries += `\n${s.name} (${s.hall})\n${subDetails.join(', ')}\n`;
+
+        const total = dept.subjects.length;
+        let line = '';
+        if (pSubs.length === total) {
+          line = `Present (${total}/${total})`;
+        } else if (pSubs.length === 0) {
+          line = `Absent (0/${total})`;
+        } else {
+          line = `Present: ${pSubs.join(', ')} (${pSubs.length}/${total})\nAbsent: ${aSubs.join(', ')}`;
+        }
+
+        studentEntries += `\n${s.name} (${s.hall})\n${line}\n`;
       }
 
       const message = 
