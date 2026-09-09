@@ -14,31 +14,39 @@
 
   <style>
     :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --navy: #090d16;
-      --navy-sidebar: #0f172a;
-      --primary: #2563eb;
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-card: #1f2937;
+      --surface-elevated: #283548;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-glow: rgba(79, 70, 229, 0.25);
       --green: #10b981;
-      --green-light: #d1fae5;
-      --red: #ef4444;
-      --red-light: #fee2e2;
-      --orange: #f59e0b;
-      --text: #0f172a;
-      --text-secondary: #475569;
-      --border: #e2e8f0;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --green-glow: rgba(16, 185, 129, 0.2);
+      --red: #f43f5e;
+      --red-glow: rgba(244, 63, 94, 0.2);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.2);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.2);
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-bright: rgba(255, 255, 255, 0.14);
+      --radius-xl: 18px;
       --radius: 12px;
       --radius-sm: 8px;
+      --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.45);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-    
+
     html, body {
       height: 100%;
       height: 100dvh;
       overflow: hidden;
-      background-color: var(--bg);
+      background: radial-gradient(circle at 10% 20%, #172033 0%, var(--bg) 80%);
       color: var(--text);
     }
 
@@ -46,220 +54,256 @@
 
     #authOverlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: #090d16; display: flex; align-items: center; justify-content: center; z-index: 1000;
+      background: rgba(5, 8, 15, 0.88); backdrop-filter: blur(14px);
+      display: flex; align-items: center; justify-content: center; z-index: 1000;
     }
     .auth-card {
-      background: #ffffff; padding: 35px 25px; border-radius: 18px;
-      width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      background: rgba(25, 35, 52, 0.82);
+      border: 1px solid var(--border-bright);
+      padding: 40px 30px; border-radius: var(--radius-xl);
+      width: 90%; max-width: 410px; text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 40px var(--primary-glow);
     }
-    .auth-card h2 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
-    .auth-card h3 { font-size: 13px; color: var(--primary); margin-bottom: 18px; font-weight: 700; }
-    .forgot-link { display: inline-block; margin-top: 14px; font-size: 12px; color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
+    .auth-card h2 { font-size: 20px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .auth-card h3 { font-size: 13px; color: var(--cyan); margin-bottom: 20px; font-weight: 700; letter-spacing: 0.3px; }
+    .forgot-link { display: inline-block; margin-top: 14px; font-size: 12px; color: var(--cyan); cursor: pointer; text-decoration: underline; font-weight: 600; }
 
     .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px);
+      background: rgba(5, 8, 15, 0.75); backdrop-filter: blur(8px);
       display: none; align-items: center; justify-content: center; z-index: 500;
     }
     .modal {
-      background: var(--surface); padding: 22px; border-radius: 16px;
+      background: rgba(26, 36, 54, 0.95);
+      border: 1px solid var(--border-bright);
+      padding: 24px; border-radius: var(--radius-xl);
       width: 92%; max-width: 720px; max-height: 85dvh; overflow-y: auto;
-      border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      box-shadow: var(--shadow-soft);
       contain: content;
     }
-    .modal h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-    .form-group { margin-bottom: 12px; text-align: left; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; }
+    .modal h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; color: var(--text); }
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
     .form-group input, .form-group select {
-      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
-      border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; background: #f8fafc;
+      width: 100%; padding: 11px 14px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
+      background: rgba(15, 23, 42, 0.6); color: var(--text); outline: none; transition: 0.2s ease;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-glow);
     }
 
     .class-item-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-      margin-bottom: 8px; background: #fff;
+      padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      margin-bottom: 8px; background: rgba(31, 41, 55, 0.5);
     }
 
     .student-attendance-card {
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 12px; margin-bottom: 10px; background: #ffffff;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px; margin-bottom: 12px; background: rgba(31, 41, 55, 0.45);
       contain: content;
     }
-    .student-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .student-card-title b { font-size: 14px; }
-    .student-card-title span { font-size: 12px; color: var(--text-secondary); margin-left: 6px; }
+    .student-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .student-card-title b { font-size: 14px; color: var(--text); }
+    .student-card-title span { font-size: 12px; color: var(--text-muted); margin-left: 6px; }
 
     .master-switch-box {
-      display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
-      background: #f8fafc; padding: 4px 8px; border-radius: 20px; border: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+      background: rgba(15, 23, 42, 0.5); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--border);
     }
 
     .subject-chips-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px;
-      padding-top: 8px; border-top: 1px solid #f1f5f9;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
+      padding-top: 10px; border-top: 1px solid var(--border);
     }
     .subject-chip {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border);
-      background: #f8fafc; font-size: 11px; font-weight: 600;
+      padding: 7px 9px; border-radius: 6px; border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.4); font-size: 11px; font-weight: 600;
     }
     .chip-toggle {
-      font-size: 11px; font-weight: 700; padding: 3px 6px; border-radius: 4px;
-      cursor: pointer; border: none;
+      font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;
+      cursor: pointer; border: none; transition: 0.15s;
     }
-    .chip-toggle.present { background: var(--green-light); color: var(--green); }
-    .chip-toggle.absent { background: var(--red-light); color: var(--red); }
-    .chip-toggle.noclass { background: #e2e8f0; color: #64748b; cursor: not-allowed; }
+    .chip-toggle.present { background: var(--green-glow); color: var(--green); border: 1px solid var(--green); }
+    .chip-toggle.absent { background: var(--red-glow); color: var(--red); border: 1px solid var(--red); }
+    .chip-toggle.noclass { background: rgba(255,255,255,0.05); color: var(--text-dim); cursor: not-allowed; border: 1px solid transparent; }
 
     .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider-round {
       position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #cbd5e1; transition: .15s; border-radius: 22px;
+      background-color: #374151; transition: .2s; border-radius: 22px;
     }
     .slider-round:before {
       position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
-      background-color: white; transition: .15s; border-radius: 50%;
+      background-color: white; transition: .2s; border-radius: 50%;
     }
     input:checked + .slider-round { background-color: var(--green); }
     input:checked + .slider-round:before { transform: translateX(18px); }
 
     .phone-group { display: flex; align-items: center; }
     .phone-prefix {
-      background: #f1f5f9; border: 1px solid var(--border); border-right: none;
-      padding: 10px 12px; font-weight: 700; font-size: 14px; color: var(--text-secondary);
+      background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-right: none;
+      padding: 11px 14px; font-weight: 700; font-size: 14px; color: var(--cyan);
       border-radius: var(--radius-sm) 0 0 var(--radius-sm);
     }
     .phone-group input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important; }
 
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
 
     .sidebar-backdrop {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); z-index: 200;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 200;
     }
     .sidebar {
-      width: 260px; background-color: var(--navy-sidebar); color: white;
+      width: 270px; background: rgba(17, 24, 39, 0.95);
+      border-right: 1px solid var(--border); color: white;
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
-      transition: transform 0.2s ease-out; z-index: 250;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 250;
     }
-    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .sidebar-header h2 { font-size: 15px; font-weight: 800; color: #fff; }
-    .sidebar-header h3 { font-size: 12px; color: #818cf8; font-weight: 600; }
-    .sidebar-menu { display: flex; flex-direction: column; gap: 4px; padding: 12px 8px; flex-grow: 1; overflow-y: auto; }
+    .sidebar-header { padding: 22px 18px; border-bottom: 1px solid var(--border); }
+    .sidebar-header h2 { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+    .sidebar-header h3 { font-size: 11px; color: var(--cyan); font-weight: 700; letter-spacing: 0.5px; }
+    .sidebar-menu { display: flex; flex-direction: column; gap: 4px; padding: 14px 10px; flex-grow: 1; overflow-y: auto; }
     .sidebar-btn {
-      background: transparent; border: none; color: #cbd5e1; padding: 10px 12px;
-      text-align: left; font-size: 13px; font-weight: 600; border-radius: 6px;
-      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      background: transparent; border: none; color: var(--text-muted); padding: 11px 14px;
+      text-align: left; font-size: 13px; font-weight: 600; border-radius: var(--radius-sm);
+      cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.15s ease;
     }
-    .sidebar-btn:hover { background-color: #1e293b; color: #fff; }
-    .sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: #94a3b8; }
+    .sidebar-btn:hover { background: rgba(255, 255, 255, 0.05); color: #fff; transform: translateX(3px); }
+    .sidebar-footer { padding: 14px 18px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
 
     .main {
       flex-grow: 1;
       height: 100dvh;
       overflow-y: auto;
       overscroll-behavior-y: contain;
-      padding: 0 16px 20px 16px;
-      background: var(--bg);
+      padding: 0 20px 24px 20px;
     }
     
     .top-header-bar {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: var(--bg);
-      padding: 12px 0;
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 14px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .menu-toggle-btn {
-      background: var(--navy-sidebar); color: white; border: 1px solid #334155; font-size: 13px;
-      padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 700;
+      background: linear-gradient(135deg, var(--surface-card), var(--surface-elevated));
+      color: white; border: 1px solid var(--border-bright); font-size: 13px;
+      padding: 8px 14px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
 
-    .page-title h1 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
-    .class-badge { text-align: right; font-size: 11px; color: var(--text-secondary); background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); }
+    .page-title h1 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+    .class-badge {
+      text-align: right; font-size: 11px; color: var(--text-muted);
+      background: rgba(31, 41, 55, 0.6); padding: 6px 12px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border-bright);
+    }
     .class-badge b { color: var(--text); font-size: 12px; }
 
     .subject-strip {
-      background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px;
-      padding: 8px 12px; margin-bottom: 12px; display: flex; align-items: center;
-      justify-content: space-between; font-size: 12px; font-weight: 600; color: #3730a3; flex-wrap: wrap; gap: 8px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(6, 182, 212, 0.1));
+      border: 1px solid rgba(79, 70, 229, 0.3); border-radius: var(--radius);
+      padding: 10px 14px; margin-bottom: 14px; display: flex; align-items: center;
+      justify-content: space-between; font-size: 12px; font-weight: 600; color: #a5b4fc; flex-wrap: wrap; gap: 8px;
     }
     .subject-strip select {
-      padding: 5px 10px; border-radius: 4px; border: 1px solid #a5b4fc; font-weight: 700; background: #fff; color: #1e1b4b;
+      padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+      font-weight: 700; background: var(--surface); color: #fff; outline: none;
     }
 
     .conducted-strip {
-      background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px;
-      padding: 10px 12px; margin-bottom: 12px;
+      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 12px 14px; margin-bottom: 14px;
     }
-    .conducted-title { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
-    .conducted-checkboxes { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; font-weight: 600; }
-    .conducted-checkboxes label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .conducted-title { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .conducted-checkboxes { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; font-weight: 600; }
+    .conducted-checkboxes label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); }
 
-    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
     .card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(145deg, rgba(31, 41, 55, 0.65), rgba(17, 24, 39, 0.75));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     }
-    .card-info h4 { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2px; font-weight: 700; }
-    .card-info span { font-size: 20px; font-weight: 800; }
-    .card-bar { width: 4px; height: 28px; border-radius: 4px; }
+    .card-info h4 { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.6px; }
+    .card-info span { font-size: 22px; font-weight: 800; }
+    .card-bar { width: 4px; height: 32px; border-radius: 4px; }
 
     .comparison-banner {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 8px 12px; margin-bottom: 12px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
+      background: rgba(31, 41, 55, 0.5); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
     }
-    .comparison-controls { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
-    .comparison-controls select { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); font-weight: 600; background: #f8fafc; font-size: 12px; }
-    .comparison-stats { display: flex; gap: 6px; font-size: 11px; flex-wrap: wrap; }
-    .stat-pill { background: #f8fafc; border: 1px solid var(--border); padding: 3px 8px; border-radius: 30px; font-weight: 600; }
+    .comparison-controls { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .comparison-controls select {
+      padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border);
+      font-weight: 600; background: var(--surface); color: #fff; font-size: 12px; outline: none;
+    }
+    .comparison-stats { display: flex; gap: 8px; font-size: 12px; flex-wrap: wrap; }
+    .stat-pill {
+      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 30px; font-weight: 600; color: var(--text);
+    }
 
     .table-container {
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 14px; display: flex; flex-direction: column; overflow: hidden;
+      background: rgba(17, 24, 39, 0.6); border: 1px solid var(--border); border-radius: var(--radius-xl);
+      padding: 16px; display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: var(--shadow-soft);
     }
-    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .table-toolbar input[type="text"] {
-      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 100%;
-      font-size: 13px; background: #f8fafc;
+      padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); width: 100%;
+      font-size: 13px; background: rgba(15, 23, 42, 0.6); color: var(--text); outline: none; transition: 0.2s ease;
+    }
+    .table-toolbar input[type="text"]:focus {
+      border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-glow);
     }
 
     .btn {
-      padding: 7px 12px; border: none; border-radius: 6px; font-size: 12px;
-      font-weight: 700; cursor: pointer; color: white;
+      padding: 9px 16px; border: none; border-radius: var(--radius-sm); font-size: 12px;
+      font-weight: 700; cursor: pointer; color: white; transition: 0.15s ease;
     }
-    .btn-primary { background: var(--primary); }
-    .btn-green { background: var(--green); }
-    .btn-red { background: var(--red); }
-    .btn-dark { background: #334155; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), #3730a3); }
+    .btn-primary:hover { filter: brightness(1.15); box-shadow: 0 4px 16px var(--primary-glow); }
+    .btn-green { background: linear-gradient(135deg, var(--green), #059669); }
+    .btn-green:hover { filter: brightness(1.15); box-shadow: 0 4px 16px var(--green-glow); }
+    .btn-red { background: linear-gradient(135deg, var(--red), #be123c); }
+    .btn-red:hover { filter: brightness(1.15); box-shadow: 0 4px 16px var(--red-glow); }
+    .btn-dark { background: var(--surface-card); border: 1px solid var(--border-bright); }
+    .btn-dark:hover { background: var(--surface-elevated); }
 
-    .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 500px; }
     th {
-      background: #f8fafc; padding: 9px 12px; border-bottom: 1px solid var(--border);
-      color: var(--text-secondary); font-weight: 700; font-size: 11px; text-transform: uppercase;
-      white-space: nowrap;
+      background: rgba(31, 41, 55, 0.8); padding: 11px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text-muted); font-weight: 700; font-size: 11px; text-transform: uppercase;
+      white-space: nowrap; letter-spacing: 0.5px;
     }
-    td { padding: 9px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
+    td { padding: 11px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
     .present { color: var(--green); font-weight: 700; }
     .absent { color: var(--red); font-weight: 700; }
-    .noclass { color: #94a3b8; font-weight: 600; }
+    .noclass { color: var(--text-dim); font-weight: 600; }
 
     @media (max-width: 900px) {
       .sidebar { position: fixed; top: 0; left: 0; height: 100%; height: 100dvh; transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
       .sidebar-backdrop.active { display: block; }
       .cards-row { grid-template-columns: repeat(2, 1fr); }
-      .main { padding: 0 12px 20px 12px; }
+      .main { padding: 0 14px 20px 14px; }
     }
   </style>
 </head>
@@ -271,7 +315,7 @@
     <div class="auth-card">
       <h2>SARDAR PATEL COLLEGE</h2>
       <h3>ATTENDANCE MANAGEMENT SYSTEM</h3>
-      <p id="authDesc" style="font-size:12px; color:#64748b; margin-bottom:15px;">Enter staff password to continue</p>
+      <p id="authDesc" style="font-size:12px; color:var(--text-muted); margin-bottom:18px;">Authenticate with staff password to continue</p>
       
       <div id="setupPassFields" style="display: none;">
         <div class="form-group">
@@ -291,7 +335,7 @@
         </div>
       </div>
 
-      <button class="btn btn-primary" style="width:100%; padding:10px; margin-top:5px;" onclick="authenticateStaff()">LOGIN</button>
+      <button class="btn btn-primary" style="width:100%; padding:12px; margin-top:8px;" onclick="authenticateStaff()">LOGIN</button>
       <div><span class="forgot-link" onclick="forgotPassword()">Forgot Password?</span></div>
     </div>
   </div>
@@ -303,7 +347,7 @@
           <h2>ATTENDANCE</h2>
           <h3>MANAGEMENT</h3>
         </div>
-        <button style="background:transparent; border:none; color:#cbd5e1; font-size:16px; cursor:pointer;" onclick="toggleSidebar(false)">✕</button>
+        <button style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;" onclick="toggleSidebar(false)">✕</button>
       </div>
       <div class="sidebar-menu">
         <button class="sidebar-btn" onclick="navAction(showDashboard)">📊 Dashboard</button>
@@ -320,7 +364,7 @@
     </div>
     <div class="sidebar-footer">
       <div id="sidebarDeptInfo">Loading...</div>
-      <button class="sidebar-btn" style="margin-top: 8px; padding: 4px 0; color:#f87171;" onclick="logout()">Logout</button>
+      <button class="sidebar-btn" style="margin-top: 8px; padding: 4px 0; color:var(--red);" onclick="logout()">Logout</button>
     </div>
   </div>
 
@@ -335,41 +379,41 @@
     </div>
 
     <div class="subject-strip" id="subjectStrip">
-      <div style="display:flex; align-items:center; gap:6px;">
+      <div style="display:flex; align-items:center; gap:8px;">
         <span>Dashboard Subject:</span>
         <select id="activeSubjectSelect" onchange="changeActiveSubject()"></select>
       </div>
-      <button class="btn btn-dark" style="padding:4px 8px; font-size:11px;" onclick="openManageSubjectsModal()">Manage Subjects</button>
+      <button class="btn btn-dark" style="padding:5px 10px; font-size:11px;" onclick="openManageSubjectsModal()">Manage Subjects</button>
     </div>
 
     <div class="cards-row" id="statsRow">
       <div class="card">
         <div class="card-info">
           <h4>Total Students</h4>
-          <span id="statTotal" style="color: var(--primary);">0</span>
+          <span id="statTotal" style="color: var(--cyan);">0</span>
         </div>
-        <div class="card-bar" style="background: var(--primary);"></div>
+        <div class="card-bar" style="background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></div>
       </div>
       <div class="card">
         <div class="card-info">
           <h4>Present Today</h4>
           <span id="statPresent" style="color: var(--green);">0</span>
         </div>
-        <div class="card-bar" style="background: var(--green);"></div>
+        <div class="card-bar" style="background: var(--green); box-shadow: 0 0 10px var(--green);"></div>
       </div>
       <div class="card">
         <div class="card-info">
           <h4>Absent Today</h4>
           <span id="statAbsent" style="color: var(--red);">0</span>
         </div>
-        <div class="card-bar" style="background: var(--red);"></div>
+        <div class="card-bar" style="background: var(--red); box-shadow: 0 0 10px var(--red);"></div>
       </div>
       <div class="card">
         <div class="card-info">
           <h4>Attendance</h4>
-          <span id="statPct" style="color: var(--orange);">0%</span>
+          <span id="statPct" style="color: var(--amber);">0%</span>
         </div>
-        <div class="card-bar" style="background: var(--orange);"></div>
+        <div class="card-bar" style="background: var(--amber); box-shadow: 0 0 10px var(--amber);"></div>
       </div>
     </div>
 
@@ -401,7 +445,7 @@
   <div id="manageSubjectsModal" class="overlay">
     <div class="modal" style="max-width: 500px;">
       <h2>Manage Subjects</h2>
-      <div id="subjectsListContainer" style="max-height: 45dvh; overflow-y: auto; margin-bottom: 12px;"></div>
+      <div id="subjectsListContainer" style="max-height: 45dvh; overflow-y: auto; margin-bottom: 14px;"></div>
       <div class="modal-actions">
         <button class="btn btn-primary" onclick="openAddSubjectPrompt()">+ New Subject</button>
         <button class="btn btn-red" onclick="closeModal('manageSubjectsModal')">Close</button>
@@ -465,7 +509,7 @@
   <div id="manageClassesModal" class="overlay">
     <div class="modal" style="max-width: 580px;">
       <h2>Manage Classes</h2>
-      <div id="classesListContainer" style="max-height: 45dvh; overflow-y: auto; margin-bottom: 12px;"></div>
+      <div id="classesListContainer" style="max-height: 45dvh; overflow-y: auto; margin-bottom: 14px;"></div>
       <div class="modal-actions">
         <button class="btn btn-primary" onclick="closeModal('manageClassesModal'); openAddDeptModal();">+ Add Class</button>
         <button class="btn btn-red" onclick="closeModal('manageClassesModal')">Close</button>
@@ -540,7 +584,7 @@
   <div id="attendanceModal" class="overlay">
     <div class="modal">
       <h2>Mark Attendance</h2>
-      <div style="margin-bottom:10px;">
+      <div style="margin-bottom:12px;">
         <div class="form-group">
           <label>Date:</label>
           <input type="date" id="attendDate">
@@ -563,13 +607,13 @@
   <div id="settingsModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Settings</h2>
-      <div style="border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
-        <label style="font-weight:700; font-size:12px;">DEFAULT WHATSAPP NUMBER</label>
-        <div class="phone-group" style="margin-top:6px;">
+      <div style="border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:14px;">
+        <label style="font-weight:700; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">DEFAULT WHATSAPP NUMBER</label>
+        <div class="phone-group" style="margin-top:8px;">
           <span class="phone-prefix">+91</span>
           <input type="text" id="defaultReportNumberInput">
         </div>
-        <button class="btn btn-green" style="margin-top:8px; width:100%;" onclick="saveDefaultReportNumber()">Save Number</button>
+        <button class="btn btn-green" style="margin-top:10px; width:100%;" onclick="saveDefaultReportNumber()">Save Number</button>
       </div>
       <div class="form-group">
         <label>Current Password:</label>
@@ -591,10 +635,10 @@
   </div>
 
   <div id="pdfModal" class="overlay">
-    <div class="modal" style="max-width: 480px;">
-      <h2>Reports & PDF Export</h2>
+    <div class="modal" style="max-width: 520px;">
+      <h2>Reports & Export</h2>
       <div class="form-group">
-        <label>Timeframe:</label>
+        <label>Report Timeframe:</label>
         <select id="reportTimeframeSelect">
           <option value="all">Full Semester Register</option>
           <option value="weekly">Weekly (Past 7 Days)</option>
@@ -609,15 +653,16 @@
           <input type="text" id="targetWhatsApp">
         </div>
       </div>
+      
       <div class="modal-actions">
-        <button class="btn btn-red" onclick="closeModal('pdfModal')">Cancel</button>
-        <button class="btn btn-green" onclick="processPdfAndWhatsApp()">Download & WhatsApp</button>
+        <button class="btn btn-red" onclick="closeModal('pdfModal')">Close</button>
+        <button class="btn btn-primary" onclick="downloadPdfOnly()">📥 Download PDF Only</button>
+        <button class="btn btn-green" onclick="sendWhatsAppOnly()">📲 Send WhatsApp Report</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Unified permanent storage key with backwards migration
     const PERMANENT_STORAGE_KEY = 'spc_attendance_master_db';
     let data = { passwordHash: '', defaultReportNumber: '', departments: {}, currentDeptId: '' };
     let activeView = 'dashboard';
@@ -642,7 +687,6 @@
       setTimeout(callback, 50);
     }
 
-    // AUTOMATIC MIGRATION: Reads all past versions to ensure no student data is ever lost
     function init() {
       const pastKeys = [
         PERMANENT_STORAGE_KEY,
@@ -658,7 +702,6 @@
       let foundSavedData = null;
       let maxStudentsFound = -1;
 
-      // Find the key that holds the highest number of students
       for (let i = 0; i < pastKeys.length; i++) {
         const raw = localStorage.getItem(pastKeys[i]);
         if (raw) {
@@ -712,7 +755,7 @@
       });
 
       activeSubject = 'ALL';
-      save(); // Commits all found data safely to the permanent key
+      save();
     }
 
     function save() { 
@@ -920,10 +963,10 @@
         const d = deptList[i];
         const isCurrent = d.id === data.currentDeptId;
         html += `
-          <div class="class-item-row" style="${isCurrent ? 'border-left: 4px solid var(--primary);' : ''}">
+          <div class="class-item-row" style="${isCurrent ? 'border-left: 4px solid var(--cyan);' : ''}">
             <div>
               <b>${d.name}</b>
-              <p style="font-size:11px; color:#64748b;">${d.academicYear} | ${d.semester}</p>
+              <p style="font-size:11px; color:var(--text-muted);">${d.academicYear} | ${d.semester}</p>
             </div>
             <div style="display:flex; gap:6px;">
               <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="openEditClassModal('${d.id}')">Edit</button>
@@ -1416,7 +1459,7 @@
         }
 
         if (totalDays > 0) {
-          let summaryRow = `<tr style="background:#f1f5f9; font-weight:bold;"><td colspan="2">Daily %</td>`;
+          let summaryRow = `<tr style="background:rgba(31, 41, 55, 0.8); font-weight:bold;"><td colspan="2">Daily %</td>`;
           for (let j = 0; j < totalDays; j++) {
             summaryRow += `<td>${calculatePercentageForDateAndSubject(dept.dates[j], activeSubject).toFixed(0)}%</td>`;
           }
@@ -1437,9 +1480,9 @@
               <td>${s.name}</td>
               <td>+${s.phone}</td>
               <td>
-                <button class="btn btn-primary" style="padding:3px 6px; font-size:11px;" onclick="openEditStudentModal(${idx})">Edit</button>
-                <button class="btn btn-green" style="padding:3px 6px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
-                <button class="btn btn-red" style="padding:3px 6px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
+                <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="openEditStudentModal(${idx})">Edit</button>
+                <button class="btn btn-green" style="padding:4px 8px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
+                <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
               </td>
             </tr>
           `;
@@ -1487,13 +1530,42 @@
       openModal('pdfModal'); 
     }
 
-    function processPdfAndWhatsApp() {
-      if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF Engine loading...'); return; }
-      const rawInput = document.getElementById('targetWhatsApp').value.replace(/\D/g, '');
-      if (rawInput.length < 10) { alert('Enter valid 10-digit number.'); return; }
-      const fullPhone = '91' + rawInput.slice(-10);
-      const timeframe = document.getElementById('reportTimeframeSelect').value;
+    // Official Sardar Patel College Emblem Vector Drawing Function
+    function renderCollegeEmblemVector(doc, x, y, size) {
+      const radius = size / 2;
+      const cx = x + radius;
+      const cy = y + radius;
 
+      // Outer badge circle
+      doc.setFillColor(255, 255, 255);
+      doc.circle(cx, cy, radius, 'F');
+
+      // Inner college maroon ring
+      doc.setDrawColor(128, 0, 32);
+      doc.setLineWidth(0.6);
+      doc.circle(cx, cy, radius - 1.2, 'S');
+
+      // Inner central seal
+      doc.setLineWidth(0.3);
+      doc.circle(cx, cy, radius - 2.8, 'S');
+
+      // Central Torch & Book silhouette
+      doc.setFillColor(128, 0, 32);
+      doc.circle(cx, cy - 1, 2.2, 'F');
+      doc.rect(cx - 0.4, cy - 3.5, 0.8, 3.2, 'F');
+
+      // College Monogram
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(5);
+      doc.setTextColor(128, 0, 32);
+      doc.text('SPC', cx, cy + 3.8, { align: 'center' });
+      doc.setFontSize(3.2);
+      doc.text('ESTD 1970', cx, cy + 6.2, { align: 'center' });
+    }
+
+    function generatePdfDocument() {
+      if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF Engine loading...'); return null; }
+      const timeframe = document.getElementById('reportTimeframeSelect').value;
       const dept = curDept();
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -1518,22 +1590,32 @@
         filteredDates = d ? [d] : [];
       }
 
+      // Institutional Header Dark Banner
       doc.setFillColor(15, 23, 42);
-      doc.rect(0, 0, 297, 26, 'F');
+      doc.rect(0, 0, 297, 28, 'F');
 
-      doc.setFillColor(37, 99, 235);
-      doc.rect(0, 26, 297, 2, 'F');
+      // Indigo Accent Line
+      doc.setFillColor(79, 70, 229);
+      doc.rect(0, 28, 297, 2, 'F');
 
+      // Draw Sardar Patel College Crest
+      try {
+        renderCollegeEmblemVector(doc, 14, 4, 20);
+      } catch (e) {
+        console.warn('Emblem render error:', e);
+      }
+
+      // College Title & Metadata
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(15);
       doc.setTextColor(255, 255, 255);
-      doc.text('SARDAR PATEL COLLEGE', 14, 11);
+      doc.text('SARDAR PATEL COLLEGE', 39, 11);
 
-      doc.setFontSize(8.5);
+      doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(203, 213, 225);
-      doc.text('AFFILIATED TO OSMANIA UNIVERSITY • STUDENT ATTENDANCE REPORT', 14, 17);
-      doc.text(`REPORT TIMEFRAME: ${timeframe.toUpperCase()}`, 14, 22);
+      doc.text('AFFILIATED TO OSMANIA UNIVERSITY • ATTENDANCE REGISTER REPORT', 39, 17);
+      doc.text(`REPORT TIMEFRAME: ${timeframe.toUpperCase()}`, 39, 22);
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9.5);
@@ -1543,7 +1625,7 @@
       doc.setFontSize(8);
       doc.setTextColor(203, 213, 225);
       doc.text(`SEMESTER: ${dept.semester}`, 283, 17, { align: 'right' });
-      doc.text(`GENERATED ON: ${now.toLocaleDateString('en-GB')}`, 283, 22, { align: 'right' });
+      doc.text(`DATE GENERATED: ${now.toLocaleDateString('en-GB')}`, 283, 22, { align: 'right' });
 
       const headers = ['Roll No', 'Student Name', ...dept.subjects, 'Attended', 'Held', 'Overall %', 'Attendance Status'];
       const body = [];
@@ -1587,7 +1669,7 @@
       doc.autoTable({
         head: [headers],
         body: body,
-        startY: 32,
+        startY: 34,
         theme: 'striped',
         styles: { fontSize: 8, cellPadding: 2.5, font: 'helvetica', lineColor: [226, 232, 240], lineWidth: 0.1 },
         headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
@@ -1654,9 +1736,34 @@
         }
       });
 
-      doc.save(`${dept.name}_Attendance_Report.pdf`);
+      return doc;
+    }
 
-      const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1];
+    function downloadPdfOnly() {
+      const doc = generatePdfDocument();
+      if (!doc) return;
+
+      const dept = curDept();
+      const timeframe = document.getElementById('reportTimeframeSelect').value;
+      const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1] || new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+      
+      const safeDeptName = dept.name.replace(/\s+/g, '_');
+      const safeTimeframe = timeframe.toLowerCase();
+      const fileName = `${safeDeptName}_${chosenDate}_${safeTimeframe}_Attendance.pdf`;
+
+      doc.save(fileName);
+      alert(`PDF downloaded successfully as "${fileName}"!`);
+    }
+
+    function sendWhatsAppOnly() {
+      const rawInput = document.getElementById('targetWhatsApp').value.replace(/\D/g, '');
+      if (rawInput.length < 10) { alert('Enter valid 10-digit number.'); return; }
+      const fullPhone = '91' + rawInput.slice(-10);
+      const timeframe = document.getElementById('reportTimeframeSelect').value;
+      const dept = curDept();
+
+      const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1] || new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+      
       let studentEntries = '';
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
