@@ -18,11 +18,7 @@
       --surface: #ffffff;
       --navy: #090d16;
       --navy-sidebar: #0f172a;
-      --navy-card: #1e293b;
-      --navy-hover: #1e293b;
-      --primary: #3b82f6;
-      --primary-dark: #2563eb;
-      --accent: #6366f1;
+      --primary: #2563eb;
       --green: #10b981;
       --green-light: #d1fae5;
       --red: #ef4444;
@@ -30,12 +26,8 @@
       --orange: #f59e0b;
       --text: #0f172a;
       --text-secondary: #475569;
-      --text-muted: #94a3b8;
       --border: #e2e8f0;
-      --border-subtle: #f1f5f9;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04);
-      --shadow-lg: 0 12px 24px -4px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.02);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
       --radius: 12px;
       --radius-sm: 8px;
     }
@@ -49,26 +41,12 @@
       display: flex; align-items: center; justify-content: center; z-index: 1000;
     }
     .auth-card {
-      background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px);
-      padding: 42px 34px; border-radius: 20px; width: 92%; max-width: 430px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); text-align: center;
-      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.98); padding: 40px 30px; border-radius: 18px;
+      width: 92%; max-width: 420px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35); text-align: center;
     }
-    .auth-badge {
-      display: inline-block; background: #e0e7ff; color: #4338ca;
-      font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 50px;
-      margin-bottom: 12px; letter-spacing: 0.5px; text-transform: uppercase;
-    }
-    .auth-card h2 { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 4px; letter-spacing: -0.3px; }
-    .auth-card h3 { font-size: 13px; color: var(--primary); margin-bottom: 22px; font-weight: 700; letter-spacing: 0.2px; }
-    .auth-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
-
-    .forgot-link {
-      display: inline-block; margin-top: 16px; font-size: 12px;
-      color: var(--primary); cursor: pointer; text-decoration: none; font-weight: 600;
-      transition: color 0.15s;
-    }
-    .forgot-link:hover { color: var(--primary-dark); text-decoration: underline; }
+    .auth-card h2 { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+    .auth-card h3 { font-size: 13px; color: var(--primary); margin-bottom: 20px; font-weight: 700; }
+    .forgot-link { display: inline-block; margin-top: 14px; font-size: 12px; color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
 
     .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -76,70 +54,52 @@
       display: none; align-items: center; justify-content: center; z-index: 500;
     }
     .modal {
-      background: var(--surface); padding: 28px; border-radius: 18px;
-      width: 92%; max-width: 720px; max-height: 88vh; overflow-y: auto;
-      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
-      animation: modalSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      background: var(--surface); padding: 24px; border-radius: 16px;
+      width: 92%; max-width: 760px; max-height: 88vh; overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid var(--border);
     }
-    @keyframes modalSlide {
-      from { opacity: 0; transform: scale(0.96) translateY(8px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    .modal h2 { font-size: 20px; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.3px; }
+    .modal h2 { font-size: 20px; font-weight: 800; margin-bottom: 12px; }
     .form-group { margin-bottom: 14px; text-align: left; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; }
     .form-group input, .form-group select {
-      width: 100%; padding: 11px 14px; border: 1px solid var(--border);
-      border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
-      background: #f8fafc; transition: all 0.2s;
-    }
-    .form-group input:focus, .form-group select:focus {
-      outline: none; border-color: var(--primary); background: #fff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; background: #f8fafc;
     }
 
     .class-item-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-      margin-bottom: 10px; background: #fff; transition: box-shadow 0.2s;
+      padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      margin-bottom: 8px; background: #fff;
     }
-    .class-item-row:hover { box-shadow: var(--shadow-sm); }
-    .class-info-col b { font-size: 14px; color: var(--text); font-weight: 700; }
-    .class-info-col p { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
 
     .student-attendance-card {
-      border: 1px solid var(--border); border-radius: 14px;
-      padding: 16px; margin-bottom: 14px; background: #ffffff;
-      box-shadow: var(--shadow-sm); transition: border 0.2s;
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px; margin-bottom: 12px; background: #ffffff; box-shadow: var(--shadow-sm);
     }
-    .student-attendance-card:hover { border-color: #cbd5e1; }
-    .student-card-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
-    }
-    .student-card-title b { font-size: 15px; color: var(--text); font-weight: 700; }
-    .student-card-title span { font-size: 12px; color: var(--text-secondary); margin-left: 8px; font-weight: 500; }
+    .student-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .student-card-title b { font-size: 14px; color: var(--text); font-weight: 700; }
+    .student-card-title span { font-size: 12px; color: var(--text-secondary); margin-left: 6px; }
 
     .master-switch-box {
       display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
-      background: #f8fafc; padding: 6px 12px; border-radius: 50px; border: 1px solid var(--border);
+      background: #f8fafc; padding: 4px 10px; border-radius: 50px; border: 1px solid var(--border);
     }
 
     .subject-chips-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px;
-      padding-top: 10px; border-top: 1px solid var(--border-subtle);
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
+      padding-top: 8px; border-top: 1px solid var(--border);
     }
     .subject-chip {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border);
-      background: #f8fafc; font-size: 12px; font-weight: 600;
+      padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border);
+      background: #f8fafc; font-size: 11px; font-weight: 600;
     }
     .chip-toggle {
-      font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
-      cursor: pointer; user-select: none; border: none; transition: all 0.15s;
+      font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+      cursor: pointer; border: none;
     }
     .chip-toggle.present { background: var(--green-light); color: var(--green); }
     .chip-toggle.absent { background: var(--red-light); color: var(--red); }
-    .chip-toggle:active { transform: scale(0.95); }
 
     .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
     .switch input { opacity: 0; width: 0; height: 0; }
@@ -149,7 +109,7 @@
     }
     .slider-round:before {
       position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-      background-color: white; transition: .2s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      background-color: white; transition: .2s; border-radius: 50%;
     }
     input:checked + .slider-round { background-color: var(--green); }
     input:checked + .slider-round:before { transform: translateX(20px); }
@@ -157,112 +117,104 @@
     .phone-group { display: flex; align-items: center; }
     .phone-prefix {
       background: #f1f5f9; border: 1px solid var(--border); border-right: none;
-      padding: 11px 14px; font-weight: 700; font-size: 14px; color: var(--text-secondary);
+      padding: 10px 12px; font-weight: 700; font-size: 14px; color: var(--text-secondary);
       border-radius: var(--radius-sm) 0 0 var(--radius-sm);
     }
     .phone-group input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important; }
 
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
 
     .sidebar-backdrop {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 200;
+      background: rgba(0,0,0,0.5); z-index: 200;
     }
     .sidebar {
-      width: 270px; background-color: var(--navy-sidebar); color: white;
+      width: 250px; background-color: var(--navy-sidebar); color: white;
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
       transition: transform 0.25s ease; z-index: 250; border-right: 1px solid #1e293b;
     }
-    .sidebar-header { padding: 26px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .sidebar-header h2 { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+    .sidebar-header { padding: 24px 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .sidebar-header h2 { font-size: 15px; font-weight: 800; color: #fff; }
     .sidebar-header h3 { font-size: 12px; color: #818cf8; font-weight: 600; margin-top: 2px; }
-    .sidebar-menu { display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; flex-grow: 1; }
+    .sidebar-menu { display: flex; flex-direction: column; gap: 4px; padding: 14px 10px; flex-grow: 1; }
     .sidebar-btn {
-      background: transparent; border: none; color: #cbd5e1; padding: 12px 14px;
+      background: transparent; border: none; color: #cbd5e1; padding: 10px 12px;
       text-align: left; font-size: 13px; font-weight: 600; border-radius: 8px;
-      cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.15s;
+      cursor: pointer; transition: all 0.15s;
     }
-    .sidebar-btn:hover { background-color: var(--navy-hover); color: #fff; }
-    .sidebar-footer { padding: 18px 20px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: var(--text-muted); }
+    .sidebar-btn:hover { background-color: #1e293b; color: #fff; }
+    .sidebar-footer { padding: 16px 18px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: #94a3b8; }
 
-    .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 20px 28px; background: var(--bg); }
-    .mobile-header-bar { display: none; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 18px 24px; background: var(--bg); }
+    .mobile-header-bar { display: none; align-items: center; justify-content: space-between; margin-bottom: 15px; }
     .menu-toggle-btn {
       background: var(--navy-sidebar); color: white; border: 1px solid #334155; font-size: 14px;
-      padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600;
+      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;
     }
-    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-    .page-title h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
-    .class-badge { text-align: right; font-size: 12px; color: var(--text-secondary); background: #fff; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); }
+    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .page-title h1 { font-size: 22px; font-weight: 800; }
+    .class-badge { text-align: right; font-size: 12px; color: var(--text-secondary); background: #fff; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); }
     .class-badge b { color: var(--text); font-size: 13px; }
 
     .subject-strip {
-      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-      border: 1px solid #c7d2fe; border-radius: 12px;
-      padding: 10px 18px; margin-bottom: 18px; display: flex; align-items: center;
-      justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13px; font-weight: 600; color: #3730a3;
+      background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 10px;
+      padding: 8px 14px; margin-bottom: 14px; display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px; font-weight: 600; color: #3730a3;
     }
     .subject-strip select {
-      padding: 7px 14px; border-radius: 8px; border: 1px solid #a5b4fc; font-weight: 700; background: #fff; color: #1e1b4b; cursor: pointer;
+      padding: 6px 10px; border-radius: 6px; border: 1px solid #a5b4fc; font-weight: 700; background: #fff; color: #1e1b4b; cursor: pointer;
     }
 
-    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+    .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
     .card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 16px 18px; display: flex; justify-content: space-between; align-items: center;
-      box-shadow: var(--shadow-sm); transition: transform 0.15s, box-shadow 0.15s;
+      padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: var(--shadow-sm);
     }
-    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .card-info h4 { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; }
-    .card-info span { font-size: 24px; font-weight: 800; }
-    .card-bar { width: 4px; height: 36px; border-radius: 4px; }
+    .card-info h4 { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
+    .card-info span { font-size: 22px; font-weight: 800; }
+    .card-bar { width: 4px; height: 32px; border-radius: 4px; }
 
     .comparison-banner {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 12px 18px; margin-bottom: 18px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
       box-shadow: var(--shadow-sm);
     }
     .comparison-controls { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
-    .comparison-controls select { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border); font-weight: 600; background: #f8fafc; }
-    .comparison-stats { display: flex; gap: 10px; font-size: 12px; flex-wrap: wrap; }
-    .stat-pill { background: #f8fafc; border: 1px solid var(--border); padding: 6px 12px; border-radius: 50px; font-weight: 500; }
+    .comparison-controls select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); font-weight: 600; background: #f8fafc; }
+    .comparison-stats { display: flex; gap: 8px; font-size: 12px; flex-wrap: wrap; }
+    .stat-pill { background: #f8fafc; border: 1px solid var(--border); padding: 4px 10px; border-radius: 50px; font-weight: 500; }
 
     .table-container {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 18px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
+      padding: 16px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
       box-shadow: var(--shadow-sm);
     }
-    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+    .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
     .table-toolbar input[type="text"] {
-      padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; width: 240px;
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 220px;
       font-size: 13px; background: #f8fafc;
     }
-    .table-toolbar input[type="text"]:focus {
-      outline: none; border-color: var(--primary); background: #fff;
-    }
-    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
     .btn {
-      padding: 9px 16px; border: none; border-radius: 8px; font-size: 13px;
+      padding: 8px 14px; border: none; border-radius: 6px; font-size: 12px;
       font-weight: 700; cursor: pointer; color: white; transition: all 0.15s;
-      display: inline-flex; align-items: center; justify-content: center;
     }
-    .btn:active { transform: scale(0.97); }
-    .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); }
-    .btn-primary:hover { filter: brightness(1.05); }
-    .btn-green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2); }
-    .btn-red { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-    .btn-orange { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .btn-primary { background: var(--primary); }
+    .btn-green { background: var(--green); }
+    .btn-red { background: var(--red); }
+    .btn-orange { background: var(--orange); }
+    .btn-dark { background: #334155; }
 
     .table-scroll { overflow: auto; flex-grow: 1; border: 1px solid var(--border); border-radius: var(--radius-sm); }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
     th {
-      background: #f8fafc; padding: 12px 14px; border-bottom: 1px solid var(--border);
-      color: var(--text-secondary); font-weight: 700; font-size: 12px; text-transform: uppercase;
-      letter-spacing: 0.3px; white-space: nowrap;
+      background: #f8fafc; padding: 10px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text-secondary); font-weight: 700; font-size: 11px; text-transform: uppercase;
+      white-space: nowrap;
     }
-    td { padding: 11px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
-    tr:last-child td { border-bottom: none; }
+    td { padding: 9px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
     tr:hover { background-color: #f8fafc; }
     .present { color: var(--green); font-weight: 700; }
     .absent { color: var(--red); font-weight: 700; }
@@ -274,7 +226,7 @@
       .mobile-header-bar { display: flex; }
       .cards-row { grid-template-columns: repeat(2, 1fr); }
       .table-toolbar input[type="text"] { width: 100%; }
-      .main { padding: 14px; }
+      .main { padding: 12px; }
     }
   </style>
 </head>
@@ -285,7 +237,6 @@
   <!-- Authentication Screen -->
   <div id="authOverlay">
     <div class="auth-card">
-      <div class="auth-badge">Staff Access Portal</div>
       <h2>SARDAR PATEL COLLEGE</h2>
       <h3>ATTENDANCE MANAGEMENT SYSTEM</h3>
       <p id="authDesc">Authenticate with your staff password to continue</p>
@@ -308,11 +259,8 @@
         </div>
       </div>
 
-      <button class="btn btn-primary" style="width:100%; padding:12px; margin-top:8px;" onclick="authenticateStaff()">STAFF LOGIN</button>
-      
-      <div>
-        <span class="forgot-link" onclick="forgotPassword()">Forgot Password?</span>
-      </div>
+      <button class="btn btn-primary" style="width:100%; padding:11px; margin-top:8px;" onclick="authenticateStaff()">STAFF LOGIN</button>
+      <div><span class="forgot-link" onclick="forgotPassword()">Forgot Password?</span></div>
     </div>
   </div>
 
@@ -325,13 +273,14 @@
       </div>
       <div class="sidebar-menu">
         <button class="sidebar-btn" onclick="navAction(showDashboard)">Dashboard</button>
-        <button class="sidebar-btn" onclick="navAction(showStudents)">Students</button>
+        <button class="sidebar-btn" onclick="navAction(showStudents)">Students Management</button>
         <button class="sidebar-btn" onclick="navAction(openMarkAttendanceModal)">Mark Attendance</button>
         <button class="sidebar-btn" onclick="navAction(openPdfModal)">Reports & PDF</button>
-        <button class="sidebar-btn" onclick="navAction(openSettingsModal)">Settings</button>
+        <button class="sidebar-btn" onclick="navAction(openManageSubjectsModal)">Manage Subjects</button>
         <button class="sidebar-btn" onclick="navAction(openManageClassesModal)">Manage Classes</button>
         <button class="sidebar-btn" onclick="navAction(openSwitchDeptModal)">Switch Class</button>
         <button class="sidebar-btn" onclick="navAction(openAddDeptModal)">+ Add Class</button>
+        <button class="sidebar-btn" onclick="navAction(openSettingsModal)">Settings</button>
       </div>
     </div>
     <div class="sidebar-footer">
@@ -355,16 +304,19 @@
       <div class="class-badge" id="deptBadge"></div>
     </div>
 
-    <!-- Active Subject Selector -->
+    <!-- Active Subject Selector & Subject Controls -->
     <div class="subject-strip" id="subjectStrip">
-      <div style="display:flex; align-items:center; gap:10px;">
+      <div style="display:flex; align-items:center; gap:8px;">
         <span>Select Subject:</span>
         <select id="activeSubjectSelect" onchange="changeActiveSubject()"></select>
       </div>
-      <button class="btn btn-primary" style="padding:6px 12px; font-size:12px;" onclick="openAddSubjectPrompt()">+ Add Subject</button>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" onclick="openAddSubjectPrompt()">+ Add Subject</button>
+        <button class="btn btn-dark" style="padding:5px 10px; font-size:11px;" onclick="openManageSubjectsModal()">Manage Subjects</button>
+      </div>
     </div>
 
-    <!-- Summary Metrics -->
+    <!-- Metric Cards -->
     <div class="cards-row" id="statsRow">
       <div class="card">
         <div class="card-info">
@@ -409,17 +361,41 @@
       </div>
     </div>
 
-    <!-- Table Container -->
+    <!-- Table Container & Toolbar -->
     <div class="table-container">
       <div class="table-toolbar">
         <input type="text" id="searchInput" placeholder="Search by name, roll number..." oninput="debouncedRenderTable()">
-        <div class="btn-group" id="topToolbarActions"></div>
+        
+        <div class="btn-group" id="topToolbarActions">
+          <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
+          <button class="btn btn-dark" onclick="showStudents()">Manage Students</button>
+          <button class="btn btn-green" onclick="openMarkAttendanceModal()">Mark Attendance</button>
+          <button class="btn btn-dark" onclick="openManageSubjectsModal()">Manage Subjects</button>
+          <button class="btn btn-orange" onclick="openManageClassesModal()">Manage Classes</button>
+          <button class="btn btn-dark" onclick="openSwitchDeptModal()">Switch Class</button>
+          <button class="btn btn-primary" onclick="openPdfModal()">Class Report & PDF</button>
+        </div>
       </div>
       <div class="table-scroll">
         <table>
           <thead id="tblHead"></thead>
           <tbody id="tblBody"></tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Manage Subjects (Add, Edit, Delete) -->
+  <div id="manageSubjectsModal" class="overlay">
+    <div class="modal" style="max-width: 600px;">
+      <h2>Manage Subjects</h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+        Add, edit (rename), or delete subjects for the current class.
+      </p>
+      <div id="subjectsListContainer" style="max-height: 50vh; overflow-y: auto; margin-bottom: 15px;"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="openAddSubjectPrompt()">+ Add New Subject</button>
+        <button class="btn btn-red" onclick="closeModal('manageSubjectsModal')">Close</button>
       </div>
     </div>
   </div>
@@ -483,6 +459,9 @@
   <div id="manageClassesModal" class="overlay">
     <div class="modal" style="max-width: 640px;">
       <h2>Manage Classes</h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+        Add new classes, edit names and semesters, or delete batches[span_0](start_span)[span_0](end_span).
+      </p>
       <div id="classesListContainer" style="max-height: 50vh; overflow-y: auto; margin-bottom: 15px;"></div>
       <div class="modal-actions">
         <button class="btn btn-primary" onclick="closeModal('manageClassesModal'); openAddDeptModal();">+ Add New Class</button>
@@ -569,7 +548,7 @@
           <input type="date" id="attendDate">
         </div>
         <div style="font-size:12px; color:var(--text-secondary); background:#f8fafc; padding:8px 12px; border-radius:8px; border:1px solid var(--border);">
-          Use <b>"All Present"</b> master switch or tap individual subjects to override.
+          Toggle <b>"All Present"</b> or tap subject chips individually to override.
         </div>
       </div>
 
@@ -624,7 +603,7 @@
     <div class="modal">
       <h2>Attendance Reports & Executive PDF</h2>
       <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
-        Generates a consolidated, multi-subject institutional register report with signature validation lines.
+        Generates a consolidated, multi-subject institutional register report with signature validation lines[span_1](start_span)[span_1](end_span).
       </p>
       
       <div class="form-group">
@@ -798,6 +777,7 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
+    // Subjects Controls: Add, Edit, Delete
     function populateSubjectSelects() {
       const dept = curDept();
       const activeSelect = document.getElementById('activeSubjectSelect');
@@ -820,16 +800,107 @@
       if (sub && sub.trim()) {
         const name = sub.trim();
         const dept = curDept();
-        if (!dept.subjects.includes(name)) {
-          dept.subjects.push(name);
-          activeSubject = name;
-          save();
-          populateSubjectSelects();
-          showDashboard();
+        if (dept.subjects.some(s => s.toLowerCase() === name.toLowerCase())) {
+          alert('Subject already exists.');
+          return;
+        }
+        dept.subjects.push(name);
+        activeSubject = name;
+        save();
+        populateSubjectSelects();
+        showDashboard();
+        if (document.getElementById('manageSubjectsModal').style.display === 'flex') {
+          openManageSubjectsModal();
         }
       }
     }
 
+    function openManageSubjectsModal() {
+      const dept = curDept();
+      const container = document.getElementById('subjectsListContainer');
+      let html = '';
+      for (let i = 0; i < dept.subjects.length; i++) {
+        const s = dept.subjects[i];
+        html += `
+          <div class="class-item-row">
+            <div><b>${s}</b></div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="editSubject('${s}')">Rename</button>
+              <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteSubject('${s}')">Delete</button>
+            </div>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+      openModal('manageSubjectsModal');
+    }
+
+    function editSubject(oldName) {
+      const newName = prompt(`Rename subject "${oldName}" to:`, oldName);
+      if (!newName || !newName.trim() || newName.trim() === oldName) return;
+      const cleanName = newName.trim();
+      const dept = curDept();
+
+      if (dept.subjects.some(s => s.toLowerCase() === cleanName.toLowerCase() && s.toLowerCase() !== oldName.toLowerCase())) {
+        alert('A subject with this name already exists.');
+        return;
+      }
+
+      // Rename in subjects list
+      const idx = dept.subjects.indexOf(oldName);
+      if (idx !== -1) dept.subjects[idx] = cleanName;
+
+      // Update in all student attendance records
+      dept.students.forEach(student => {
+        Object.keys(student.attendance).forEach(key => {
+          if (key.endsWith(`_${oldName}`)) {
+            const datePart = key.slice(0, key.lastIndexOf(`_${oldName}`));
+            const val = student.attendance[key];
+            delete student.attendance[key];
+            student.attendance[`${datePart}_${cleanName}`] = val;
+          }
+        });
+      });
+
+      if (activeSubject === oldName) activeSubject = cleanName;
+      save();
+      populateSubjectSelects();
+      openManageSubjectsModal();
+      showDashboard();
+      alert('Subject renamed successfully!');
+    }
+
+    function deleteSubject(subName) {
+      const dept = curDept();
+      if (dept.subjects.length <= 1) {
+        alert('At least one subject must remain in the class.');
+        return;
+      }
+
+      if (confirm(`Are you sure you want to delete subject "${subName}"?\nAttendance records for this subject will be removed.`)) {
+        dept.subjects = dept.subjects.filter(s => s !== subName);
+        
+        // Remove from student attendance records
+        dept.students.forEach(student => {
+          Object.keys(student.attendance).forEach(key => {
+            if (key.endsWith(`_${subName}`)) {
+              delete student.attendance[key];
+            }
+          });
+        });
+
+        if (activeSubject === subName) {
+          activeSubject = dept.subjects[0];
+        }
+
+        save();
+        populateSubjectSelects();
+        openManageSubjectsModal();
+        showDashboard();
+      }
+    }
+
+    // Class Management (Add, Edit, Delete)
     function openAddDeptModal() { openModal('deptModal'); }
     function saveDepartment() {
       const name = document.getElementById('deptName').value.trim();
@@ -863,7 +934,7 @@
           <div class="class-item-row" style="${isCurrent ? 'border-left: 4px solid var(--primary);' : ''}">
             <div class="class-info-col">
               <b>${d.name} ${isCurrent ? '<span style="font-size:11px; color:var(--primary); font-weight:bold;">(Active)</span>' : ''}</b>
-              <p>${d.academicYear} | ${d.semester} • ${d.students.length} Students</p>
+              <p>${d.academicYear} | ${d.semester} • ${d.students.length} Students • ${d.subjects.length} Subjects</p>
             </div>
             <div style="display:flex; gap:6px;">
               <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" onclick="openEditClassModal('${d.id}')">Edit</button>
@@ -946,6 +1017,7 @@
       showDashboard();
     }
 
+    // Student Operations
     function openAddStudentModal() { openModal('studentModal'); }
     function saveStudent() {
       const hall = document.getElementById('stuHall').value.trim();
@@ -1019,6 +1091,7 @@
       }
     }
 
+    // Attendance Operations
     function openMarkAttendanceModal() {
       const dept = curDept();
       if (dept.students.length === 0) { alert('Please add students first.'); return; }
@@ -1212,10 +1285,6 @@
       document.getElementById('subjectStrip').style.display = 'flex';
       document.getElementById('statsRow').style.display = 'grid';
       document.getElementById('comparisonBanner').style.display = 'flex';
-      document.getElementById('topToolbarActions').innerHTML = `
-        <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
-        <button class="btn btn-green" onclick="openMarkAttendanceModal()">Mark Attendance</button>
-      `;
       populateDateDropdown();
       updateDateComparison();
       updateStats();
@@ -1225,14 +1294,11 @@
     function showStudents() {
       activeView = 'students';
       setDeptHeader();
-      document.getElementById('viewTitle').innerText = 'Student Management';
-      document.getElementById('viewSubtitle').innerText = 'Edit profiles, send WhatsApp notices, or remove students';
+      document.getElementById('viewTitle').innerText = 'Students Management';
+      document.getElementById('viewSubtitle').innerText = 'Add, edit, remove students or send WhatsApp reports';
       document.getElementById('subjectStrip').style.display = 'none';
       document.getElementById('statsRow').style.display = 'none';
       document.getElementById('comparisonBanner').style.display = 'none';
-      document.getElementById('topToolbarActions').innerHTML = `
-        <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
-      `;
       renderTable();
     }
 
@@ -1403,7 +1469,6 @@ ${subjectsStatusSummary}`;
       openModal('pdfModal'); 
     }
 
-    // High-Design PDF Generator (Executive Template)
     function processPdfAndWhatsApp() {
       if (!window.jspdf || !window.jspdf.jsPDF) {
         alert('PDF engine is loading. Please wait a couple seconds and try again.');
@@ -1450,15 +1515,12 @@ ${subjectsStatusSummary}`;
         : timeframe === 'daily' ? 'DAILY ATTENDANCE SUMMARY'
         : 'SEMESTER CUMULATIVE REGISTER';
 
-      // Background Header Gradient / Banner
-      doc.setFillColor(15, 23, 42); // Deep Navy
+      doc.setFillColor(15, 23, 42);
       doc.rect(0, 0, 297, 28, 'F');
 
-      // Accent Stripe
-      doc.setFillColor(59, 130, 246); // Primary Blue
+      doc.setFillColor(59, 130, 246);
       doc.rect(0, 28, 297, 2, 'F');
 
-      // Header Texts
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
       doc.setTextColor(255, 255, 255);
@@ -1470,7 +1532,6 @@ ${subjectsStatusSummary}`;
       doc.text('AFFILIATED TO OSMANIA UNIVERSITY • ATTENDANCE MANAGEMENT SYSTEM', 14, 17);
       doc.text(`REPORT TYPE: ${timeframeTitle}`, 14, 23);
 
-      // Meta Box Right Aligned
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
       doc.setTextColor(255, 255, 255);
@@ -1481,7 +1542,6 @@ ${subjectsStatusSummary}`;
       doc.text(`AY: ${dept.academicYear} | ${dept.semester}`, 283, 17, { align: 'right' });
       doc.text(`DATE GENERATED: ${now.toLocaleDateString('en-GB')}`, 283, 23, { align: 'right' });
 
-      // Table Setup
       const headers = ['Roll No.', 'Student Name'];
       dept.subjects.forEach(sub => headers.push(sub.toUpperCase()));
       headers.push('TOTAL ATTENDED', 'TOTAL HELD', 'PERCENTAGE');
@@ -1517,50 +1577,30 @@ ${subjectsStatusSummary}`;
         body: body,
         startY: 34,
         theme: 'striped',
-        styles: {
-          fontSize: 8,
-          cellPadding: 3,
-          font: 'helvetica',
-          lineColor: [226, 232, 240],
-          lineWidth: 0.1
-        },
-        headStyles: {
-          fillColor: [30, 41, 59],
-          textColor: [255, 255, 255],
-          fontStyle: 'bold',
-          halign: 'center'
-        },
-        alternateRowStyles: {
-          fillColor: [248, 250, 252]
-        },
+        styles: { fontSize: 8, cellPadding: 3, font: 'helvetica', lineColor: [226, 232, 240], lineWidth: 0.1 },
+        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
         columnStyles: {
           0: { halign: 'left', fontStyle: 'bold', cellWidth: 32 },
           1: { halign: 'left', fontStyle: 'bold', cellWidth: 50 },
-          // Right-align summary numbers
           [headers.length - 3]: { halign: 'center', fontStyle: 'bold' },
           [headers.length - 2]: { halign: 'center', fontStyle: 'bold' },
           [headers.length - 1]: { halign: 'center', fontStyle: 'bold', textColor: [37, 99, 235] }
         },
         didDrawPage: function(tableData) {
-          // Bottom Footer / Signature Lines on the final page
           const finalY = tableData.cursor.y + 16;
           if (finalY < 185) {
             doc.setFontSize(8.5);
             doc.setFont('helvetica', 'normal');
             doc.setTextColor(71, 85, 105);
-
             doc.setDrawColor(203, 213, 225);
             doc.line(14, finalY + 12, 65, finalY + 12);
             doc.text('Signature of Faculty', 14, finalY + 16);
-
             doc.line(125, finalY + 12, 175, finalY + 12);
             doc.text('Head of Department (HOD)', 125, finalY + 16);
-
             doc.line(230, finalY + 12, 283, finalY + 12);
             doc.text('Principal / Vice-Principal', 230, finalY + 16);
           }
-
-          // Page Numbering Footer
           const pageStr = `Page ${doc.internal.getNumberOfPages()}`;
           doc.setFontSize(8);
           doc.setTextColor(148, 163, 184);
