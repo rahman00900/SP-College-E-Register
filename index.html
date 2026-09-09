@@ -110,6 +110,7 @@
     }
     .chip-toggle.present { background: var(--green-light); color: var(--green); }
     .chip-toggle.absent { background: var(--red-light); color: var(--red); }
+    .chip-toggle.noclass { background: #e2e8f0; color: #64748b; cursor: not-allowed; }
 
     .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
     .switch input { opacity: 0; width: 0; height: 0; }
@@ -195,6 +196,14 @@
       padding: 5px 10px; border-radius: 4px; border: 1px solid #a5b4fc; font-weight: 700; background: #fff; color: #1e1b4b;
     }
 
+    .conducted-strip {
+      background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; margin-bottom: 12px;
+    }
+    .conducted-title { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+    .conducted-checkboxes { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; font-weight: 600; }
+    .conducted-checkboxes label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+
     .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
     .card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -243,6 +252,7 @@
     td { padding: 9px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
     .present { color: var(--green); font-weight: 700; }
     .absent { color: var(--red); font-weight: 700; }
+    .noclass { color: #94a3b8; font-weight: 600; }
 
     @media (max-width: 900px) {
       .sidebar { position: fixed; top: 0; left: 0; height: 100%; height: 100dvh; transform: translateX(-100%); }
@@ -257,7 +267,6 @@
 
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
 
-  <!-- Authentication Screen -->
   <div id="authOverlay">
     <div class="auth-card">
       <h2>SARDAR PATEL COLLEGE</h2>
@@ -287,7 +296,6 @@
     </div>
   </div>
 
-  <!-- Slide Bar / Drawer -->
   <div class="sidebar" id="appSidebar">
     <div>
       <div class="sidebar-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -316,7 +324,6 @@
     </div>
   </div>
 
-  <!-- Main View -->
   <div class="main">
     <div class="top-header-bar">
       <button class="menu-toggle-btn" onclick="toggleSidebar(true)">☰ Menu (Slide Bar)</button>
@@ -327,7 +334,6 @@
       <h1 id="viewTitle">Dashboard</h1>
     </div>
 
-    <!-- Subject Selector with All Subjects Option -->
     <div class="subject-strip" id="subjectStrip">
       <div style="display:flex; align-items:center; gap:6px;">
         <span>Dashboard Subject:</span>
@@ -392,7 +398,6 @@
     </div>
   </div>
 
-  <!-- Modal: Manage Subjects -->
   <div id="manageSubjectsModal" class="overlay">
     <div class="modal" style="max-width: 500px;">
       <h2>Manage Subjects</h2>
@@ -404,7 +409,6 @@
     </div>
   </div>
 
-  <!-- Modal: Add Class -->
   <div id="deptModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Add Class</h2>
@@ -431,7 +435,6 @@
     </div>
   </div>
 
-  <!-- Modal: Edit Class -->
   <div id="editClassModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Edit Class Details</h2>
@@ -459,7 +462,6 @@
     </div>
   </div>
 
-  <!-- Modal: Manage Classes -->
   <div id="manageClassesModal" class="overlay">
     <div class="modal" style="max-width: 580px;">
       <h2>Manage Classes</h2>
@@ -471,7 +473,6 @@
     </div>
   </div>
 
-  <!-- Modal: Switch Class -->
   <div id="switchDeptModal" class="overlay">
     <div class="modal" style="max-width: 420px;">
       <h2>Switch Class</h2>
@@ -485,7 +486,6 @@
     </div>
   </div>
 
-  <!-- Modal: Add Student -->
   <div id="studentModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Add New Student</h2>
@@ -511,7 +511,6 @@
     </div>
   </div>
 
-  <!-- Modal: Edit Student -->
   <div id="editStudentModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Edit Student</h2>
@@ -538,7 +537,6 @@
     </div>
   </div>
 
-  <!-- Modal: Mark Attendance -->
   <div id="attendanceModal" class="overlay">
     <div class="modal">
       <h2>Mark Attendance</h2>
@@ -548,7 +546,13 @@
           <input type="date" id="attendDate">
         </div>
       </div>
-      <div id="attendanceList" style="max-height:50dvh; overflow-y:auto;"></div>
+
+      <div class="conducted-strip">
+        <div class="conducted-title">Classes / Subjects Held Today:</div>
+        <div class="conducted-checkboxes" id="conductedSubjectsContainer"></div>
+      </div>
+
+      <div id="attendanceList" style="max-height:45dvh; overflow-y:auto;"></div>
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('attendanceModal')">Cancel</button>
         <button class="btn btn-green" onclick="saveAttendance()">Save Attendance</button>
@@ -556,7 +560,6 @@
     </div>
   </div>
 
-  <!-- Modal: Settings -->
   <div id="settingsModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Settings</h2>
@@ -587,7 +590,6 @@
     </div>
   </div>
 
-  <!-- Modal: PDF Reports -->
   <div id="pdfModal" class="overlay">
     <div class="modal" style="max-width: 480px;">
       <h2>Reports & PDF Export</h2>
@@ -615,7 +617,8 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'spc_attendance_v5';
+    // Unified permanent storage key with backwards migration
+    const PERMANENT_STORAGE_KEY = 'spc_attendance_master_db';
     let data = { passwordHash: '', defaultReportNumber: '', departments: {}, currentDeptId: '' };
     let activeView = 'dashboard';
     let activeSubject = 'ALL';
@@ -639,10 +642,46 @@
       setTimeout(callback, 50);
     }
 
+    // AUTOMATIC MIGRATION: Reads all past versions to ensure no student data is ever lost
     function init() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try { data = JSON.parse(saved); } catch (e) { console.error(e); }
+      const pastKeys = [
+        PERMANENT_STORAGE_KEY,
+        'spc_attendance_v8',
+        'spc_attendance_v7',
+        'spc_attendance_v6',
+        'spc_attendance_v5',
+        'spc_attendance_v4',
+        'spc_attendance_v3',
+        'college_attendance_db'
+      ];
+
+      let foundSavedData = null;
+      let maxStudentsFound = -1;
+
+      // Find the key that holds the highest number of students
+      for (let i = 0; i < pastKeys.length; i++) {
+        const raw = localStorage.getItem(pastKeys[i]);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            let studentCount = 0;
+            if (parsed.departments) {
+              Object.values(parsed.departments).forEach(d => {
+                if (d.students) studentCount += d.students.length;
+              });
+            }
+            if (studentCount > maxStudentsFound) {
+              maxStudentsFound = studentCount;
+              foundSavedData = parsed;
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+
+      if (foundSavedData) {
+        data = foundSavedData;
       }
 
       if (!data.passwordHash) {
@@ -663,7 +702,6 @@
           dates: []
         };
         data.currentDeptId = id;
-        save();
       }
 
       Object.values(data.departments).forEach(d => {
@@ -672,11 +710,13 @@
         }
         if (!d.dates) d.dates = [];
       });
+
       activeSubject = 'ALL';
+      save(); // Commits all found data safely to the permanent key
     }
 
     function save() { 
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } 
+      try { localStorage.setItem(PERMANENT_STORAGE_KEY, JSON.stringify(data)); } 
       catch (e) { console.error(e); }
     }
     
@@ -751,7 +791,6 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Subjects Controls: With "All Subjects" Option
     function populateSubjectSelects() {
       const dept = curDept();
       const activeSelect = document.getElementById('activeSubjectSelect');
@@ -1017,7 +1056,6 @@
       }
     }
 
-    // Attendance Operations
     function openMarkAttendanceModal() {
       const dept = curDept();
       if (dept.students.length === 0) { alert('Add students first.'); return; }
@@ -1025,23 +1063,61 @@
       document.getElementById('attendDate').valueAsDate = new Date();
       sessionAttendanceStaging = {};
 
+      const condContainer = document.getElementById('conductedSubjectsContainer');
+      let condHtml = '';
+      dept.subjects.forEach(sub => {
+        condHtml += `
+          <label>
+            <input type="checkbox" checked id="held_${encodeURIComponent(sub)}" onchange="updateConductedSubjects()">
+            ${sub}
+          </label>
+        `;
+      });
+      condContainer.innerHTML = condHtml;
+
+      renderAttendanceStagingGrid();
+      openModal('attendanceModal');
+    }
+
+    function updateConductedSubjects() {
+      renderAttendanceStagingGrid();
+    }
+
+    function renderAttendanceStagingGrid() {
+      const dept = curDept();
       const frag = document.createDocumentFragment();
+
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
-        sessionAttendanceStaging[s.hall] = {};
+        if (!sessionAttendanceStaging[s.hall]) sessionAttendanceStaging[s.hall] = {};
 
         const card = document.createElement('div');
         card.className = 'student-attendance-card';
 
         let chips = '';
         dept.subjects.forEach(sub => {
-          sessionAttendanceStaging[s.hall][sub] = 'Absent';
-          chips += `
-            <div class="subject-chip">
-              <span>${sub}</span>
-              <button type="button" class="chip-toggle absent" id="chip_${i}_${encodeURIComponent(sub)}" onclick="toggleIndividualSubject('${s.hall}', '${sub}', ${i})">Absent</button>
-            </div>
-          `;
+          const isHeld = document.getElementById(`held_${encodeURIComponent(sub)}`) ? document.getElementById(`held_${encodeURIComponent(sub)}`).checked : true;
+          
+          if (!isHeld) {
+            sessionAttendanceStaging[s.hall][sub] = 'No Class';
+            chips += `
+              <div class="subject-chip">
+                <span>${sub}</span>
+                <span class="chip-toggle noclass">No Class</span>
+              </div>
+            `;
+          } else {
+            if (!sessionAttendanceStaging[s.hall][sub] || sessionAttendanceStaging[s.hall][sub] === 'No Class') {
+              sessionAttendanceStaging[s.hall][sub] = 'Absent';
+            }
+            const curStatus = sessionAttendanceStaging[s.hall][sub];
+            chips += `
+              <div class="subject-chip">
+                <span>${sub}</span>
+                <button type="button" class="chip-toggle ${curStatus === 'Present' ? 'present' : 'absent'}" id="chip_${i}_${encodeURIComponent(sub)}" onclick="toggleIndividualSubject('${s.hall}', '${sub}', ${i})">${curStatus}</button>
+              </div>
+            `;
+          }
         });
 
         card.innerHTML = `
@@ -1063,7 +1139,6 @@
       const container = document.getElementById('attendanceList');
       container.innerHTML = '';
       container.appendChild(frag);
-      openModal('attendanceModal');
     }
 
     function toggleMasterStudentAttendance(hall, studentIdx) {
@@ -1072,16 +1147,22 @@
       const status = isPresent ? 'Present' : 'Absent';
 
       dept.subjects.forEach(sub => {
-        sessionAttendanceStaging[hall][sub] = status;
-        const btn = document.getElementById(`chip_${studentIdx}_${encodeURIComponent(sub)}`);
-        if (btn) {
-          btn.innerText = status;
-          btn.className = `chip-toggle ${isPresent ? 'present' : 'absent'}`;
+        const isHeld = document.getElementById(`held_${encodeURIComponent(sub)}`) ? document.getElementById(`held_${encodeURIComponent(sub)}`).checked : true;
+        if (isHeld) {
+          sessionAttendanceStaging[hall][sub] = status;
+          const btn = document.getElementById(`chip_${studentIdx}_${encodeURIComponent(sub)}`);
+          if (btn) {
+            btn.innerText = status;
+            btn.className = `chip-toggle ${isPresent ? 'present' : 'absent'}`;
+          }
         }
       });
     }
 
     function toggleIndividualSubject(hall, sub, studentIdx) {
+      const isHeld = document.getElementById(`held_${encodeURIComponent(sub)}`) ? document.getElementById(`held_${encodeURIComponent(sub)}`).checked : true;
+      if (!isHeld) return;
+
       const current = sessionAttendanceStaging[hall][sub] || 'Absent';
       const next = current === 'Present' ? 'Absent' : 'Present';
       sessionAttendanceStaging[hall][sub] = next;
@@ -1115,7 +1196,7 @@
           const key = `${formattedDate}_${sub}`;
           s.attendance[key] = (sessionAttendanceStaging[s.hall] && sessionAttendanceStaging[s.hall][sub]) 
             ? sessionAttendanceStaging[s.hall][sub] 
-            : 'Absent';
+            : 'No Class';
         });
       }
 
@@ -1125,7 +1206,6 @@
       updateDateComparison();
       updateStats();
       renderTable();
-      alert(`Attendance recorded for ${formattedDate}`);
     }
 
     function calculatePercentageForDateAndSubject(dateStr, subject) {
@@ -1133,22 +1213,26 @@
       if (!dateStr || !dept || dept.students.length === 0) return 0;
       
       if (subject === 'ALL') {
-        let totalSlots = dept.students.length * dept.subjects.length;
-        if (totalSlots === 0) return 0;
+        let heldSlots = 0;
         let present = 0;
         for (let i = 0; i < dept.students.length; i++) {
           dept.subjects.forEach(sub => {
-            if (dept.students[i].attendance[`${dateStr}_${sub}`] === 'Present') present++;
+            const st = dept.students[i].attendance[`${dateStr}_${sub}`];
+            if (st === 'Present') { present++; heldSlots++; }
+            else if (st === 'Absent') { heldSlots++; }
           });
         }
-        return (present / totalSlots) * 100;
+        return heldSlots === 0 ? 0 : (present / heldSlots) * 100;
       } else {
         const key = `${dateStr}_${subject}`;
+        let heldCount = 0;
         let present = 0;
         for (let i = 0; i < dept.students.length; i++) {
-          if (dept.students[i].attendance[key] === 'Present') present++;
+          const st = dept.students[i].attendance[key];
+          if (st === 'Present') { present++; heldCount++; }
+          else if (st === 'Absent') { heldCount++; }
         }
-        return (present / dept.students.length) * 100;
+        return heldCount === 0 ? 0 : (present / heldCount) * 100;
       }
     }
 
@@ -1156,7 +1240,7 @@
       const dept = curDept();
       const dropdown = document.getElementById('selectedDateDropdown');
       if (dept.dates.length === 0) {
-        dropdown.innerHTML = '<option value="">No dates recorded</option>';
+        dropdown.innerHTML = '<option value="">No dates</option>';
         return;
       }
       let opts = '';
@@ -1292,39 +1376,45 @@
         for (let i = 0; i < matching.length; i++) {
           const s = matching[i].s;
           let pCount = 0;
+          let heldCount = 0;
           let cols = '';
 
           if (activeSubject === 'ALL') {
-            // Consolidated view across all subjects
-            const totalLectures = totalDays * dept.subjects.length;
-            let attendedLectures = 0;
-
             for (let j = 0; j < totalDays; j++) {
+              let dayHeld = 0;
               let dayAttended = 0;
               dept.subjects.forEach(sub => {
-                if (s.attendance[`${dept.dates[j]}_${sub}`] === 'Present') dayAttended++;
+                const st = s.attendance[`${dept.dates[j]}_${sub}`];
+                if (st === 'Present') { dayAttended++; dayHeld++; }
+                else if (st === 'Absent') { dayHeld++; }
               });
-              attendedLectures += dayAttended;
-              const subCount = dept.subjects.length;
-              const statusClass = dayAttended === subCount ? 'present' : (dayAttended === 0 ? 'absent' : '');
-              cols += `<td class="${statusClass}">${dayAttended}/${subCount}</td>`;
+              pCount += dayAttended;
+              heldCount += dayHeld;
+
+              if (dayHeld === 0) {
+                cols += `<td class="noclass">-</td>`;
+              } else {
+                const statusClass = dayAttended === dayHeld ? 'present' : (dayAttended === 0 ? 'absent' : '');
+                cols += `<td class="${statusClass}">${dayAttended}/${dayHeld}</td>`;
+              }
             }
-            const pct = totalLectures === 0 ? '0%' : `${((attendedLectures / totalLectures) * 100).toFixed(0)}%`;
-            rows += `<tr><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${attendedLectures}/${totalLectures}</td><td>${pct}</td></tr>`;
+            const pct = heldCount === 0 ? '0%' : `${((pCount / heldCount) * 100).toFixed(0)}%`;
+            rows += `<tr><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${pCount}/${heldCount}</td><td>${pct}</td></tr>`;
 
           } else {
-            // Single Subject View
             for (let j = 0; j < totalDays; j++) {
               const st = s.attendance[`${dept.dates[j]}_${activeSubject}`] || '-';
-              if (st === 'Present') pCount++;
-              cols += `<td class="${st === 'Present' ? 'present' : st === 'Absent' ? 'absent' : ''}">${st}</td>`;
+              if (st === 'Present') { pCount++; heldCount++; }
+              else if (st === 'Absent') { heldCount++; }
+              
+              const cls = st === 'Present' ? 'present' : (st === 'Absent' ? 'absent' : 'noclass');
+              cols += `<td class="${cls}">${st === 'No Class' ? '-' : st}</td>`;
             }
-            const pct = totalDays === 0 ? '0%' : `${((pCount / totalDays) * 100).toFixed(0)}%`;
-            rows += `<tr><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${pCount}/${totalDays}</td><td>${pct}</td></tr>`;
+            const pct = heldCount === 0 ? '0%' : `${((pCount / heldCount) * 100).toFixed(0)}%`;
+            rows += `<tr><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${pCount}/${heldCount}</td><td>${pct}</td></tr>`;
           }
         }
 
-        // Add daily summary row at bottom
         if (totalDays > 0) {
           let summaryRow = `<tr style="background:#f1f5f9; font-weight:bold;"><td colspan="2">Daily %</td>`;
           for (let j = 0; j < totalDays; j++) {
@@ -1335,34 +1425,21 @@
         }
 
         tbody.innerHTML = rows;
-
       } else {
-        thead.innerHTML = '<tr><th>Hall Ticket</th><th>Student Name</th><th>WhatsApp</th><th>Overall Attendance</th><th>Actions</th></tr>';
+        thead.innerHTML = '<tr><th>Hall Ticket</th><th>Name</th><th>WhatsApp</th><th>Actions</th></tr>';
         let rows = '';
-
         for (let i = 0; i < matching.length; i++) {
           const s = matching[i].s;
           const idx = matching[i].idx;
-
-          let totalSlots = dept.dates.length * dept.subjects.length;
-          let attendedSlots = 0;
-          dept.dates.forEach(d => {
-            dept.subjects.forEach(sub => {
-              if (s.attendance[`${d}_${sub}`] === 'Present') attendedSlots++;
-            });
-          });
-          const overallPct = totalSlots === 0 ? '0%' : `${((attendedSlots / totalSlots) * 100).toFixed(0)}%`;
-
           rows += `
             <tr>
               <td>${s.hall}</td>
               <td>${s.name}</td>
               <td>+${s.phone}</td>
-              <td><b>${overallPct}</b> (${attendedSlots}/${totalSlots})</td>
               <td>
-                <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="openEditStudentModal(${idx})">Edit</button>
-                <button class="btn btn-green" style="padding:4px 8px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
-                <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
+                <button class="btn btn-primary" style="padding:3px 6px; font-size:11px;" onclick="openEditStudentModal(${idx})">Edit</button>
+                <button class="btn btn-green" style="padding:3px 6px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
+                <button class="btn btn-red" style="padding:3px 6px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
               </td>
             </tr>
           `;
@@ -1384,18 +1461,21 @@
 
       dept.subjects.forEach(sub => {
         const key = `${chosenDate}_${sub}`;
-        if (s.attendance[key] === 'Present') presentSubs.push(sub);
-        else absentSubs.push(sub);
+        const st = s.attendance[key];
+        if (st === 'Present') presentSubs.push(sub);
+        else if (st === 'Absent') absentSubs.push(sub);
       });
 
-      const total = dept.subjects.length;
+      const totalHeld = presentSubs.length + absentSubs.length;
       let statusText = '';
-      if (presentSubs.length === total) {
-        statusText = `Present: (${total}/${total})`;
+      if (totalHeld === 0) {
+        statusText = 'No classes held on this date.';
+      } else if (presentSubs.length === totalHeld) {
+        statusText = `Present: (${totalHeld}/${totalHeld})`;
       } else if (presentSubs.length === 0) {
-        statusText = `Absent: (0/${total})`;
+        statusText = `Absent: (0/${totalHeld})`;
       } else {
-        statusText = `Present: ${presentSubs.join(', ')} (${presentSubs.length}/${total})\nAbsent: ${absentSubs.join(', ')}`;
+        statusText = `Present: ${presentSubs.join(', ')} (${presentSubs.length}/${totalHeld})\nAbsent: ${absentSubs.join(', ')}`;
       }
 
       const msg = `Sardar Patel College\nAttendance Register Report\n\nDept: ${dept.name}\nDate: ${chosenDate}\n\n${s.name}\n${s.hall}\n\n${statusText}`;
@@ -1438,54 +1518,157 @@
         filteredDates = d ? [d] : [];
       }
 
-      doc.setFontSize(14);
-      doc.text(`SARDAR PATEL COLLEGE - ${dept.name.toUpperCase()}`, 14, 15);
-      doc.setFontSize(9);
-      doc.text(`Timeframe: ${timeframe.toUpperCase()} | Generated: ${now.toLocaleDateString()}`, 14, 21);
+      doc.setFillColor(15, 23, 42);
+      doc.rect(0, 0, 297, 26, 'F');
 
-      const headers = ['Roll No', 'Name', ...dept.subjects, 'Attended', '%'];
+      doc.setFillColor(37, 99, 235);
+      doc.rect(0, 26, 297, 2, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(15);
+      doc.setTextColor(255, 255, 255);
+      doc.text('SARDAR PATEL COLLEGE', 14, 11);
+
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(203, 213, 225);
+      doc.text('AFFILIATED TO OSMANIA UNIVERSITY • STUDENT ATTENDANCE REPORT', 14, 17);
+      doc.text(`REPORT TIMEFRAME: ${timeframe.toUpperCase()}`, 14, 22);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text(`CLASS: ${dept.name.toUpperCase()} (${dept.academicYear})`, 283, 11, { align: 'right' });
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(203, 213, 225);
+      doc.text(`SEMESTER: ${dept.semester}`, 283, 17, { align: 'right' });
+      doc.text(`GENERATED ON: ${now.toLocaleDateString('en-GB')}`, 283, 22, { align: 'right' });
+
+      const headers = ['Roll No', 'Student Name', ...dept.subjects, 'Attended', 'Held', 'Overall %', 'Attendance Status'];
       const body = [];
 
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
         const row = [s.hall, s.name];
         let totalP = 0;
-        let totalH = filteredDates.length * dept.subjects.length;
+        let totalH = 0;
 
         dept.subjects.forEach(sub => {
           let p = 0;
+          let h = 0;
           filteredDates.forEach(d => {
-            if (s.attendance[`${d}_${sub}`] === 'Present') p++;
+            const st = s.attendance[`${d}_${sub}`];
+            if (st === 'Present') { p++; h++; }
+            else if (st === 'Absent') { h++; }
           });
           totalP += p;
-          row.push(`${p}/${filteredDates.length}`);
+          totalH += h;
+          row.push(h === 0 ? '-' : `${p}/${h}`);
         });
 
-        row.push(`${totalP}/${totalH}`);
-        row.push(totalH === 0 ? '0%' : `${((totalP / totalH) * 100).toFixed(0)}%`);
+        row.push(totalP);
+        row.push(totalH);
+
+        const pctVal = totalH === 0 ? 0 : ((totalP / totalH) * 100);
+        row.push(totalH === 0 ? '0%' : `${pctVal.toFixed(0)}%`);
+
+        const statusText = totalP > 0 ? 'PRESENT' : 'ABSENT';
+        row.push(statusText);
+
         body.push(row);
       }
+
+      const statusColIndex = headers.length - 1;
+      const pctColIndex = headers.length - 2;
+      const subjectStartIndex = 2;
+      const subjectEndIndex = 2 + dept.subjects.length - 1;
 
       doc.autoTable({
         head: [headers],
         body: body,
-        startY: 26,
+        startY: 32,
         theme: 'striped',
-        styles: { fontSize: 8, cellPadding: 2 },
-        headStyles: { fillColor: [15, 23, 42] }
+        styles: { fontSize: 8, cellPadding: 2.5, font: 'helvetica', lineColor: [226, 232, 240], lineWidth: 0.1 },
+        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+        columnStyles: {
+          0: { cellWidth: 28, fontStyle: 'bold' },
+          1: { cellWidth: 42, fontStyle: 'bold' }
+        },
+        didParseCell: function(dataCell) {
+          if (dataCell.section === 'body') {
+            if (dataCell.column.index >= subjectStartIndex && dataCell.column.index <= subjectEndIndex) {
+              const val = dataCell.cell.raw;
+              if (val && val.includes('/')) {
+                const [p, h] = val.split('/').map(Number);
+                if (p === h && h > 0) {
+                  dataCell.cell.styles.textColor = [16, 185, 129];
+                  dataCell.cell.styles.fontStyle = 'bold';
+                } else if (p < h) {
+                  dataCell.cell.styles.textColor = [239, 68, 68];
+                  dataCell.cell.styles.fontStyle = 'bold';
+                }
+              }
+              dataCell.cell.styles.halign = 'center';
+            }
+
+            if (dataCell.column.index === pctColIndex) {
+              dataCell.cell.styles.fontStyle = 'bold';
+              dataCell.cell.styles.halign = 'center';
+            }
+
+            if (dataCell.column.index === statusColIndex) {
+              const statusStr = dataCell.cell.raw;
+              dataCell.cell.styles.fontStyle = 'bold';
+              dataCell.cell.styles.halign = 'center';
+              if (statusStr === 'PRESENT') {
+                dataCell.cell.styles.textColor = [16, 185, 129];
+              } else {
+                dataCell.cell.styles.textColor = [239, 68, 68];
+              }
+            }
+          }
+        },
+        didDrawPage: function(tableData) {
+          const finalY = tableData.cursor.y + 14;
+          if (finalY < 185) {
+            doc.setFontSize(8.5);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(71, 85, 105);
+
+            doc.setDrawColor(203, 213, 225);
+            doc.line(14, finalY + 12, 65, finalY + 12);
+            doc.text('Signature of Faculty', 14, finalY + 16);
+
+            doc.line(125, finalY + 12, 175, finalY + 12);
+            doc.text('Head of Department (HOD)', 125, finalY + 16);
+
+            doc.line(230, finalY + 12, 283, finalY + 12);
+            doc.text('Principal / Vice-Principal', 230, finalY + 16);
+          }
+
+          const pageStr = `Page ${doc.internal.getNumberOfPages()}`;
+          doc.setFontSize(8);
+          doc.setTextColor(148, 163, 184);
+          doc.text(pageStr, 283, 204, { align: 'right' });
+        }
       });
 
-      doc.save(`${dept.name}_Attendance.pdf`);
+      doc.save(`${dept.name}_Attendance_Report.pdf`);
 
       const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1];
       let studentEntries = '';
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
         let pSubs = [];
+        let aSubs = [];
         dept.subjects.forEach(sub => {
-          if (s.attendance[`${chosenDate}_${sub}`] === 'Present') pSubs.push(sub);
+          const st = s.attendance[`${chosenDate}_${sub}`];
+          if (st === 'Present') pSubs.push(sub);
+          else if (st === 'Absent') aSubs.push(sub);
         });
-        studentEntries += `\n${s.name} (${s.hall}): ${pSubs.length === dept.subjects.length ? 'Present' : pSubs.length + '/' + dept.subjects.length}\n`;
+        const held = pSubs.length + aSubs.length;
+        studentEntries += `\n${s.name} (${s.hall}): ${held === 0 ? 'No classes' : (pSubs.length === held ? 'Present' : pSubs.length + '/' + held)}\n`;
       }
 
       const msg = `Sardar Patel College\nReport: ${timeframe.toUpperCase()}\nDate: ${chosenDate}\n${studentEntries}`;
