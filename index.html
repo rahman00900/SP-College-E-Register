@@ -7,316 +7,394 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
   <style>
     :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --sidebar-bg: #ffffff;
+      --ios-bg: #0f172a;
+      --glass-base: rgba(255, 255, 255, 0.72);
+      --glass-card: rgba(255, 255, 255, 0.65);
+      --glass-sidebar: rgba(255, 255, 255, 0.78);
+      --glass-overlay: rgba(15, 23, 42, 0.35);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --glass-inner-glow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.07);
+      --glass-shadow-lg: 0 20px 48px 0 rgba(15, 23, 42, 0.12);
+      
       --maroon: #800020;
-      --maroon-hover: #630019;
-      --maroon-light: #fff1f2;
-      --maroon-border: #fecdd3;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-light: #eff6ff;
-      --green: #10b981;
-      --green-light: #ecfdf5;
-      --green-border: #a7f3d0;
-      --red: #ef4444;
-      --red-light: #fef2f2;
-      --red-border: #fecdd3;
-      --amber: #f59e0b;
-      --amber-light: #fffbeb;
-      --amber-border: #fde68a;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --border-bright: #cbd5e1;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-      --shadow-card: 0 4px 12px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
-      --shadow-hover: 0 10px 20px -3px rgba(15, 23, 42, 0.08);
-      --radius-xl: 16px;
-      --radius: 12px;
+      --maroon-dark: #580016;
+      --maroon-glow: rgba(128, 0, 32, 0.25);
+      --blue: #007aff;
+      --blue-hover: #0062cc;
+      --green: #34c759;
+      --green-light: rgba(52, 199, 89, 0.14);
+      --green-border: rgba(52, 199, 89, 0.3);
+      --red: #ff3b30;
+      --red-light: rgba(255, 59, 48, 0.14);
+      --red-border: rgba(255, 59, 48, 0.3);
+      --amber: #ff9500;
+      --amber-light: rgba(255, 149, 0, 0.14);
+      --amber-border: rgba(255, 149, 0, 0.3);
+      
+      --text: #1c1c1e;
+      --text-secondary: #636366;
+      --text-tertiary: #8e8e93;
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
       --radius-sm: 8px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif; 
+      -webkit-tap-highlight-color: transparent; 
+    }
     
     html, body {
       height: 100%;
       height: 100dvh;
       overflow: hidden;
-      background: var(--bg);
       color: var(--text);
     }
 
-    body { display: flex; position: relative; }
+    body {
+      display: flex;
+      position: relative;
+      background: radial-gradient(at 0% 0%, #e0e7ff 0px, transparent 50%),
+                  radial-gradient(at 100% 0%, #fce7f3 0px, transparent 50%),
+                  radial-gradient(at 50% 100%, #e2e8f0 0px, transparent 50%),
+                  #f1f5f9;
+      background-attachment: fixed;
+    }
 
-    #authOverlay {
+    /* Ambient Glow Spheres for iOS Glass Realism */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -100px;
+      left: -100px;
+      width: 450px;
+      height: 450px;
+      background: rgba(128, 0, 32, 0.15);
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -100px;
+      right: -100px;
+      width: 450px;
+      height: 450px;
+      background: rgba(0, 122, 255, 0.12);
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Glass Overlay & Modals */
+    #authOverlay, .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px);
+      background: var(--glass-overlay);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
       display: flex; align-items: center; justify-content: center; z-index: 1000;
+      transition: all 0.25s ease;
     }
-    .auth-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      padding: 40px 32px; border-radius: var(--radius-xl);
-      width: 90%; max-width: 410px; text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-    }
-    .auth-card h2 { font-size: 20px; font-weight: 800; color: var(--maroon); margin-bottom: 4px; }
-    .auth-card h3 { font-size: 13px; color: var(--primary); margin-bottom: 22px; font-weight: 700; letter-spacing: 0.3px; }
-    .forgot-link { display: inline-block; margin-top: 14px; font-size: 12px; color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
+    .overlay { display: none; z-index: 500; }
 
-    .overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(4px);
-      display: none; align-items: center; justify-content: center; z-index: 500;
+    .auth-card, .modal {
+      background: var(--glass-card);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow-lg), var(--glass-inner-glow);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      width: 92%;
+      max-width: 440px;
+      position: relative;
+      z-index: 2;
     }
+
     .modal {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      padding: 24px; border-radius: var(--radius-xl);
-      width: 92%; max-width: 720px; max-height: 85dvh; overflow-y: auto;
-      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
-      contain: content;
+      max-width: 680px;
+      max-height: 86dvh;
+      overflow-y: auto;
     }
-    .modal h2 { font-size: 18px; font-weight: 800; margin-bottom: 14px; color: var(--text); }
+
+    .auth-card h2 { font-size: 20px; font-weight: 800; color: var(--maroon); margin-bottom: 4px; letter-spacing: -0.3px; }
+    .auth-card h3 { font-size: 13px; color: var(--blue); margin-bottom: 24px; font-weight: 700; letter-spacing: 0.3px; }
+    .forgot-link { display: inline-block; margin-top: 14px; font-size: 13px; color: var(--blue); cursor: pointer; text-decoration: none; font-weight: 600; }
+    .forgot-link:hover { text-decoration: underline; }
+
+    .modal h2 { font-size: 19px; font-weight: 800; margin-bottom: 18px; color: var(--text); letter-spacing: -0.3px; }
     .form-group { margin-bottom: 14px; text-align: left; }
-    .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
     .form-group input, .form-group select {
-      width: 100%; padding: 11px 14px; border: 1px solid var(--border);
-      border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
-      background: #ffffff; color: var(--text); outline: none; transition: 0.15s ease;
+      width: 100%; padding: 12px 16px; border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: var(--radius-md); font-size: 14px; font-weight: 500;
+      background: rgba(255, 255, 255, 0.6); color: var(--text); outline: none; 
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .form-group input:focus, .form-group select:focus {
-      border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light);
+      background: rgba(255, 255, 255, 0.9);
+      border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.18);
     }
 
-    .class-item-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-      margin-bottom: 8px; background: #ffffff;
-    }
-
-    .student-attendance-card {
-      border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 14px 16px; margin-bottom: 12px; background: #ffffff;
-      box-shadow: var(--shadow-sm); contain: content;
-    }
-    .student-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .student-card-title b { font-size: 14px; color: var(--text); font-weight: 700; }
-    .student-card-title span { font-size: 12px; color: var(--text-muted); margin-left: 6px; }
-
-    .master-switch-box {
-      display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
-      background: #f8fafc; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border);
-    }
-
-    .subject-chips-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
-      padding-top: 10px; border-top: 1px solid #f1f5f9;
-    }
-    .subject-chip {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border);
-      background: #f8fafc; font-size: 11px; font-weight: 600;
-    }
-    .chip-toggle {
-      font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;
-      cursor: pointer; border: none; transition: 0.15s;
-    }
-    .chip-toggle.present { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
-    .chip-toggle.absent { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
-    .chip-toggle.noclass { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; border: 1px solid transparent; }
-
-    .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider-round {
-      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #cbd5e1; transition: .2s; border-radius: 22px;
-    }
-    .slider-round:before {
-      position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
-      background-color: white; transition: .2s; border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-    }
-    input:checked + .slider-round { background-color: var(--green); }
-    input:checked + .slider-round:before { transform: translateX(18px); }
-
-    .phone-group { display: flex; align-items: center; }
-    .phone-prefix {
-      background: #f1f5f9; border: 1px solid var(--border); border-right: none;
-      padding: 11px 14px; font-weight: 700; font-size: 14px; color: var(--text-muted);
-      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-    }
-    .phone-group input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important; }
-
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
-
+    /* iOS Glass Sidebar */
     .sidebar-backdrop {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.25); backdrop-filter: blur(4px); z-index: 200;
+      background: rgba(15, 23, 42, 0.2); backdrop-filter: blur(8px); z-index: 200;
     }
     .sidebar {
-      width: 270px; background: var(--sidebar-bg);
-      border-right: 1px solid var(--border); color: var(--text);
+      width: 280px;
+      background: var(--glass-sidebar);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.04);
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 250;
-      box-shadow: 4px 0 15px rgba(0,0,0,0.03);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 250;
     }
-    .sidebar-header { padding: 24px 20px; border-bottom: 1px solid var(--border); background: #ffffff; }
-    .sidebar-header h2 { font-size: 16px; font-weight: 800; color: var(--maroon); }
-    .sidebar-header h3 { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+    .sidebar-header { padding: 26px 22px; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+    .sidebar-header h2 { font-size: 17px; font-weight: 800; color: var(--maroon); letter-spacing: -0.3px; }
+    .sidebar-header h3 { font-size: 12px; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
     .sidebar-menu { display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; flex-grow: 1; overflow-y: auto; }
     .sidebar-btn {
-      background: transparent; border: none; color: #475569; padding: 11px 14px;
-      text-align: left; font-size: 13px; font-weight: 600; border-radius: var(--radius-sm);
-      cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.15s ease;
+      background: transparent; border: none; color: #2c2c2e; padding: 12px 16px;
+      text-align: left; font-size: 13px; font-weight: 600; border-radius: var(--radius-md);
+      cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.18s ease;
     }
-    .sidebar-btn:hover { background: #f1f5f9; color: var(--primary); transform: translateX(3px); }
-    .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: #fafafa; }
+    .sidebar-btn:hover { background: rgba(0, 122, 255, 0.1); color: var(--blue); transform: translateX(3px); }
+    .sidebar-footer { padding: 18px 22px; border-top: 1px solid rgba(0, 0, 0, 0.05); font-size: 12px; color: var(--text-secondary); background: rgba(255, 255, 255, 0.3); }
 
+    /* Main Container */
     .main {
       flex-grow: 1;
       height: 100dvh;
       overflow-y: auto;
       overscroll-behavior-y: contain;
-      padding: 0 24px 28px 24px;
+      padding: 0 28px 32px 28px;
+      position: relative;
+      z-index: 1;
     }
     
     .top-header-bar {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(248, 250, 252, 0.95);
-      backdrop-filter: blur(10px);
+      background: rgba(248, 250, 252, 0.65);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
       padding: 16px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+      margin-bottom: 22px;
     }
 
     .menu-toggle-btn {
-      background: #ffffff;
-      color: var(--text); border: 1px solid var(--border); font-size: 13px;
-      padding: 9px 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700;
-      box-shadow: var(--shadow-sm); transition: 0.15s;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      color: var(--text); border: 1px solid var(--glass-border); font-size: 13px;
+      padding: 10px 18px; border-radius: 40px; cursor: pointer; font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.2s ease;
     }
-    .menu-toggle-btn:hover { background: #f8fafc; border-color: var(--border-bright); }
+    .menu-toggle-btn:hover { background: #ffffff; transform: scale(1.02); }
 
-    .page-title h1 { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 12px; }
+    .page-title h1 { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 16px; }
     .class-badge {
-      text-align: right; font-size: 11px; color: var(--text-muted);
-      background: #ffffff; padding: 6px 14px; border-radius: var(--radius-sm);
-      border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+      text-align: right; font-size: 11px; color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.75); padding: 8px 16px; border-radius: 40px;
+      border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(12px);
     }
     .class-badge b { color: var(--maroon); font-size: 12px; }
 
-    .subject-strip {
-      background: #ffffff;
-      border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 12px 18px; margin-bottom: 20px; display: flex; align-items: center;
-      justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text); flex-wrap: wrap; gap: 8px;
-      box-shadow: var(--shadow-card);
-    }
-    .subject-strip select {
-      padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border);
-      font-weight: 700; background: #ffffff; color: var(--text); outline: none;
+    /* Glass Cards & Strips */
+    .subject-strip, .comparison-banner, .card, .table-container {
+      background: var(--glass-card);
+      backdrop-filter: blur(24px) saturate(190%);
+      -webkit-backdrop-filter: blur(24px) saturate(190%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--glass-shadow), var(--glass-inner-glow);
     }
 
-    .conducted-strip {
-      background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm);
-      padding: 12px 14px; margin-bottom: 14px;
+    .subject-strip {
+      padding: 14px 20px; margin-bottom: 20px; display: flex; align-items: center;
+      justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text); flex-wrap: wrap; gap: 10px;
     }
-    .conducted-title { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .conducted-checkboxes { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; font-weight: 600; }
-    .conducted-checkboxes label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); }
+    .subject-strip select {
+      padding: 8px 16px; border-radius: 30px; border: 1px solid var(--glass-border);
+      font-weight: 700; background: rgba(255, 255, 255, 0.8); color: var(--text); outline: none;
+    }
 
     .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
     .card {
-      background: #ffffff;
-      border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;
-      box-shadow: var(--shadow-card); transition: 0.2s ease;
+      padding: 20px 22px; display: flex; justify-content: space-between; align-items: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
-    .card-info h4 { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; }
-    .card-info span { font-size: 26px; font-weight: 800; color: var(--text); }
-    .card-bar { width: 5px; height: 40px; border-radius: 4px; }
+    .card:hover { transform: translateY(-3px); box-shadow: var(--glass-shadow-lg); }
+    .card-info h4 { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; }
+    .card-info span { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .card-bar { width: 5px; height: 42px; border-radius: 10px; }
 
     .comparison-banner {
-      background: #ffffff; border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px 18px; margin-bottom: 20px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-      box-shadow: var(--shadow-card);
+      padding: 14px 22px; margin-bottom: 20px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
     }
-    .comparison-controls { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+    .comparison-controls { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
     .comparison-controls select {
-      padding: 7px 12px; border-radius: 6px; border: 1px solid var(--border);
-      font-weight: 600; background: #ffffff; color: var(--text); font-size: 12px; outline: none;
+      padding: 8px 14px; border-radius: 30px; border: 1px solid var(--glass-border);
+      font-weight: 600; background: rgba(255, 255, 255, 0.85); color: var(--text); font-size: 12px; outline: none;
     }
     .comparison-stats { display: flex; gap: 10px; font-size: 12px; flex-wrap: wrap; }
     .stat-pill {
-      background: #f8fafc; border: 1px solid var(--border);
-      padding: 6px 14px; border-radius: 30px; font-weight: 600; color: var(--text);
+      background: rgba(255, 255, 255, 0.7); border: 1px solid var(--glass-border);
+      padding: 8px 16px; border-radius: 30px; font-weight: 600; color: var(--text);
+      backdrop-filter: blur(10px);
     }
 
+    /* iOS Glass Table */
     .table-container {
-      background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-xl);
-      padding: 20px; display: flex; flex-direction: column; overflow: hidden;
-      box-shadow: var(--shadow-card);
+      padding: 22px; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 24px;
     }
     .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .table-toolbar input[type="text"] {
-      padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); width: 100%;
-      font-size: 13px; background: #ffffff; color: var(--text); outline: none; transition: 0.15s ease;
+      padding: 13px 18px; border: 1px solid var(--glass-border); border-radius: var(--radius-md); width: 100%;
+      font-size: 13px; background: rgba(255, 255, 255, 0.7); color: var(--text); outline: none;
+      backdrop-filter: blur(12px);
+      transition: 0.2s ease;
     }
     .table-toolbar input[type="text"]:focus {
-      border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light);
+      background: rgba(255, 255, 255, 0.95);
+      border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.16);
     }
 
-    .btn {
-      padding: 9px 16px; border: none; border-radius: var(--radius-sm); font-size: 12px;
-      font-weight: 700; cursor: pointer; color: white; transition: 0.15s ease;
-    }
-    .btn-primary { background: var(--primary); }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-green { background: #10b981; }
-    .btn-green:hover { background: #059669; }
-    .btn-red { background: #ef4444; }
-    .btn-red:hover { background: #dc2626; }
-    .btn-maroon { background: var(--maroon); color: #ffffff; }
-    .btn-maroon:hover { background: var(--maroon-hover); }
-    .btn-dark { background: #ffffff; color: var(--text); border: 1px solid var(--border); }
-    .btn-dark:hover { background: #f8fafc; border-color: var(--border-bright); }
-
-    .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 500px; }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--glass-border); border-radius: var(--radius-lg); background: rgba(255, 255, 255, 0.4); }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 540px; }
     th {
-      background: #f8fafc; padding: 13px 16px; border-bottom: 1px solid var(--border);
-      color: var(--text-muted); font-weight: 700; font-size: 11px; text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.7); padding: 14px 18px; border-bottom: 1px solid var(--glass-border);
+      color: var(--text-secondary); font-weight: 700; font-size: 11px; text-transform: uppercase;
       white-space: nowrap; letter-spacing: 0.5px;
     }
-    td { padding: 13px 16px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; font-weight: 500; }
-    tr:hover td { background: #f8fafc; }
+    td { padding: 13px 18px; border-bottom: 1px solid rgba(0, 0, 0, 0.04); white-space: nowrap; font-weight: 500; }
+    tr:hover td { background: rgba(255, 255, 255, 0.5); }
     .present { color: var(--green); font-weight: 700; }
     .absent { color: var(--red); font-weight: 700; }
-    .noclass { color: #94a3b8; font-weight: 600; }
+    .noclass { color: var(--text-tertiary); font-weight: 600; }
+
+    /* Student Attendance Card Grid inside Modal */
+    .student-attendance-card {
+      border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+      padding: 16px; margin-bottom: 12px; background: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+      backdrop-filter: blur(14px);
+    }
+    .student-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .student-card-title b { font-size: 14px; color: var(--text); font-weight: 700; }
+    .student-card-title span { font-size: 12px; color: var(--text-secondary); margin-left: 6px; }
+
+    .master-switch-box {
+      display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+      background: rgba(255, 255, 255, 0.85); padding: 5px 14px; border-radius: 30px; border: 1px solid var(--glass-border);
+    }
+
+    .subject-chips-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
+      padding-top: 10px; border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .subject-chip {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 12px; border-radius: 8px; border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.6); font-size: 11px; font-weight: 600;
+    }
+    .chip-toggle {
+      font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 6px;
+      cursor: pointer; border: none; transition: 0.15s ease;
+    }
+    .chip-toggle.present { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+    .chip-toggle.absent { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
+    .chip-toggle.noclass { background: rgba(0, 0, 0, 0.04); color: var(--text-tertiary); cursor: not-allowed; border: 1px solid transparent; }
+
+    /* iOS Pill Switches */
+    .switch { position: relative; display: inline-block; width: 42px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider-round {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #d1d1d6; transition: .25s; border-radius: 30px;
+    }
+    .slider-round:before {
+      position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+      background-color: white; transition: .25s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider-round { background-color: var(--green); }
+    input:checked + .slider-round:before { transform: translateX(18px); }
+
+    .conducted-strip {
+      background: rgba(255, 255, 255, 0.55); border: 1px solid var(--glass-border); border-radius: var(--radius-md);
+      padding: 12px 16px; margin-bottom: 14px; backdrop-filter: blur(10px);
+    }
+    .conducted-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .conducted-checkboxes { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; font-weight: 600; }
+    .conducted-checkboxes label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); }
+
+    .phone-group { display: flex; align-items: center; }
+    .phone-prefix {
+      background: rgba(255, 255, 255, 0.7); border: 1px solid var(--glass-border); border-right: none;
+      padding: 12px 14px; font-weight: 700; font-size: 14px; color: var(--text-secondary);
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
+    }
+    .phone-group input { border-radius: 0 var(--radius-md) var(--radius-md) 0 !important; }
+
+    .class-item-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 16px; border: 1px solid var(--glass-border); border-radius: var(--radius-md);
+      margin-bottom: 10px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px);
+    }
+
+    /* iOS Glass Buttons */
+    .btn {
+      padding: 10px 18px; border: none; border-radius: 30px; font-size: 12px;
+      font-weight: 700; cursor: pointer; color: white; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .btn:hover { transform: scale(1.02); }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--blue); }
+    .btn-primary:hover { background: var(--blue-hover); box-shadow: 0 6px 16px rgba(0, 122, 255, 0.25); }
+    .btn-green { background: var(--green); }
+    .btn-green:hover { background: #28a745; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.25); }
+    .btn-red { background: var(--red); }
+    .btn-red:hover { background: #d70015; box-shadow: 0 6px 16px rgba(255, 59, 48, 0.25); }
+    .btn-maroon { background: var(--maroon); color: #ffffff; }
+    .btn-maroon:hover { background: var(--maroon-dark); box-shadow: 0 6px 16px var(--maroon-glow); }
+    .btn-dark { background: rgba(255, 255, 255, 0.85); color: var(--text); border: 1px solid var(--glass-border); }
+    .btn-dark:hover { background: #ffffff; }
+
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
 
     @media (max-width: 900px) {
       .sidebar { position: fixed; top: 0; left: 0; height: 100%; height: 100dvh; transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
       .sidebar-backdrop.active { display: block; }
       .cards-row { grid-template-columns: repeat(2, 1fr); }
-      .main { padding: 0 14px 20px 14px; }
+      .main { padding: 0 16px 24px 16px; }
     }
   </style>
 </head>
@@ -324,11 +402,12 @@
 
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
 
+  <!-- iOS Glass Authentication Modal -->
   <div id="authOverlay">
     <div class="auth-card">
       <h2>SARDAR PATEL COLLEGE</h2>
       <h3>ATTENDANCE MANAGEMENT SYSTEM</h3>
-      <p id="authDesc" style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Staff Authentication Access</p>
+      <p id="authDesc" style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Staff Authentication Access</p>
       
       <div id="setupPassFields" style="display: none;">
         <div class="form-group">
@@ -348,11 +427,12 @@
         </div>
       </div>
 
-      <button class="btn btn-maroon" style="width:100%; padding:12px; margin-top:8px;" onclick="authenticateStaff()">STAFF LOGIN</button>
+      <button class="btn btn-maroon" style="width:100%; padding:13px; margin-top:10px;" onclick="authenticateStaff()">STAFF LOGIN</button>
       <div><span class="forgot-link" onclick="forgotPassword()">Forgot Password?</span></div>
     </div>
   </div>
 
+  <!-- iOS Glass Sidebar -->
   <div class="sidebar" id="appSidebar">
     <div>
       <div class="sidebar-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -360,7 +440,7 @@
           <h2>ATTENDANCE</h2>
           <h3>MANAGEMENT</h3>
         </div>
-        <button style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;" onclick="toggleSidebar(false)">✕</button>
+        <button style="background:transparent; border:none; color:var(--text-secondary); font-size:18px; cursor:pointer;" onclick="toggleSidebar(false)">✕</button>
       </div>
       <div class="sidebar-menu">
         <button class="sidebar-btn" onclick="navAction(showDashboard)">📊 Dashboard</button>
@@ -377,10 +457,11 @@
     </div>
     <div class="sidebar-footer">
       <div id="sidebarDeptInfo">Loading...</div>
-      <button class="sidebar-btn" style="margin-top: 8px; padding: 4px 0; color:#ef4444;" onclick="logout()">Logout</button>
+      <button class="sidebar-btn" style="margin-top: 8px; padding: 4px 0; color:var(--red);" onclick="logout()">Logout</button>
     </div>
   </div>
 
+  <!-- Main View -->
   <div class="main">
     <div class="top-header-bar">
       <button class="menu-toggle-btn" onclick="toggleSidebar(true)">☰ Menu (Slide Bar)</button>
@@ -392,20 +473,20 @@
     </div>
 
     <div class="subject-strip" id="subjectStrip">
-      <div style="display:flex; align-items:center; gap:8px;">
+      <div style="display:flex; align-items:center; gap:10px;">
         <span>Dashboard Subject:</span>
         <select id="activeSubjectSelect" onchange="changeActiveSubject()"></select>
       </div>
-      <button class="btn btn-dark" style="padding:7px 14px; font-size:12px;" onclick="openManageSubjectsModal()">Manage Subjects</button>
+      <button class="btn btn-dark" style="padding:8px 16px; font-size:12px;" onclick="openManageSubjectsModal()">Manage Subjects</button>
     </div>
 
     <div class="cards-row" id="statsRow">
       <div class="card">
         <div class="card-info">
           <h4>Total Students</h4>
-          <span id="statTotal" style="color: var(--primary);">0</span>
+          <span id="statTotal" style="color: var(--blue);">0</span>
         </div>
-        <div class="card-bar" style="background: var(--primary);"></div>
+        <div class="card-bar" style="background: var(--blue);"></div>
       </div>
       <div class="card">
         <div class="card-info">
@@ -455,6 +536,7 @@
     </div>
   </div>
 
+  <!-- Manage Subjects Modal -->
   <div id="manageSubjectsModal" class="overlay">
     <div class="modal" style="max-width: 500px;">
       <h2>Manage Subjects</h2>
@@ -466,6 +548,7 @@
     </div>
   </div>
 
+  <!-- Safe Add Class Modal -->
   <div id="deptModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Add Class</h2>
@@ -492,6 +575,7 @@
     </div>
   </div>
 
+  <!-- Edit Class Modal -->
   <div id="editClassModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Edit Class Details</h2>
@@ -519,6 +603,7 @@
     </div>
   </div>
 
+  <!-- Manage Classes Modal -->
   <div id="manageClassesModal" class="overlay">
     <div class="modal" style="max-width: 580px;">
       <h2>Manage Classes</h2>
@@ -530,6 +615,7 @@
     </div>
   </div>
 
+  <!-- Switch Class Modal -->
   <div id="switchDeptModal" class="overlay">
     <div class="modal" style="max-width: 420px;">
       <h2>Switch Class</h2>
@@ -543,6 +629,7 @@
     </div>
   </div>
 
+  <!-- Add Student Modal -->
   <div id="studentModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Add New Student</h2>
@@ -568,6 +655,7 @@
     </div>
   </div>
 
+  <!-- Edit Student Modal -->
   <div id="editStudentModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Edit Student</h2>
@@ -594,6 +682,7 @@
     </div>
   </div>
 
+  <!-- Mark Attendance Modal -->
   <div id="attendanceModal" class="overlay">
     <div class="modal">
       <h2>Mark Attendance</h2>
@@ -617,11 +706,12 @@
     </div>
   </div>
 
+  <!-- Settings Modal (With JSON Data Backup and Protection) -->
   <div id="settingsModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Settings</h2>
-      <div style="border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:14px;">
-        <label style="font-weight:700; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">DEFAULT WHATSAPP NUMBER</label>
+      <div style="border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:14px; margin-bottom:14px;">
+        <label style="font-weight:700; font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">DEFAULT WHATSAPP NUMBER</label>
         <div class="phone-group" style="margin-top:8px;">
           <span class="phone-prefix">+91</span>
           <input type="text" id="defaultReportNumberInput">
@@ -629,8 +719,8 @@
         <button class="btn btn-green" style="margin-top:10px; width:100%;" onclick="saveDefaultReportNumber()">Save Number</button>
       </div>
 
-      <div style="border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:14px;">
-        <label style="font-weight:700; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">DATA BACKUP & RECOVERY</label>
+      <div style="border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:14px; margin-bottom:14px;">
+        <label style="font-weight:700; font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">DATA BACKUP & RECOVERY</label>
         <div style="display:flex; gap:8px; margin-top:8px;">
           <button class="btn btn-primary" style="flex:1;" onclick="exportDatabaseBackup()">📥 Export JSON</button>
           <button class="btn btn-dark" style="flex:1;" onclick="document.getElementById('importBackupInput').click()">📤 Import JSON</button>
@@ -657,6 +747,7 @@
     </div>
   </div>
 
+  <!-- PDF & Reports Modal -->
   <div id="pdfModal" class="overlay">
     <div class="modal" style="max-width: 520px;">
       <h2>Reports & Export</h2>
@@ -723,7 +814,7 @@
         }
       }
 
-      // Check legacy stores strictly as a one-time import fallback if master key doesn't exist
+      // Preserve legacy datasets strictly if master does not exist yet
       if (!loaded) {
         const pastKeys = [
           'spc_attendance_v8',
@@ -763,7 +854,6 @@
         }
       }
 
-      // Safeguard structures
       if (!data || typeof data !== 'object') {
         data = { passwordHash: '', defaultReportNumber: '', departments: {}, currentDeptId: '' };
       }
@@ -968,8 +1058,8 @@
           <div class="class-item-row">
             <div><b>${s}</b></div>
             <div style="display:flex; gap:6px;">
-              <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="editSubject('${s}')">Rename</button>
-              <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteSubject('${s}')">Delete</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="editSubject('${s}')">Rename</button>
+              <button class="btn btn-red" style="padding:6px 12px; font-size:11px;" onclick="deleteSubject('${s}')">Delete</button>
             </div>
           </div>
         `;
@@ -1027,6 +1117,7 @@
 
     function openAddDeptModal() { openModal('deptModal'); }
 
+    /* SAFE ADD CLASS WITHOUT DATA LOSS */
     function saveDepartment() {
       const nameInput = document.getElementById('deptName');
       const yearInput = document.getElementById('deptYear');
@@ -1051,7 +1142,6 @@
         return;
       }
 
-      // Safe isolated ID generated with no overwriting of existing classes
       const id = 'dept_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
       
       data.departments[id] = { 
@@ -1088,11 +1178,11 @@
           <div class="class-item-row" style="${isCurrent ? 'border-left: 4px solid var(--maroon);' : ''}">
             <div>
               <b style="color:var(--text);">${d.name}</b>
-              <p style="font-size:11px; color:var(--text-muted);">${d.academicYear} | ${d.semester}</p>
+              <p style="font-size:11px; color:var(--text-secondary);">${d.academicYear} • ${d.semester}</p>
             </div>
             <div style="display:flex; gap:6px;">
-              <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="openEditClassModal('${d.id}')">Edit</button>
-              <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteClass('${d.id}')">Delete</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="openEditClassModal('${d.id}')">Edit</button>
+              <button class="btn btn-red" style="padding:6px 12px; font-size:11px;" onclick="deleteClass('${d.id}')">Delete</button>
             </div>
           </div>
         `;
@@ -1592,7 +1682,7 @@
         }
 
         if (totalDays > 0) {
-          let summaryRow = `<tr style="background:#f8fafc; font-weight:bold;"><td colspan="2">Daily %</td>`;
+          let summaryRow = `<tr style="background:rgba(255,255,255,0.6); font-weight:bold;"><td colspan="2">Daily %</td>`;
           for (let j = 0; j < totalDays; j++) {
             summaryRow += `<td>${calculatePercentageForDateAndSubject(dept.dates[j], activeSubject).toFixed(0)}%</td>`;
           }
@@ -1613,9 +1703,9 @@
               <td>${s.name}</td>
               <td>+${s.phone}</td>
               <td>
-                <button class="btn btn-primary" style="padding:4px 8px; font-size:11px;" onclick="openEditStudentModal(${idx})">Edit</button>
-                <button class="btn btn-green" style="padding:4px 8px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
-                <button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
+                <button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="openEditStudentModal(${idx})">Edit</button>
+                <button class="btn btn-green" style="padding:6px 12px; font-size:11px;" onclick="sendSingleStudentWhatsApp('${s.hall}')">WhatsApp</button>
+                <button class="btn btn-red" style="padding:6px 12px; font-size:11px;" onclick="deleteStudent(${idx})">Delete</button>
               </td>
             </tr>
           `;
