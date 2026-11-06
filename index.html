@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
   <style>
     :root {
@@ -471,7 +471,7 @@
       <h2>Add Class</h2>
       <div class="form-group">
         <label>Class Name:</label>
-        <input type="text" id="deptName" placeholder="B.Sc MPCs">
+        <input type="text" id="deptName" placeholder="e.g. B.Sc MPCs">
       </div>
       <div class="form-group">
         <label>Academic Year:</label>
@@ -628,6 +628,16 @@
         </div>
         <button class="btn btn-green" style="margin-top:10px; width:100%;" onclick="saveDefaultReportNumber()">Save Number</button>
       </div>
+
+      <div style="border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:14px;">
+        <label style="font-weight:700; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">DATA BACKUP & RECOVERY</label>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn btn-primary" style="flex:1;" onclick="exportDatabaseBackup()">📥 Export JSON</button>
+          <button class="btn btn-dark" style="flex:1;" onclick="document.getElementById('importBackupInput').click()">📤 Import JSON</button>
+          <input type="file" id="importBackupInput" accept=".json" style="display:none;" onchange="importDatabaseBackup(event)">
+        </div>
+      </div>
+
       <div class="form-group">
         <label>Current Password:</label>
         <input type="password" id="currPassInput">
@@ -701,53 +711,77 @@
     }
 
     function init() {
-      const pastKeys = [
-        PERMANENT_STORAGE_KEY,
-        'spc_attendance_v8',
-        'spc_attendance_v7',
-        'spc_attendance_v6',
-        'spc_attendance_v5',
-        'spc_attendance_v4',
-        'spc_attendance_v3',
-        'college_attendance_db'
-      ];
+      const masterRaw = localStorage.getItem(PERMANENT_STORAGE_KEY);
+      let loaded = false;
 
-      let foundSavedData = null;
-      let maxStudentsFound = -1;
-
-      for (let i = 0; i < pastKeys.length; i++) {
-        const raw = localStorage.getItem(pastKeys[i]);
-        if (raw) {
-          try {
-            const parsed = JSON.parse(raw);
-            let studentCount = 0;
-            if (parsed.departments) {
-              Object.values(parsed.departments).forEach(d => {
-                if (d.students) studentCount += d.students.length;
-              });
-            }
-            if (studentCount > maxStudentsFound) {
-              maxStudentsFound = studentCount;
-              foundSavedData = parsed;
-            }
-          } catch (e) {
-            console.error(e);
-          }
+      if (masterRaw) {
+        try {
+          data = JSON.parse(masterRaw);
+          loaded = true;
+        } catch (e) {
+          console.error("Master DB parse failed, checking fallbacks:", e);
         }
       }
 
-      if (foundSavedData) {
-        data = foundSavedData;
+      // Check legacy stores strictly as a one-time import fallback if master key doesn't exist
+      if (!loaded) {
+        const pastKeys = [
+          'spc_attendance_v8',
+          'spc_attendance_v7',
+          'spc_attendance_v6',
+          'spc_attendance_v5',
+          'spc_attendance_v4',
+          'spc_attendance_v3',
+          'college_attendance_db'
+        ];
+
+        let foundSavedData = null;
+        let maxStudentsFound = -1;
+
+        for (let i = 0; i < pastKeys.length; i++) {
+          const raw = localStorage.getItem(pastKeys[i]);
+          if (raw) {
+            try {
+              const parsed = JSON.parse(raw);
+              let studentCount = 0;
+              if (parsed.departments) {
+                Object.values(parsed.departments).forEach(d => {
+                  if (d.students) studentCount += d.students.length;
+                });
+              }
+              if (studentCount > maxStudentsFound) {
+                maxStudentsFound = studentCount;
+                foundSavedData = parsed;
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        }
+        if (foundSavedData) {
+          data = foundSavedData;
+        }
+      }
+
+      // Safeguard structures
+      if (!data || typeof data !== 'object') {
+        data = { passwordHash: '', defaultReportNumber: '', departments: {}, currentDeptId: '' };
+      }
+      if (!data.departments || typeof data.departments !== 'object') {
+        data.departments = {};
       }
 
       if (!data.passwordHash) {
         document.getElementById('setupPassFields').style.display = 'block';
         document.getElementById('loginPassField').style.display = 'none';
+      } else {
+        document.getElementById('setupPassFields').style.display = 'none';
+        document.getElementById('loginPassField').style.display = 'block';
       }
 
-      if (!data.departments || Object.keys(data.departments).length === 0) {
+      const deptKeys = Object.keys(data.departments);
+      if (deptKeys.length === 0) {
         const id = 'dept_' + Date.now();
-        data.departments = {};
         data.departments[id] = {
           id: id,
           name: 'B.Sc MPCs',
@@ -758,13 +792,16 @@
           dates: []
         };
         data.currentDeptId = id;
+      } else if (!data.currentDeptId || !data.departments[data.currentDeptId]) {
+        data.currentDeptId = deptKeys[0];
       }
 
       Object.values(data.departments).forEach(d => {
-        if (!d.subjects || d.subjects.length === 0) {
+        if (!d.subjects || !Array.isArray(d.subjects) || d.subjects.length === 0) {
           d.subjects = ['Maths', 'Physics', 'Computer Science', 'English', 'Second Language'];
         }
-        if (!d.dates) d.dates = [];
+        if (!d.students || !Array.isArray(d.students)) d.students = [];
+        if (!d.dates || !Array.isArray(d.dates)) d.dates = [];
       });
 
       activeSubject = 'ALL';
@@ -772,11 +809,20 @@
     }
 
     function save() { 
-      try { localStorage.setItem(PERMANENT_STORAGE_KEY, JSON.stringify(data)); } 
-      catch (e) { console.error(e); }
+      try { 
+        localStorage.setItem(PERMANENT_STORAGE_KEY, JSON.stringify(data)); 
+      } catch (e) { 
+        console.error("Local storage error:", e); 
+      }
     }
     
-    function curDept() { return data.departments[data.currentDeptId]; }
+    function curDept() { 
+      if (!data.departments[data.currentDeptId]) {
+        const keys = Object.keys(data.departments);
+        if (keys.length > 0) data.currentDeptId = keys[0];
+      }
+      return data.departments[data.currentDeptId]; 
+    }
 
     function authenticateStaff() {
       if (!data.passwordHash) {
@@ -786,13 +832,13 @@
           alert('Password must match and be at least 4 characters long.');
           return;
         }
-        data.passwordHash = btoa(p1);
+        data.passwordHash = btoa(encodeURIComponent(p1));
         save();
         document.getElementById('authOverlay').style.display = 'none';
         showDashboard();
       } else {
         const pass = document.getElementById('loginPassInput').value;
-        if (btoa(pass) === data.passwordHash) {
+        if (btoa(encodeURIComponent(pass)) === data.passwordHash) {
           document.getElementById('authOverlay').style.display = 'none';
           showDashboard();
         } else {
@@ -803,7 +849,7 @@
 
     function forgotPassword() {
       if (confirm("Reset staff password to '1234'?")) {
-        data.passwordHash = btoa("1234");
+        data.passwordHash = btoa(encodeURIComponent("1234"));
         save();
         alert("Password restored! Your password is now: 1234");
         document.getElementById('setupPassFields').style.display = 'none';
@@ -827,15 +873,48 @@
       alert('Default report WhatsApp number saved!');
     }
 
+    function exportDatabaseBackup() {
+      const jsonString = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `SPC_Attendance_Register_${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function importDatabaseBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.departments && typeof imported.departments === 'object') {
+            data = imported;
+            save();
+            alert('Database restored successfully!');
+            location.reload();
+          } else {
+            alert('Invalid backup file. Required departmental data structure missing.');
+          }
+        } catch (err) {
+          alert('Error parsing JSON backup file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
     function updatePassword() {
       const curr = document.getElementById('currPassInput').value;
       const next = document.getElementById('changePassInput').value;
       const conf = document.getElementById('confirmChangePassInput').value;
 
-      if (btoa(curr) !== data.passwordHash) { alert('Current password incorrect.'); return; }
+      if (btoa(encodeURIComponent(curr)) !== data.passwordHash) { alert('Current password incorrect.'); return; }
       if (next.length < 4 || next !== conf) { alert('New passwords must match (min 4 chars).'); return; }
 
-      data.passwordHash = btoa(next);
+      data.passwordHash = btoa(encodeURIComponent(next));
       save();
       closeModal('settingsModal');
       document.getElementById('currPassInput').value = '';
@@ -947,23 +1026,53 @@
     }
 
     function openAddDeptModal() { openModal('deptModal'); }
-    function saveDepartment() {
-      const name = document.getElementById('deptName').value.trim();
-      const year = document.getElementById('deptYear').value.trim();
-      const sem = document.getElementById('deptSem').value;
-      if (!name) return;
 
-      const id = 'dept_' + Date.now();
+    function saveDepartment() {
+      const nameInput = document.getElementById('deptName');
+      const yearInput = document.getElementById('deptYear');
+      const semInput = document.getElementById('deptSem');
+
+      const name = nameInput.value.trim();
+      const year = yearInput.value.trim() || '2026-2027';
+      const sem = semInput.value;
+
+      if (!name) {
+        alert('Please enter a class name.');
+        return;
+      }
+
+      if (!data.departments) data.departments = {};
+
+      const exists = Object.values(data.departments).some(
+        d => d.name.toLowerCase() === name.toLowerCase() && d.semester === sem && d.academicYear === year
+      );
+      if (exists) {
+        alert('A class with this name, year, and semester already exists.');
+        return;
+      }
+
+      // Safe isolated ID generated with no overwriting of existing classes
+      const id = 'dept_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+      
       data.departments[id] = { 
-        id, name, academicYear: year, semester: sem, 
+        id: id, 
+        name: name, 
+        academicYear: year, 
+        semester: sem, 
         subjects: ['Maths', 'Physics', 'Computer Science', 'English', 'Second Language'],
-        students: [], dates: [] 
+        students: [], 
+        dates: [] 
       };
+
       data.currentDeptId = id;
       activeSubject = 'ALL';
+
       save();
       closeModal('deptModal');
-      document.getElementById('deptName').value = '';
+      nameInput.value = '';
+
+      setDeptHeader();
+      populateSubjectSelects();
       showDashboard();
     }
 
@@ -1023,13 +1132,20 @@
     }
 
     function deleteClass(deptId) {
-      if (Object.keys(data.departments).length <= 1) { alert('Cannot delete the only remaining class.'); return; }
+      const keys = Object.keys(data.departments);
+      if (keys.length <= 1) { 
+        alert('Cannot delete the only remaining class.'); 
+        return; 
+      }
       const d = data.departments[deptId];
       if (!d) return;
 
-      if (confirm(`Delete class "${d.name}"?`)) {
+      if (confirm(`Delete class "${d.name}" and all its records?`)) {
         delete data.departments[deptId];
-        if (data.currentDeptId === deptId) data.currentDeptId = Object.keys(data.departments)[0];
+        const remaining = Object.keys(data.departments);
+        if (data.currentDeptId === deptId) {
+          data.currentDeptId = remaining[0];
+        }
         save();
         openManageClassesModal();
         showDashboard();
@@ -1040,7 +1156,7 @@
       const select = document.getElementById('switchDeptSelect');
       let optionsHtml = '';
       Object.values(data.departments).forEach(d => {
-        optionsHtml += `<option value="${d.id}" ${d.id === data.currentDeptId ? 'selected' : ''}>${d.name} (${d.academicYear})</option>`;
+        optionsHtml += `<option value="${d.id}" ${d.id === data.currentDeptId ? 'selected' : ''}>${d.name} (${d.academicYear} - ${d.semester})</option>`;
       });
       select.innerHTML = optionsHtml;
       openModal('switchDeptModal');
@@ -1116,7 +1232,11 @@
       const dept = curDept();
       if (dept.students.length === 0) { alert('Add students first.'); return; }
       
-      document.getElementById('attendDate').valueAsDate = new Date();
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      document.getElementById('attendDate').value = `${yyyy}-${mm}-${dd}`;
       sessionAttendanceStaging = {};
 
       const condContainer = document.getElementById('conductedSubjectsContainer');
@@ -1234,15 +1354,15 @@
       const dateVal = document.getElementById('attendDate').value;
       if (!dateVal) return;
       const dateParts = dateVal.split('-');
-      const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+      const formattedDate = `${String(dateParts[2]).padStart(2, '0')}-${String(dateParts[1]).padStart(2, '0')}-${dateParts[0]}`;
 
       const dept = curDept();
       if (!dept.dates.includes(formattedDate)) {
         dept.dates.push(formattedDate);
         dept.dates.sort((a, b) => {
-          const [d1, m1, y1] = a.split('-').map(Number);
-          const [d2, m2, y2] = b.split('-').map(Number);
-          return new Date(y1, m1 - 1, d1) - new Date(y2, m2 - 1, d2);
+          const p1 = a.split('-').map(Number);
+          const p2 = b.split('-').map(Number);
+          return new Date(p1[2], p1[1] - 1, p1[0]) - new Date(p2[2], p2[1] - 1, p2[0]);
         });
       }
 
@@ -1340,8 +1460,8 @@
 
     function setDeptHeader() {
       const d = curDept();
-      document.getElementById('sidebarDeptInfo').innerHTML = `<b>${d.name}</b><br>${d.academicYear}`;
-      document.getElementById('deptBadge').innerHTML = `<b>${d.name}</b><br>${d.academicYear}`;
+      document.getElementById('sidebarDeptInfo').innerHTML = `<b>${d.name}</b><br>${d.academicYear} • ${d.semester}`;
+      document.getElementById('deptBadge').innerHTML = `<b>${d.name}</b><br>${d.academicYear} • ${d.semester}`;
     }
 
     function showDashboard() {
@@ -1614,10 +1734,14 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
+      if (typeof doc.autoTable !== 'function') {
+        alert('AutoTable plugin is still initializing, please try again in a moment.');
+        return null;
+      }
+
       const now = new Date();
       let filteredDates = [...dept.dates];
 
-      // Active target date reference
       const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1];
 
       if (timeframe === 'weekly') {
@@ -1636,30 +1760,25 @@
         filteredDates = chosenDate ? [chosenDate] : [];
       }
 
-      // Bright Header Canvas
       doc.setFillColor(255, 255, 255);
       doc.rect(0, 0, 297, 34, 'F');
 
-      // Top Accent Rule in Maroon
       doc.setFillColor(128, 0, 32);
       doc.rect(0, 0, 297, 3.5, 'F');
 
-      // Header Bottom Divider Line
       doc.setDrawColor(226, 232, 240);
       doc.setLineWidth(0.6);
       doc.line(14, 34, 283, 34);
 
-      // Crest
       try {
         drawCollegeLogo(doc, 14, 6, 22);
       } catch (e) {
         console.warn('Emblem render fallback:', e);
       }
 
-      // College Title & Subheaders (Bright crisp layout)
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
-      doc.setTextColor(128, 0, 32); // Sardar Patel Maroon
+      doc.setTextColor(128, 0, 32);
       doc.text('SARDAR PATEL COLLEGE', 40, 14);
 
       doc.setFontSize(8.5);
@@ -1687,7 +1806,6 @@
         let totalP = 0;
         let totalH = 0;
 
-        // Cumulative counts across timeframe
         dept.subjects.forEach(sub => {
           let p = 0;
           let h = 0;
@@ -1704,11 +1822,9 @@
         row.push(totalP);
         row.push(totalH);
 
-        // Overall percentage calculation
         const pctVal = totalH === 0 ? 0 : ((totalP / totalH) * 100);
         row.push(totalH === 0 ? '0%' : `${pctVal.toFixed(0)}%`);
 
-        // Target Date (Today) specific status
         let todayPresent = 0;
         let todayHeld = 0;
         if (chosenDate) {
@@ -1769,10 +1885,9 @@
         },
         didParseCell: function(dataCell) {
           if (dataCell.section === 'body') {
-            // Subject attendance breakdown coloring
             if (dataCell.column.index >= subjectStartIndex && dataCell.column.index <= subjectEndIndex) {
               const val = dataCell.cell.raw;
-              if (val && val.includes('/')) {
+              if (val && typeof val === 'string' && val.includes('/')) {
                 const [p, h] = val.split('/').map(Number);
                 if (p === h && h > 0) {
                   dataCell.cell.styles.textColor = [16, 185, 129];
@@ -1785,7 +1900,6 @@
               dataCell.cell.styles.halign = 'center';
             }
 
-            // Overall % column (<75% highlighted in light red badge style)
             if (dataCell.column.index === pctColIndex) {
               dataCell.cell.styles.fontStyle = 'bold';
               dataCell.cell.styles.halign = 'center';
@@ -1798,7 +1912,6 @@
               }
             }
 
-            // Target Day (Today) status formatting with clean pill backgrounds
             if (dataCell.column.index === statusColIndex) {
               const statusStr = String(dataCell.cell.raw);
               dataCell.cell.styles.fontStyle = 'bold';
