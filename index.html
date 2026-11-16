@@ -15,33 +15,35 @@
   <style>
     :root {
       --ios-bg: #0f172a;
-      --glass-base: rgba(255, 255, 255, 0.72);
-      --glass-card: rgba(255, 255, 255, 0.65);
-      --glass-sidebar: rgba(255, 255, 255, 0.78);
-      --glass-overlay: rgba(15, 23, 42, 0.35);
-      --glass-border: rgba(255, 255, 255, 0.6);
-      --glass-inner-glow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
-      --glass-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.07);
-      --glass-shadow-lg: 0 20px 48px 0 rgba(15, 23, 42, 0.12);
+      --glass-base: rgba(255, 255, 255, 0.74);
+      --glass-card: rgba(255, 255, 255, 0.72);
+      --glass-sidebar: rgba(255, 255, 255, 0.82);
+      --glass-overlay: rgba(15, 23, 42, 0.42);
+      --glass-border: rgba(255, 255, 255, 0.75);
+      --glass-inner-glow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+      --glass-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.08);
+      --glass-shadow-lg: 0 20px 48px 0 rgba(15, 23, 42, 0.14);
       
       --maroon: #800020;
-      --maroon-dark: #580016;
-      --maroon-glow: rgba(128, 0, 32, 0.25);
+      --maroon-dark: #4c0013;
+      --maroon-gradient: linear-gradient(135deg, #800020 0%, #b91c1c 55%, #d97706 100%);
       --blue: #007aff;
-      --blue-hover: #0062cc;
-      --green: #34c759;
-      --green-light: rgba(52, 199, 89, 0.14);
-      --green-border: rgba(52, 199, 89, 0.3);
-      --red: #ff3b30;
-      --red-light: rgba(255, 59, 48, 0.14);
-      --red-border: rgba(255, 59, 48, 0.3);
-      --amber: #ff9500;
-      --amber-light: rgba(255, 149, 0, 0.14);
-      --amber-border: rgba(255, 149, 0, 0.3);
+      --blue-gradient: linear-gradient(135deg, #007aff 0%, #4f46e5 100%);
+      --green: #16a34a;
+      --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --green-light: rgba(16, 185, 129, 0.14);
+      --green-border: rgba(16, 185, 129, 0.35);
+      --red: #dc2626;
+      --red-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+      --red-light: rgba(239, 68, 68, 0.14);
+      --red-border: rgba(239, 68, 68, 0.35);
+      --amber: #d97706;
+      --amber-light: rgba(245, 158, 11, 0.15);
+      --amber-border: rgba(245, 158, 11, 0.35);
       
-      --text: #1c1c1e;
-      --text-secondary: #636366;
-      --text-tertiary: #8e8e93;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-tertiary: #94a3b8;
       --radius-xl: 24px;
       --radius-lg: 18px;
       --radius-md: 12px;
@@ -66,22 +68,24 @@
     body {
       display: flex;
       position: relative;
-      background: radial-gradient(at 0% 0%, #e0e7ff 0px, transparent 50%),
-                  radial-gradient(at 100% 0%, #fce7f3 0px, transparent 50%),
-                  radial-gradient(at 50% 100%, #e2e8f0 0px, transparent 50%),
-                  #f1f5f9;
+      background:
+        radial-gradient(at 0% 0%, rgba(129, 140, 248, 0.28) 0px, transparent 52%),
+        radial-gradient(at 100% 0%, rgba(244, 114, 182, 0.25) 0px, transparent 52%),
+        radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.25) 0px, transparent 52%),
+        radial-gradient(at 0% 100%, rgba(251, 191, 36, 0.2) 0px, transparent 52%),
+        linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #fdf2f8 100%);
       background-attachment: fixed;
     }
 
-    /* Ambient Glow Spheres for iOS Glass Realism */
+    /* Ambient Glow Spheres */
     body::before {
       content: "";
       position: fixed;
-      top: -100px;
-      left: -100px;
-      width: 450px;
-      height: 450px;
-      background: rgba(128, 0, 32, 0.15);
+      top: -120px;
+      left: -120px;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(128, 0, 32, 0.22), rgba(217, 119, 6, 0.12));
       border-radius: 50%;
       filter: blur(90px);
       z-index: 0;
@@ -90,18 +94,186 @@
     body::after {
       content: "";
       position: fixed;
-      bottom: -100px;
-      right: -100px;
-      width: 450px;
-      height: 450px;
-      background: rgba(0, 122, 255, 0.12);
+      bottom: -120px;
+      right: -120px;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(0, 122, 255, 0.2), rgba(99, 102, 241, 0.14));
       border-radius: 50%;
       filter: blur(90px);
       z-index: 0;
       pointer-events: none;
     }
 
-    /* Glass Overlay & Modals */
+    /* ================= ANIMATED WELCOME SCREEN ================= */
+    #welcomeScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1e0510 0%, #3b0718 35%, #1e1b4b 75%, #0f172a 100%);
+      overflow: hidden;
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #welcomeScreen.fade-out {
+      opacity: 0;
+      transform: scale(1.04);
+      pointer-events: none;
+    }
+
+    .welcome-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.6;
+      animation: floatOrb 7s ease-in-out infinite alternate;
+    }
+    .welcome-orb-1 {
+      width: 380px; height: 380px;
+      top: -80px; left: -60px;
+      background: linear-gradient(135deg, #be123c, #f59e0b);
+    }
+    .welcome-orb-2 {
+      width: 420px; height: 420px;
+      bottom: -100px; right: -80px;
+      background: linear-gradient(135deg, #2563eb, #9333ea);
+      animation-delay: -3s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(28px, -24px) scale(1.1); }
+    }
+
+    .welcome-card {
+      position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 480px;
+      padding: 40px 32px;
+      text-align: center;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(26px) saturate(180%);
+      -webkit-backdrop-filter: blur(26px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+    }
+
+    .welcome-emblem {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 20px auto;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+      color: var(--maroon);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+      border: 4px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 12px 30px rgba(190, 18, 60, 0.45);
+      animation: emblemPop 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes emblemPop {
+      0% { opacity: 0; transform: scale(0.65) translateY(14px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .welcome-badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, rgba(251, 191, 36, 0.25), rgba(244, 63, 94, 0.25));
+      border: 1px solid rgba(253, 224, 71, 0.4);
+      color: #fde68a;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: slideUpFade 0.7s ease 0.15s forwards;
+    }
+
+    .welcome-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      line-height: 1.25;
+      margin-bottom: 6px;
+      background: linear-gradient(90deg, #ffffff 0%, #fde68a 55%, #ffffff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0;
+      animation: slideUpFade 0.7s ease 0.28s forwards;
+    }
+
+    .welcome-subtitle {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: slideUpFade 0.7s ease 0.4s forwards;
+    }
+
+    .welcome-progress-wrap {
+      width: 100%;
+      height: 6px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.16);
+      overflow: hidden;
+      margin-bottom: 22px;
+      opacity: 0;
+      animation: slideUpFade 0.6s ease 0.45s forwards;
+    }
+
+    .welcome-progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #f59e0b, #fb7185, #38bdf8);
+      animation: loadProgress 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes loadProgress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    @keyframes slideUpFade {
+      0% { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .welcome-enter-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #e11d48 100%);
+      color: #ffffff;
+      border: none;
+      padding: 12px 26px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(225, 29, 72, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      opacity: 0;
+      animation: slideUpFade 0.7s ease 0.5s forwards;
+    }
+    .welcome-enter-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 14px 28px rgba(225, 29, 72, 0.55);
+    }
+
+    /* ================= GLASS OVERLAY & MODALS ================= */
     #authOverlay, .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: var(--glass-overlay);
@@ -113,7 +285,7 @@
     .overlay { display: none; z-index: 500; }
 
     .auth-card, .modal {
-      background: var(--glass-card);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.68));
       backdrop-filter: blur(28px) saturate(190%);
       -webkit-backdrop-filter: blur(28px) saturate(190%);
       border: 1px solid var(--glass-border);
@@ -124,6 +296,15 @@
       max-width: 440px;
       position: relative;
       z-index: 2;
+      overflow: hidden;
+    }
+
+    .auth-card::before, .modal::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: var(--maroon-gradient);
     }
 
     .modal {
@@ -132,7 +313,13 @@
       overflow-y: auto;
     }
 
-    .auth-card h2 { font-size: 20px; font-weight: 800; color: var(--maroon); margin-bottom: 4px; letter-spacing: -0.3px; }
+    .auth-card h2 {
+      font-size: 21px; font-weight: 800;
+      background: var(--maroon-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px; letter-spacing: -0.3px;
+    }
     .auth-card h3 { font-size: 13px; color: var(--blue); margin-bottom: 24px; font-weight: 700; letter-spacing: 0.3px; }
     .forgot-link { display: inline-block; margin-top: 14px; font-size: 13px; color: var(--blue); cursor: pointer; text-decoration: none; font-weight: 600; }
     .forgot-link:hover { text-decoration: underline; }
@@ -141,46 +328,66 @@
     .form-group { margin-bottom: 14px; text-align: left; }
     .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
     .form-group input, .form-group select {
-      width: 100%; padding: 12px 16px; border: 1px solid rgba(255, 255, 255, 0.7);
+      width: 100%; padding: 12px 16px; border: 1px solid rgba(255, 255, 255, 0.85);
       border-radius: var(--radius-md); font-size: 14px; font-weight: 500;
-      background: rgba(255, 255, 255, 0.6); color: var(--text); outline: none; 
+      background: rgba(255, 255, 255, 0.72); color: var(--text); outline: none; 
       backdrop-filter: blur(10px);
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .form-group input:focus, .form-group select:focus {
-      background: rgba(255, 255, 255, 0.9);
+      background: #ffffff;
       border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.18);
     }
 
-    /* iOS Glass Sidebar */
+    /* ================= iOS GLASS SIDEBAR ================= */
     .sidebar-backdrop {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.2); backdrop-filter: blur(8px); z-index: 200;
+      background: rgba(15, 23, 42, 0.25); backdrop-filter: blur(8px); z-index: 200;
     }
     .sidebar {
       width: 280px;
-      background: var(--glass-sidebar);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(248, 250, 252, 0.82) 100%);
       backdrop-filter: blur(28px) saturate(190%);
       -webkit-backdrop-filter: blur(28px) saturate(190%);
       border-right: 1px solid var(--glass-border);
-      box-shadow: 10px 0 30px rgba(0,0,0,0.04);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.05);
       display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 250;
     }
-    .sidebar-header { padding: 26px 22px; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
-    .sidebar-header h2 { font-size: 17px; font-weight: 800; color: var(--maroon); letter-spacing: -0.3px; }
-    .sidebar-header h3 { font-size: 12px; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
-    .sidebar-menu { display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; flex-grow: 1; overflow-y: auto; }
-    .sidebar-btn {
-      background: transparent; border: none; color: #2c2c2e; padding: 12px 16px;
-      text-align: left; font-size: 13px; font-weight: 600; border-radius: var(--radius-md);
-      cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.18s ease;
+    .sidebar-header {
+      padding: 24px 22px;
+      background: linear-gradient(135deg, rgba(128, 0, 32, 0.08), rgba(0, 122, 255, 0.06));
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     }
-    .sidebar-btn:hover { background: rgba(0, 122, 255, 0.1); color: var(--blue); transform: translateX(3px); }
-    .sidebar-footer { padding: 18px 22px; border-top: 1px solid rgba(0, 0, 0, 0.05); font-size: 12px; color: var(--text-secondary); background: rgba(255, 255, 255, 0.3); }
+    .sidebar-header h2 {
+      font-size: 18px; font-weight: 800;
+      background: var(--maroon-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.3px;
+    }
+    .sidebar-header h3 { font-size: 12px; color: var(--text-secondary); font-weight: 700; margin-top: 2px; }
+    .sidebar-menu { display: flex; flex-direction: column; gap: 5px; padding: 16px 12px; flex-grow: 1; overflow-y: auto; }
+    .sidebar-btn {
+      background: transparent; border: none; color: #1e293b; padding: 12px 16px;
+      text-align: left; font-size: 13px; font-weight: 600; border-radius: var(--radius-md);
+      cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s ease;
+    }
+    .sidebar-btn:hover {
+      background: linear-gradient(135deg, rgba(0, 122, 255, 0.12), rgba(99, 102, 241, 0.12));
+      color: #1d4ed8;
+      transform: translateX(4px);
+    }
+    .sidebar-footer {
+      padding: 18px 22px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(241, 245, 249, 0.6));
+    }
 
-    /* Main Container */
+    /* ================= MAIN CONTAINER ================= */
     .main {
       flex-grow: 1;
       height: 100dvh;
@@ -195,37 +402,46 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(248, 250, 252, 0.65);
+      background: rgba(248, 250, 252, 0.72);
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       padding: 16px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.75);
       margin-bottom: 22px;
     }
 
     .menu-toggle-btn {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
+      background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
       color: var(--text); border: 1px solid var(--glass-border); font-size: 13px;
       padding: 10px 18px; border-radius: 40px; cursor: pointer; font-weight: 700;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06); transition: all 0.2s ease;
     }
-    .menu-toggle-btn:hover { background: #ffffff; transform: scale(1.02); }
+    .menu-toggle-btn:hover {
+      background: var(--maroon-gradient);
+      color: #ffffff;
+      transform: scale(1.02);
+    }
 
-    .page-title h1 { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 16px; }
+    .page-title h1 {
+      font-size: 27px; font-weight: 800;
+      background: linear-gradient(135deg, #0f172a 0%, #800020 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px; margin-bottom: 16px;
+    }
     .class-badge {
       text-align: right; font-size: 11px; color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.75); padding: 8px 16px; border-radius: 40px;
-      border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
-      backdrop-filter: blur(12px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(253, 242, 248, 0.9));
+      padding: 8px 18px; border-radius: 40px;
+      border: 1px solid rgba(128, 0, 32, 0.2); box-shadow: var(--glass-shadow);
     }
     .class-badge b { color: var(--maroon); font-size: 12px; }
 
-    /* Glass Cards & Strips */
-    .subject-strip, .comparison-banner, .card, .table-container {
+    /* ================= GRADIENT GLASS CARDS & STRIPS ================= */
+    .subject-strip, .comparison-banner, .table-container {
       background: var(--glass-card);
       backdrop-filter: blur(24px) saturate(190%);
       -webkit-backdrop-filter: blur(24px) saturate(190%);
@@ -237,73 +453,87 @@
     .subject-strip {
       padding: 14px 20px; margin-bottom: 20px; display: flex; align-items: center;
       justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text); flex-wrap: wrap; gap: 10px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(238, 242, 255, 0.78));
     }
     .subject-strip select {
-      padding: 8px 16px; border-radius: 30px; border: 1px solid var(--glass-border);
-      font-weight: 700; background: rgba(255, 255, 255, 0.8); color: var(--text); outline: none;
+      padding: 8px 16px; border-radius: 30px; border: 1px solid rgba(99, 102, 241, 0.25);
+      font-weight: 700; background: #ffffff; color: #1e1b4b; outline: none;
     }
 
     .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
     .card {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow), var(--glass-inner-glow);
+      backdrop-filter: blur(24px) saturate(190%);
       padding: 20px 22px; display: flex; justify-content: space-between; align-items: center;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
     }
-    .card:hover { transform: translateY(-3px); box-shadow: var(--glass-shadow-lg); }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--glass-shadow-lg); }
+
+    /* Individual Gradient Cards */
+    .card-blue { background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(219, 234, 254, 0.82) 100%); }
+    .card-green { background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(209, 250, 229, 0.82) 100%); }
+    .card-red { background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(254, 226, 226, 0.82) 100%); }
+    .card-maroon { background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(252, 231, 243, 0.82) 100%); }
+
     .card-info h4 { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; }
-    .card-info span { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
-    .card-bar { width: 5px; height: 42px; border-radius: 10px; }
+    .card-info span { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .card-bar { width: 6px; height: 44px; border-radius: 10px; }
 
     .comparison-banner {
       padding: 14px 22px; margin-bottom: 20px;
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(254, 243, 199, 0.55));
     }
-    .comparison-controls { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+    .comparison-controls { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 700; color: var(--text); }
     .comparison-controls select {
-      padding: 8px 14px; border-radius: 30px; border: 1px solid var(--glass-border);
-      font-weight: 600; background: rgba(255, 255, 255, 0.85); color: var(--text); font-size: 12px; outline: none;
+      padding: 8px 14px; border-radius: 30px; border: 1px solid rgba(128, 0, 32, 0.25);
+      font-weight: 700; background: #ffffff; color: var(--maroon); font-size: 12px; outline: none;
     }
     .comparison-stats { display: flex; gap: 10px; font-size: 12px; flex-wrap: wrap; }
     .stat-pill {
-      background: rgba(255, 255, 255, 0.7); border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.88); border: 1px solid var(--glass-border);
       padding: 8px 16px; border-radius: 30px; font-weight: 600; color: var(--text);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
 
-    /* iOS Glass Table */
+    /* ================= iOS GLASS TABLE ================= */
     .table-container {
       padding: 22px; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 24px;
     }
     .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .table-toolbar input[type="text"] {
       padding: 13px 18px; border: 1px solid var(--glass-border); border-radius: var(--radius-md); width: 100%;
-      font-size: 13px; background: rgba(255, 255, 255, 0.7); color: var(--text); outline: none;
-      backdrop-filter: blur(12px);
+      font-size: 13px; background: rgba(255, 255, 255, 0.82); color: var(--text); outline: none;
       transition: 0.2s ease;
     }
     .table-toolbar input[type="text"]:focus {
-      background: rgba(255, 255, 255, 0.95);
+      background: #ffffff;
       border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.16);
     }
 
-    .table-scroll { overflow-x: auto; border: 1px solid var(--glass-border); border-radius: var(--radius-lg); background: rgba(255, 255, 255, 0.4); }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--glass-border); border-radius: var(--radius-lg); background: rgba(255, 255, 255, 0.55); }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 540px; }
     th {
-      background: rgba(255, 255, 255, 0.7); padding: 14px 18px; border-bottom: 1px solid var(--glass-border);
-      color: var(--text-secondary); font-weight: 700; font-size: 11px; text-transform: uppercase;
+      background: linear-gradient(135deg, #800020 0%, #581c87 100%);
+      padding: 14px 18px;
+      color: #ffffff; font-weight: 700; font-size: 11px; text-transform: uppercase;
       white-space: nowrap; letter-spacing: 0.5px;
     }
-    td { padding: 13px 18px; border-bottom: 1px solid rgba(0, 0, 0, 0.04); white-space: nowrap; font-weight: 500; }
-    tr:hover td { background: rgba(255, 255, 255, 0.5); }
-    .present { color: var(--green); font-weight: 700; }
-    .absent { color: var(--red); font-weight: 700; }
+    td { padding: 13px 18px; border-bottom: 1px solid rgba(0, 0, 0, 0.05); white-space: nowrap; font-weight: 600; }
+    tr:nth-child(even) td { background: rgba(248, 250, 252, 0.55); }
+    tr:hover td { background: rgba(224, 231, 255, 0.55); }
+    .present { color: var(--green); font-weight: 800; }
+    .absent { color: var(--red); font-weight: 800; }
     .noclass { color: var(--text-tertiary); font-weight: 600; }
 
     /* Student Attendance Card Grid inside Modal */
     .student-attendance-card {
       border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
-      padding: 16px; margin-bottom: 12px; background: rgba(255, 255, 255, 0.65);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
-      backdrop-filter: blur(14px);
+      padding: 16px; margin-bottom: 12px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(241, 245, 249, 0.8));
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
     }
     .student-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .student-card-title b { font-size: 14px; color: var(--text); font-weight: 700; }
@@ -311,52 +541,53 @@
 
     .master-switch-box {
       display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
-      background: rgba(255, 255, 255, 0.85); padding: 5px 14px; border-radius: 30px; border: 1px solid var(--glass-border);
+      background: #ffffff; padding: 5px 14px; border-radius: 30px; border: 1px solid var(--glass-border);
     }
 
     .subject-chips-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px;
       padding-top: 10px; border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
     .subject-chip {
       display: flex; justify-content: space-between; align-items: center;
       padding: 8px 12px; border-radius: 8px; border: 1px solid var(--glass-border);
-      background: rgba(255, 255, 255, 0.6); font-size: 11px; font-weight: 600;
+      background: rgba(255, 255, 255, 0.8); font-size: 11px; font-weight: 700;
     }
     .chip-toggle {
       font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 6px;
       cursor: pointer; border: none; transition: 0.15s ease;
     }
-    .chip-toggle.present { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
-    .chip-toggle.absent { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
-    .chip-toggle.noclass { background: rgba(0, 0, 0, 0.04); color: var(--text-tertiary); cursor: not-allowed; border: 1px solid transparent; }
+    .chip-toggle.present { background: var(--green-gradient); color: #ffffff; }
+    .chip-toggle.absent { background: var(--red-gradient); color: #ffffff; }
+    .chip-toggle.noclass { background: rgba(0, 0, 0, 0.05); color: var(--text-tertiary); cursor: not-allowed; }
 
     /* iOS Pill Switches */
     .switch { position: relative; display: inline-block; width: 42px; height: 24px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider-round {
       position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #d1d1d6; transition: .25s; border-radius: 30px;
+      background-color: #cbd5e1; transition: .25s; border-radius: 30px;
     }
     .slider-round:before {
       position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
       background-color: white; transition: .25s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 50%;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
-    input:checked + .slider-round { background-color: var(--green); }
+    input:checked + .slider-round { background: var(--green-gradient); }
     input:checked + .slider-round:before { transform: translateX(18px); }
 
     .conducted-strip {
-      background: rgba(255, 255, 255, 0.55); border: 1px solid var(--glass-border); border-radius: var(--radius-md);
-      padding: 12px 16px; margin-bottom: 14px; backdrop-filter: blur(10px);
+      background: linear-gradient(135deg, rgba(238, 242, 255, 0.8), rgba(252, 231, 243, 0.7));
+      border: 1px solid var(--glass-border); border-radius: var(--radius-md);
+      padding: 12px 16px; margin-bottom: 14px;
     }
-    .conducted-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .conducted-title { font-size: 11px; font-weight: 700; color: var(--maroon); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
     .conducted-checkboxes { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; font-weight: 600; }
     .conducted-checkboxes label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); }
 
     .phone-group { display: flex; align-items: center; }
     .phone-prefix {
-      background: rgba(255, 255, 255, 0.7); border: 1px solid var(--glass-border); border-right: none;
+      background: rgba(255, 255, 255, 0.85); border: 1px solid var(--glass-border); border-right: none;
       padding: 12px 14px; font-weight: 700; font-size: 14px; color: var(--text-secondary);
       border-radius: var(--radius-md) 0 0 var(--radius-md);
     }
@@ -365,26 +596,26 @@
     .class-item-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: 14px 16px; border: 1px solid var(--glass-border); border-radius: var(--radius-md);
-      margin-bottom: 10px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px);
+      margin-bottom: 10px; background: rgba(255, 255, 255, 0.82);
     }
 
-    /* iOS Glass Buttons */
+    /* ================= GRADIENT GLASS BUTTONS ================= */
     .btn {
       padding: 10px 18px; border: none; border-radius: 30px; font-size: 12px;
       font-weight: 700; cursor: pointer; color: white; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    .btn:hover { transform: scale(1.02); }
+    .btn:hover { transform: translateY(-1px) scale(1.02); }
     .btn:active { transform: scale(0.98); }
-    .btn-primary { background: var(--blue); }
-    .btn-primary:hover { background: var(--blue-hover); box-shadow: 0 6px 16px rgba(0, 122, 255, 0.25); }
-    .btn-green { background: var(--green); }
-    .btn-green:hover { background: #28a745; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.25); }
-    .btn-red { background: var(--red); }
-    .btn-red:hover { background: #d70015; box-shadow: 0 6px 16px rgba(255, 59, 48, 0.25); }
-    .btn-maroon { background: var(--maroon); color: #ffffff; }
-    .btn-maroon:hover { background: var(--maroon-dark); box-shadow: 0 6px 16px var(--maroon-glow); }
-    .btn-dark { background: rgba(255, 255, 255, 0.85); color: var(--text); border: 1px solid var(--glass-border); }
+    .btn-primary { background: var(--blue-gradient); }
+    .btn-primary:hover { box-shadow: 0 6px 18px rgba(79, 70, 229, 0.3); }
+    .btn-green { background: var(--green-gradient); }
+    .btn-green:hover { box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3); }
+    .btn-red { background: var(--red-gradient); }
+    .btn-red:hover { box-shadow: 0 6px 18px rgba(220, 38, 38, 0.3); }
+    .btn-maroon { background: var(--maroon-gradient); color: #ffffff; }
+    .btn-maroon:hover { box-shadow: 0 6px 18px rgba(128, 0, 32, 0.35); }
+    .btn-dark { background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%); color: var(--text); border: 1px solid var(--glass-border); }
     .btn-dark:hover { background: #ffffff; }
 
     .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
@@ -399,6 +630,22 @@
   </style>
 </head>
 <body>
+
+  <!-- Animated Welcome Screen -->
+  <div id="welcomeScreen">
+    <div class="welcome-orb welcome-orb-1"></div>
+    <div class="welcome-orb welcome-orb-2"></div>
+    <div class="welcome-card">
+      <div class="welcome-emblem">SPC</div>
+      <div class="welcome-badge">Est. 1970 • Osmania University</div>
+      <div class="welcome-title">SARDAR PATEL COLLEGE</div>
+      <div class="welcome-subtitle">Smart Digital Attendance Management System</div>
+      <div class="welcome-progress-wrap">
+        <div class="welcome-progress-bar"></div>
+      </div>
+      <button class="welcome-enter-btn" onclick="dismissWelcomeScreen()">Enter Staff Portal →</button>
+    </div>
+  </div>
 
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
 
@@ -423,7 +670,7 @@
       <div id="loginPassField">
         <div class="form-group">
           <label>Staff Password:</label>
-          <input type="password" id="loginPassInput" placeholder="••••••••">
+          <input type="password" id="loginPassInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') authenticateStaff()">
         </div>
       </div>
 
@@ -477,37 +724,37 @@
         <span>Dashboard Subject:</span>
         <select id="activeSubjectSelect" onchange="changeActiveSubject()"></select>
       </div>
-      <button class="btn btn-dark" style="padding:8px 16px; font-size:12px;" onclick="openManageSubjectsModal()">Manage Subjects</button>
+      <button class="btn btn-primary" style="padding:8px 16px; font-size:12px;" onclick="openManageSubjectsModal()">Manage Subjects</button>
     </div>
 
     <div class="cards-row" id="statsRow">
-      <div class="card">
+      <div class="card card-blue">
         <div class="card-info">
           <h4>Total Students</h4>
           <span id="statTotal" style="color: var(--blue);">0</span>
         </div>
-        <div class="card-bar" style="background: var(--blue);"></div>
+        <div class="card-bar" style="background: var(--blue-gradient);"></div>
       </div>
-      <div class="card">
+      <div class="card card-green">
         <div class="card-info">
           <h4>Present Today</h4>
           <span id="statPresent" style="color: var(--green);">0</span>
         </div>
-        <div class="card-bar" style="background: var(--green);"></div>
+        <div class="card-bar" style="background: var(--green-gradient);"></div>
       </div>
-      <div class="card">
+      <div class="card card-red">
         <div class="card-info">
           <h4>Absent Today</h4>
           <span id="statAbsent" style="color: var(--red);">0</span>
         </div>
-        <div class="card-bar" style="background: var(--red);"></div>
+        <div class="card-bar" style="background: var(--red-gradient);"></div>
       </div>
-      <div class="card">
+      <div class="card card-maroon">
         <div class="card-info">
           <h4>Attendance</h4>
-          <span id="statPct" style="color: var(--text);">0%</span>
+          <span id="statPct" style="color: var(--maroon);">0%</span>
         </div>
-        <div class="card-bar" style="background: var(--maroon);"></div>
+        <div class="card-bar" style="background: var(--maroon-gradient);"></div>
       </div>
     </div>
 
@@ -706,7 +953,7 @@
     </div>
   </div>
 
-  <!-- Settings Modal (With JSON Data Backup and Protection) -->
+  <!-- Settings Modal -->
   <div id="settingsModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Settings</h2>
@@ -754,10 +1001,10 @@
       <div class="form-group">
         <label>Report Timeframe:</label>
         <select id="reportTimeframeSelect">
+          <option value="daily">Daily Summary (Selected Date)</option>
           <option value="all">Full Semester Register</option>
           <option value="weekly">Weekly (Past 7 Days)</option>
           <option value="monthly">Monthly (Current Month)</option>
-          <option value="daily">Daily Summary</option>
         </select>
       </div>
       <div class="form-group">
@@ -770,7 +1017,7 @@
       
       <div class="modal-actions">
         <button class="btn btn-red" onclick="closeModal('pdfModal')">Close</button>
-        <button class="btn btn-primary" onclick="downloadPdfOnly()">📥 Download PDF Only</button>
+        <button class="btn btn-maroon" onclick="downloadPdfOnly()">📥 Download PDF Only</button>
         <button class="btn btn-green" onclick="sendWhatsAppOnly()">📲 Send WhatsApp Report</button>
       </div>
     </div>
@@ -783,6 +1030,17 @@
     let activeSubject = 'ALL';
     let renderDebounceTimer = null;
     let sessionAttendanceStaging = {};
+
+    /* Welcome Screen Controller */
+    let welcomeTimer = setTimeout(dismissWelcomeScreen, 2600);
+    function dismissWelcomeScreen() {
+      clearTimeout(welcomeTimer);
+      const ws = document.getElementById('welcomeScreen');
+      if (ws && !ws.classList.contains('fade-out')) {
+        ws.classList.add('fade-out');
+        setTimeout(() => { ws.style.display = 'none'; }, 650);
+      }
+    }
 
     function toggleSidebar(open) {
       const sidebar = document.getElementById('appSidebar');
@@ -814,7 +1072,6 @@
         }
       }
 
-      // Preserve legacy datasets strictly if master does not exist yet
       if (!loaded) {
         const pastKeys = [
           'spc_attendance_v8',
@@ -1117,7 +1374,6 @@
 
     function openAddDeptModal() { openModal('deptModal'); }
 
-    /* SAFE ADD CLASS WITHOUT DATA LOSS */
     function saveDepartment() {
       const nameInput = document.getElementById('deptName');
       const yearInput = document.getElementById('deptYear');
@@ -1682,7 +1938,7 @@
         }
 
         if (totalDays > 0) {
-          let summaryRow = `<tr style="background:rgba(255,255,255,0.6); font-weight:bold;"><td colspan="2">Daily %</td>`;
+          let summaryRow = `<tr style="background:rgba(255,255,255,0.75); font-weight:bold;"><td colspan="2">Daily %</td>`;
           for (let j = 0; j < totalDays; j++) {
             summaryRow += `<td>${calculatePercentageForDateAndSubject(dept.dates[j], activeSubject).toFixed(0)}%</td>`;
           }
@@ -1831,8 +2087,7 @@
 
       const now = new Date();
       let filteredDates = [...dept.dates];
-
-      const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1];
+      const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1] || 'N/A';
 
       if (timeframe === 'weekly') {
         const weekAgo = new Date();
@@ -1847,45 +2102,62 @@
           return (m - 1) === now.getMonth() && y === now.getFullYear();
         });
       } else if (timeframe === 'daily') {
-        filteredDates = chosenDate ? [chosenDate] : [];
+        filteredDates = chosenDate !== 'N/A' ? [chosenDate] : [];
       }
 
-      doc.setFillColor(255, 255, 255);
-      doc.rect(0, 0, 297, 34, 'F');
-
+      /* Top Gradient-Inspired Accent Bars */
       doc.setFillColor(128, 0, 32);
-      doc.rect(0, 0, 297, 3.5, 'F');
-
-      doc.setDrawColor(226, 232, 240);
-      doc.setLineWidth(0.6);
-      doc.line(14, 34, 283, 34);
+      doc.rect(0, 0, 198, 4, 'F');
+      doc.setFillColor(217, 119, 6);
+      doc.rect(198, 0, 99, 4, 'F');
 
       try {
-        drawCollegeLogo(doc, 14, 6, 22);
+        drawCollegeLogo(doc, 14, 7, 22);
       } catch (e) {
         console.warn('Emblem render fallback:', e);
       }
 
+      /* Highlighted Date Box in Header */
+      doc.setFillColor(253, 242, 244);
+      doc.setDrawColor(128, 0, 32);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(40, 7, 118, 22, 3, 3, 'FD');
+
+      /* Left Crimson Strip inside Date Box */
+      doc.setFillColor(128, 0, 32);
+      doc.roundedRect(40, 7, 4, 22, 1.5, 1.5, 'F');
+
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
+      doc.setFontSize(13);
       doc.setTextColor(128, 0, 32);
-      doc.text('SARDAR PATEL COLLEGE', 40, 14);
-
-      doc.setFontSize(8.5);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(100, 116, 139);
-      doc.text('AFFILIATED TO OSMANIA UNIVERSITY • ATTENDANCE REGISTER REPORT', 40, 20);
-      doc.text(`TIMEFRAME: ${timeframe.toUpperCase()} | TARGET DATE: ${chosenDate || 'N/A'}`, 40, 26);
+      doc.text(`DATE: ${chosenDate}`, 48, 15.5);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(15, 23, 42);
-      doc.text(`CLASS: ${dept.name.toUpperCase()} (${dept.academicYear})`, 283, 14, { align: 'right' });
-      doc.setFont('helvetica', 'normal');
       doc.setFontSize(8.5);
-      doc.setTextColor(100, 116, 139);
-      doc.text(`SEMESTER: ${dept.semester}`, 283, 20, { align: 'right' });
-      doc.text(`GENERATED: ${now.toLocaleDateString('en-GB')}`, 283, 26, { align: 'right' });
+      doc.setTextColor(71, 85, 105);
+      const dateRangeLabel = timeframe === 'daily'
+        ? `REPORT MODE: DAILY SUMMARY (${chosenDate})`
+        : `REPORT MODE: ${timeframe.toUpperCase()} (${filteredDates.length} DAYS)`;
+      doc.text(dateRangeLabel, 48, 21.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.text(`GENERATED ON: ${now.toLocaleDateString('en-GB')}`, 48, 26.5);
+
+      /* Right College Header */
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(15);
+      doc.setTextColor(128, 0, 32);
+      doc.text('SARDAR PATEL COLLEGE', 283, 14, { align: 'right' });
+
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(30, 41, 59);
+      doc.text('AFFILIATED TO OSMANIA UNIVERSITY • ATTENDANCE REGISTER REPORT', 283, 19.5, { align: 'right' });
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(79, 70, 229);
+      doc.text(`CLASS: ${dept.name.toUpperCase()} (${dept.academicYear}) • ${dept.semester.toUpperCase()}`, 283, 25.5, { align: 'right' });
 
       const headers = ['Roll No', 'Student Name', ...dept.subjects, 'Attended', 'Held', 'Overall %', 'Today Status'];
       const body = [];
@@ -1906,7 +2178,14 @@
           });
           totalP += p;
           totalH += h;
-          row.push(h === 0 ? '-' : `${p}/${h}`);
+
+          if (h === 0) {
+            row.push('Not Held');
+          } else if (timeframe === 'daily' || filteredDates.length === 1) {
+            row.push(p === 1 ? 'Held\nPresent' : 'Held\nAbsent');
+          } else {
+            row.push(`Held: ${h}\n${p === h ? 'Present: ' + p : (p === 0 ? 'Absent' : 'Present: ' + p)}`);
+          }
         });
 
         row.push(totalP);
@@ -1917,7 +2196,7 @@
 
         let todayPresent = 0;
         let todayHeld = 0;
-        if (chosenDate) {
+        if (chosenDate && chosenDate !== 'N/A') {
           dept.subjects.forEach(sub => {
             const todayStatus = s.attendance[`${chosenDate}_${sub}`];
             if (todayStatus === 'Present') { todayPresent++; todayHeld++; }
@@ -1942,52 +2221,58 @@
 
       const statusColIndex = headers.length - 1;
       const pctColIndex = headers.length - 2;
+      const attendedColIndex = headers.length - 4;
+      const heldColIndex = headers.length - 3;
       const subjectStartIndex = 2;
       const subjectEndIndex = 2 + dept.subjects.length - 1;
 
       doc.autoTable({
         head: [headers],
         body: body,
-        startY: 38,
-        theme: 'plain',
+        startY: 34,
+        theme: 'grid',
         styles: { 
           fontSize: 8, 
-          cellPadding: 3, 
+          cellPadding: 2.8, 
           font: 'helvetica', 
-          lineColor: [226, 232, 240], 
-          lineWidth: 0.1,
-          textColor: [15, 23, 42]
+          lineColor: [203, 213, 225], 
+          lineWidth: 0.15,
+          textColor: [15, 23, 42],
+          valign: 'middle'
         },
         headStyles: { 
-          fillColor: [248, 250, 252], 
-          textColor: [71, 85, 105], 
+          fillColor: [128, 0, 32], 
+          textColor: [255, 255, 255], 
           fontStyle: 'bold', 
           halign: 'center',
-          lineWidth: 0.1,
-          lineColor: [203, 213, 225]
+          fontSize: 8.2
         },
         alternateRowStyles: {
-          fillColor: [253, 254, 255]
+          fillColor: [248, 250, 252]
         },
         columnStyles: {
-          0: { cellWidth: 28, fontStyle: 'bold' },
-          1: { cellWidth: 42, fontStyle: 'bold' }
+          0: { cellWidth: 26, fontStyle: 'bold', halign: 'center' },
+          1: { cellWidth: 40, fontStyle: 'bold' },
+          [attendedColIndex]: { halign: 'center', fontStyle: 'bold' },
+          [heldColIndex]: { halign: 'center', fontStyle: 'bold' }
         },
         didParseCell: function(dataCell) {
           if (dataCell.section === 'body') {
             if (dataCell.column.index >= subjectStartIndex && dataCell.column.index <= subjectEndIndex) {
-              const val = dataCell.cell.raw;
-              if (val && typeof val === 'string' && val.includes('/')) {
-                const [p, h] = val.split('/').map(Number);
-                if (p === h && h > 0) {
-                  dataCell.cell.styles.textColor = [16, 185, 129];
-                  dataCell.cell.styles.fontStyle = 'bold';
-                } else if (p < h) {
-                  dataCell.cell.styles.textColor = [239, 68, 68];
-                  dataCell.cell.styles.fontStyle = 'bold';
-                }
-              }
+              const val = String(dataCell.cell.raw || '');
               dataCell.cell.styles.halign = 'center';
+              dataCell.cell.styles.fontStyle = 'bold';
+
+              if (val.includes('Absent')) {
+                dataCell.cell.styles.textColor = [185, 28, 28];
+                dataCell.cell.styles.fillColor = [254, 226, 226];
+              } else if (val.includes('Present')) {
+                dataCell.cell.styles.textColor = [4, 120, 87];
+                dataCell.cell.styles.fillColor = [209, 250, 229];
+              } else {
+                dataCell.cell.styles.textColor = [100, 116, 139];
+                dataCell.cell.styles.fillColor = [241, 245, 249];
+              }
             }
 
             if (dataCell.column.index === pctColIndex) {
@@ -1995,10 +2280,11 @@
               dataCell.cell.styles.halign = 'center';
               const pctNum = parseInt(dataCell.cell.raw, 10);
               if (!isNaN(pctNum) && pctNum < 75) {
-                dataCell.cell.styles.textColor = [220, 38, 38];
-                dataCell.cell.styles.fillColor = [254, 242, 242];
+                dataCell.cell.styles.textColor = [185, 28, 28];
+                dataCell.cell.styles.fillColor = [254, 226, 226];
               } else {
-                dataCell.cell.styles.textColor = [16, 185, 129];
+                dataCell.cell.styles.textColor = [4, 120, 87];
+                dataCell.cell.styles.fillColor = [236, 253, 245];
               }
             }
 
@@ -2008,42 +2294,42 @@
               dataCell.cell.styles.halign = 'center';
               
               if (statusStr === 'PRESENT') {
-                dataCell.cell.styles.textColor = [16, 185, 129];
-                dataCell.cell.styles.fillColor = [236, 253, 245];
+                dataCell.cell.styles.textColor = [255, 255, 255];
+                dataCell.cell.styles.fillColor = [16, 185, 129];
               } else if (statusStr === 'ABSENT') {
-                dataCell.cell.styles.textColor = [239, 68, 68];
-                dataCell.cell.styles.fillColor = [254, 242, 242];
+                dataCell.cell.styles.textColor = [255, 255, 255];
+                dataCell.cell.styles.fillColor = [239, 68, 68];
               } else if (statusStr.startsWith('PARTIAL')) {
-                dataCell.cell.styles.textColor = [217, 119, 6];
-                dataCell.cell.styles.fillColor = [255, 251, 235];
+                dataCell.cell.styles.textColor = [255, 255, 255];
+                dataCell.cell.styles.fillColor = [245, 158, 11];
               } else {
-                dataCell.cell.styles.textColor = [148, 163, 184];
-                dataCell.cell.styles.fillColor = [248, 250, 252];
+                dataCell.cell.styles.textColor = [71, 85, 105];
+                dataCell.cell.styles.fillColor = [226, 232, 240];
               }
             }
           }
         },
         didDrawPage: function(tableData) {
-          const finalY = tableData.cursor.y + 16;
+          const finalY = tableData.cursor.y + 14;
           if (finalY < 185) {
             doc.setFontSize(8.5);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(100, 116, 139);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(71, 85, 105);
 
-            doc.setDrawColor(203, 213, 225);
-            doc.line(14, finalY + 12, 65, finalY + 12);
+            doc.setDrawColor(148, 163, 184);
+            doc.line(14, finalY + 12, 68, finalY + 12);
             doc.text('Signature of Faculty', 14, finalY + 16);
 
-            doc.line(125, finalY + 12, 175, finalY + 12);
-            doc.text('Head of Department (HOD)', 125, finalY + 16);
+            doc.line(122, finalY + 12, 178, finalY + 12);
+            doc.text('Head of Department (HOD)', 122, finalY + 16);
 
-            doc.line(230, finalY + 12, 283, finalY + 12);
-            doc.text('Principal / Vice-Principal', 230, finalY + 16);
+            doc.line(228, finalY + 12, 283, finalY + 12);
+            doc.text('Principal / Vice-Principal', 228, finalY + 16);
           }
 
           const pageStr = `Page ${doc.internal.getNumberOfPages()}`;
           doc.setFontSize(8);
-          doc.setTextColor(148, 163, 184);
+          doc.setTextColor(100, 116, 139);
           doc.text(pageStr, 283, 204, { align: 'right' });
         }
       });
