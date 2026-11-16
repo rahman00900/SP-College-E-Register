@@ -153,7 +153,7 @@
       z-index: 2;
       width: 90%;
       max-width: 480px;
-      padding: 42px 32px;
+      padding: 36px 32px;
       text-align: center;
       border-radius: 28px;
       background: rgba(255, 255, 255, 0.1);
@@ -164,22 +164,28 @@
       color: #ffffff;
     }
 
-    .welcome-emblem {
-      width: 84px;
-      height: 84px;
-      margin: 0 auto 20px auto;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
-      color: var(--maroon);
+    .welcome-logo-box {
+      width: 118px;
+      height: 118px;
+      margin: 0 auto 18px auto;
+      border-radius: 22px;
+      background: #ffffff;
+      padding: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 24px;
-      letter-spacing: -0.5px;
-      border: 4px solid rgba(255, 255, 255, 0.45);
-      box-shadow: 0 12px 30px rgba(190, 18, 60, 0.45);
+      border: 3px solid rgba(253, 224, 71, 0.65);
+      box-shadow: 0 14px 32px rgba(190, 18, 60, 0.48);
       animation: emblemPop 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .welcome-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     @keyframes emblemPop {
@@ -198,7 +204,7 @@
       background: linear-gradient(90deg, rgba(251, 191, 36, 0.25), rgba(244, 63, 94, 0.25));
       border: 1px solid rgba(253, 224, 71, 0.4);
       color: #fde68a;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       opacity: 0;
       animation: slideUpFade 0.7s ease 0.15s forwards;
     }
@@ -220,7 +226,7 @@
       font-size: 13px;
       font-weight: 600;
       color: rgba(255, 255, 255, 0.82);
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       opacity: 0;
       animation: slideUpFade 0.7s ease 0.4s forwards;
     }
@@ -231,7 +237,7 @@
       border-radius: 10px;
       background: rgba(255, 255, 255, 0.16);
       overflow: hidden;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       opacity: 0;
       animation: slideUpFade 0.6s ease 0.45s forwards;
     }
@@ -255,6 +261,15 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
+    .welcome-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: slideUpFade 0.7s ease 0.5s forwards;
+    }
+
     .welcome-enter-btn {
       background: linear-gradient(135deg, #f59e0b 0%, #e11d48 100%);
       color: #ffffff;
@@ -267,15 +282,25 @@
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(225, 29, 72, 0.45);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      opacity: 0;
-      animation: slideUpFade 0.7s ease 0.5s forwards;
     }
     .welcome-enter-btn:hover {
       transform: translateY(-2px) scale(1.04);
       box-shadow: 0 14px 30px rgba(225, 29, 72, 0.6);
     }
-    .welcome-enter-btn:active {
-      transform: scale(0.98);
+
+    .welcome-upload-btn {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fde68a;
+      border: 1px solid rgba(253, 224, 71, 0.45);
+      padding: 12px 18px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .welcome-upload-btn:hover {
+      background: rgba(255, 255, 255, 0.26);
     }
 
     /* ================= GLASS OVERLAY & MODALS ================= */
@@ -312,6 +337,26 @@
       background: var(--maroon-gradient);
     }
 
+    .auth-logo-preview {
+      width: 78px;
+      height: 78px;
+      margin: 0 auto 12px auto;
+      border-radius: 16px;
+      background: #ffffff;
+      padding: 5px;
+      border: 2px solid rgba(128, 0, 32, 0.2);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .auth-logo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
     .modal {
       max-width: 680px;
       max-height: 86dvh;
@@ -324,8 +369,9 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 4px; letter-spacing: -0.3px;
+      text-align: center;
     }
-    .auth-card h3 { font-size: 13px; color: var(--blue); margin-bottom: 24px; font-weight: 700; letter-spacing: 0.3px; }
+    .auth-card h3 { font-size: 13px; color: var(--blue); margin-bottom: 18px; font-weight: 700; letter-spacing: 0.3px; text-align: center; }
     .forgot-link { display: inline-block; margin-top: 14px; font-size: 13px; color: var(--blue); cursor: pointer; text-decoration: none; font-weight: 600; }
     .forgot-link:hover { text-decoration: underline; }
 
@@ -361,7 +407,7 @@
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 250;
     }
     .sidebar-header {
-      padding: 24px 22px;
+      padding: 20px 22px;
       background: linear-gradient(135deg, rgba(128, 0, 32, 0.08), rgba(0, 122, 255, 0.06));
       border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     }
@@ -518,14 +564,14 @@
     }
 
     .table-scroll { overflow-x: auto; border: 1px solid var(--glass-border); border-radius: var(--radius-lg); background: rgba(255, 255, 255, 0.55); }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 540px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 580px; }
     th {
       background: linear-gradient(135deg, #800020 0%, #581c87 100%);
-      padding: 14px 18px;
+      padding: 14px 16px;
       color: #ffffff; font-weight: 700; font-size: 11px; text-transform: uppercase;
       white-space: nowrap; letter-spacing: 0.5px;
     }
-    td { padding: 13px 18px; border-bottom: 1px solid rgba(0, 0, 0, 0.05); white-space: nowrap; font-weight: 600; }
+    td { padding: 13px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.05); white-space: nowrap; font-weight: 600; }
     tr:nth-child(even) td { background: rgba(248, 250, 252, 0.55); }
     tr:hover td { background: rgba(224, 231, 255, 0.55); }
     .present { color: var(--green); font-weight: 800; }
@@ -635,19 +681,27 @@
 </head>
 <body>
 
-  <!-- Animated Welcome Screen (Only transitions on button click) -->
+  <!-- Hidden File Input for Exact College Logo Image -->
+  <input type="file" id="collegeLogoFileInput" accept="image/*" style="display:none;" onchange="handleCollegeLogoUpload(event)">
+
+  <!-- Animated Welcome Screen -->
   <div id="welcomeScreen">
     <div class="welcome-orb welcome-orb-1"></div>
     <div class="welcome-orb welcome-orb-2"></div>
     <div class="welcome-card">
-      <div class="welcome-emblem">SPC</div>
+      <div class="welcome-logo-box" title="Click to set your exact College Logo image" onclick="document.getElementById('collegeLogoFileInput').click()">
+        <img id="welcomeLogoImg" alt="Sardar Patel College Logo">
+      </div>
       <div class="welcome-badge">Est. 1970 • Osmania University</div>
       <div class="welcome-title">SARDAR PATEL COLLEGE</div>
       <div class="welcome-subtitle">Smart Digital Attendance Management System</div>
       <div class="welcome-progress-wrap">
         <div class="welcome-progress-bar"></div>
       </div>
-      <button class="welcome-enter-btn" onclick="goToLoginScreen()">Login →</button>
+      <div class="welcome-actions">
+        <button class="welcome-enter-btn" onclick="goToLoginScreen()">Login →</button>
+        <button class="welcome-upload-btn" onclick="document.getElementById('collegeLogoFileInput').click()">🖼️ Set Exact Logo</button>
+      </div>
     </div>
   </div>
 
@@ -656,9 +710,12 @@
   <!-- iOS Glass Authentication Modal -->
   <div id="authOverlay">
     <div class="auth-card">
+      <div class="auth-logo-preview">
+        <img id="authLogoImg" alt="Sardar Patel College Logo">
+      </div>
       <h2>SARDAR PATEL COLLEGE</h2>
       <h3>ATTENDANCE MANAGEMENT SYSTEM</h3>
-      <p id="authDesc" style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Staff Authentication Access</p>
+      <p id="authDesc" style="font-size:12px; color:var(--text-secondary); margin-bottom:18px; text-align:center;">Staff Authentication Access</p>
       
       <div id="setupPassFields" style="display: none;">
         <div class="form-group">
@@ -679,7 +736,7 @@
       </div>
 
       <button class="btn btn-maroon" style="width:100%; padding:13px; margin-top:10px;" onclick="authenticateStaff()">STAFF LOGIN</button>
-      <div><span class="forgot-link" onclick="forgotPassword()">Forgot Password?</span></div>
+      <div style="text-align:center;"><span class="forgot-link" onclick="forgotPassword()">Forgot Password?</span></div>
     </div>
   </div>
 
@@ -687,9 +744,12 @@
   <div class="sidebar" id="appSidebar">
     <div>
       <div class="sidebar-header" style="display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <h2>ATTENDANCE</h2>
-          <h3>MANAGEMENT</h3>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img id="sidebarLogoImg" alt="SPC" style="width:38px; height:38px; object-fit:contain; background:#fff; border-radius:10px; padding:3px; border:1px solid rgba(128,0,32,0.2);">
+          <div>
+            <h2>ATTENDANCE</h2>
+            <h3>MANAGEMENT</h3>
+          </div>
         </div>
         <button style="background:transparent; border:none; color:var(--text-secondary); font-size:18px; cursor:pointer;" onclick="toggleSidebar(false)">✕</button>
       </div>
@@ -776,7 +836,7 @@
 
     <div class="table-container">
       <div class="table-toolbar">
-        <input type="text" id="searchInput" placeholder="Search student name or roll..." oninput="debouncedRenderTable()">
+        <input type="text" id="searchInput" placeholder="Search S.No, student name, or roll..." oninput="debouncedRenderTable()">
       </div>
       <div class="table-scroll">
         <table>
@@ -886,7 +946,7 @@
       <h2>Add New Student</h2>
       <div class="form-group">
         <label>Hall Ticket:</label>
-        <input type="text" id="stuHall">
+        <input type="text" id="stuHall" placeholder="e.g. 118924468028">
       </div>
       <div class="form-group">
         <label>Student Name:</label>
@@ -961,6 +1021,18 @@
   <div id="settingsModal" class="overlay">
     <div class="modal" style="max-width: 450px;">
       <h2>Settings</h2>
+
+      <div style="border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:14px; margin-bottom:14px;">
+        <label style="font-weight:700; font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">COLLEGE LOGO (WELCOME, LOGIN & PDF)</label>
+        <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+          <img id="settingsLogoPreview" alt="College Logo" style="width:52px; height:52px; object-fit:contain; background:#fff; border-radius:10px; padding:4px; border:1px solid rgba(0,0,0,0.1);">
+          <div style="display:flex; gap:8px; flex:1;">
+            <button class="btn btn-maroon" style="flex:1;" onclick="document.getElementById('collegeLogoFileInput').click()">🖼️ Upload Exact Logo</button>
+            <button class="btn btn-dark" onclick="resetCollegeLogo()">Reset</button>
+          </div>
+        </div>
+      </div>
+
       <div style="border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:14px; margin-bottom:14px;">
         <label style="font-weight:700; font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">DEFAULT WHATSAPP NUMBER</label>
         <div class="phone-group" style="margin-top:8px;">
@@ -1029,11 +1101,219 @@
 
   <script>
     const PERMANENT_STORAGE_KEY = 'spc_attendance_master_db';
+    const LOGO_STORAGE_KEY = 'spc_college_logo_dataurl';
     let data = { passwordHash: '', defaultReportNumber: '', departments: {}, currentDeptId: '' };
     let activeView = 'dashboard';
     let activeSubject = 'ALL';
     let renderDebounceTimer = null;
     let sessionAttendanceStaging = {};
+
+    /* Detailed vector crest matching your Sardar Patel College emblem (used automatically until/unless exact PNG is uploaded) */
+    function buildDefaultCollegeCrestDataUrl() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 420;
+      canvas.height = 460;
+      const ctx = canvas.getContext('2d');
+      const red = '#e11d1d';
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 420, 460);
+
+      // Outer & inner emblem circles
+      ctx.strokeStyle = red;
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      ctx.arc(210, 185, 155, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(210, 185, 112, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Arched top text: SARDAR PATEL COLLEGE
+      const text = 'SARDAR PATEL COLLEGE';
+      ctx.fillStyle = red;
+      ctx.font = 'bold 26px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const startAngle = -Math.PI * 0.84;
+      const endAngle = -Math.PI * 0.16;
+      const step = (endAngle - startAngle) / (text.length - 1);
+      for (let i = 0; i < text.length; i++) {
+        const angle = startAngle + i * step;
+        ctx.save();
+        ctx.translate(210 + Math.cos(angle) * 133, 185 + Math.sin(angle) * 133);
+        ctx.rotate(angle + Math.PI / 2);
+        ctx.fillText(text[i], 0, 0);
+        ctx.restore();
+      }
+
+      // Torch rays
+      ctx.strokeStyle = red;
+      ctx.lineWidth = 2;
+      for (let a = -155; a <= -25; a += 10) {
+        const rad = (a * Math.PI) / 180;
+        ctx.beginPath();
+        ctx.moveTo(210 + Math.cos(rad) * 32, 128 + Math.sin(rad) * 32);
+        ctx.lineTo(210 + Math.cos(rad) * 52, 128 + Math.sin(rad) * 52);
+        ctx.stroke();
+      }
+
+      // Central red circle & torch flame
+      ctx.fillStyle = red;
+      ctx.beginPath();
+      ctx.arc(210, 182, 44, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Flame
+      ctx.beginPath();
+      ctx.moveTo(210, 96);
+      ctx.quadraticCurveTo(226, 118, 216, 134);
+      ctx.quadraticCurveTo(210, 138, 204, 134);
+      ctx.quadraticCurveTo(194, 118, 210, 96);
+      ctx.fill();
+
+      // Open book inside circle
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(184, 166, 23, 28);
+      ctx.fillRect(213, 166, 23, 28);
+      ctx.fillStyle = red;
+      ctx.fillRect(188, 172, 15, 2.5);
+      ctx.fillRect(188, 179, 15, 2.5);
+      ctx.fillRect(188, 186, 15, 2.5);
+      ctx.fillRect(217, 172, 15, 2.5);
+      ctx.fillRect(217, 179, 15, 2.5);
+      ctx.fillRect(217, 186, 15, 2.5);
+
+      // Left & right heraldic lions (stylized silhouettes)
+      ctx.fillStyle = red;
+      ctx.beginPath();
+      ctx.arc(146, 164, 13, 0, Math.PI * 2); // Left lion head
+      ctx.fill();
+      ctx.fillRect(136, 175, 18, 34);
+      ctx.fillRect(150, 178, 18, 6);
+
+      ctx.beginPath();
+      ctx.arc(274, 164, 13, 0, Math.PI * 2); // Right lion head
+      ctx.fill();
+      ctx.fillRect(266, 175, 18, 34);
+      ctx.fillRect(252, 178, 18, 6);
+
+      // Base wave line
+      ctx.strokeStyle = red;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(106, 224);
+      ctx.quadraticCurveTo(160, 218, 210, 232);
+      ctx.quadraticCurveTo(260, 218, 314, 224);
+      ctx.stroke();
+
+      // SECUNDERABAD pill box
+      ctx.strokeStyle = red;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.roundRect(142, 248, 136, 24, 12);
+      ctx.stroke();
+      ctx.font = 'bold 13px sans-serif';
+      ctx.fillText('SECUNDERABAD', 210, 260);
+
+      // Lower Motto Ribbon
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = red;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.roundRect(45, 348, 330, 34, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = red;
+      ctx.font = 'bold 13px sans-serif';
+      ctx.fillText('ASK RIGHT QUESTION', 128, 366);
+      ctx.fillText('BE A SARDAR', 292, 366);
+
+      // ESTD: 1970
+      ctx.font = 'bold 26px sans-serif';
+      ctx.fillText('ESTD: 1970', 210, 422);
+
+      return canvas.toDataURL('image/png');
+    }
+
+    function getCollegeLogoDataUrl() {
+      const savedLogo = localStorage.getItem(LOGO_STORAGE_KEY);
+      if (savedLogo && savedLogo.startsWith('data:image/')) {
+        return savedLogo;
+      }
+      return buildDefaultCollegeCrestDataUrl();
+    }
+
+    function applyCollegeLogoEverywhere() {
+      const logoUrl = getCollegeLogoDataUrl();
+      ['welcomeLogoImg', 'authLogoImg', 'sidebarLogoImg', 'settingsLogoPreview'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.src = logoUrl;
+      });
+    }
+
+    function handleCollegeLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          // Optimize resolution cleanly so it fits localStorage safely while staying crisp in PDF & UI
+          const maxDim = 600;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+
+          const optimizedDataUrl = canvas.toDataURL('image/png', 0.92);
+          try {
+            localStorage.setItem(LOGO_STORAGE_KEY, optimizedDataUrl);
+            applyCollegeLogoEverywhere();
+            alert('Your exact College Logo has been saved! It will now appear on the Welcome Screen, Login Screen, and all PDF Reports.');
+          } catch (err) {
+            alert('Logo image is too large for browser storage. Please choose a smaller file.');
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetCollegeLogo() {
+      localStorage.removeItem(LOGO_STORAGE_KEY);
+      applyCollegeLogoEverywhere();
+      alert('Reset to built-in Sardar Patel College crest.');
+    }
+
+    /* Sort students naturally by Hall Ticket number so any late/missing entry automatically slots into exact sequence */
+    function sortStudentsByHallTicket(dept) {
+      if (!dept || !Array.isArray(dept.students)) return;
+      dept.students.sort((a, b) =>
+        String(a.hall || '').trim().localeCompare(String(b.hall || '').trim(), undefined, {
+          numeric: true,
+          sensitivity: 'base'
+        })
+      );
+    }
 
     /* Welcome Screen Controller: Opens Login Screen strictly when Login button is clicked */
     function goToLoginScreen() {
@@ -1068,6 +1348,7 @@
     }
 
     function init() {
+      applyCollegeLogoEverywhere();
       const masterRaw = localStorage.getItem(PERMANENT_STORAGE_KEY);
       let loaded = false;
 
@@ -1157,6 +1438,7 @@
         }
         if (!d.students || !Array.isArray(d.students)) d.students = [];
         if (!d.dates || !Array.isArray(d.dates)) d.dates = [];
+        sortStudentsByHallTicket(d);
       });
 
       activeSubject = 'ALL';
@@ -1216,6 +1498,7 @@
     function logout() { location.reload(); }
 
     function openSettingsModal() { 
+      applyCollegeLogoEverywhere();
       document.getElementById('defaultReportNumberInput').value = data.defaultReportNumber ? data.defaultReportNumber.replace(/^91/, '') : '';
       openModal('settingsModal'); 
     }
@@ -1248,6 +1531,7 @@
           const imported = JSON.parse(e.target.result);
           if (imported.departments && typeof imported.departments === 'object') {
             data = imported;
+            Object.values(data.departments).forEach(sortStudentsByHallTicket);
             save();
             alert('Database restored successfully!');
             location.reload();
@@ -1535,6 +1819,7 @@
       if (dept.students.some(s => s.hall.toLowerCase() === hall.toLowerCase())) { alert('Hall ticket exists.'); return; }
 
       dept.students.push({ hall, name, phone: '91' + phoneDigits.slice(-10), attendance: {} });
+      sortStudentsByHallTicket(dept);
       save();
       closeModal('studentModal');
       document.getElementById('stuHall').value = '';
@@ -1566,6 +1851,7 @@
       dept.students[idx].hall = hall;
       dept.students[idx].name = name;
       dept.students[idx].phone = '91' + phoneDigits.slice(-10);
+      sortStudentsByHallTicket(dept);
 
       save();
       closeModal('editStudentModal');
@@ -1585,6 +1871,7 @@
     function openMarkAttendanceModal() {
       const dept = curDept();
       if (dept.students.length === 0) { alert('Add students first.'); return; }
+      sortStudentsByHallTicket(dept);
       
       const now = new Date();
       const yyyy = now.getFullYear();
@@ -1652,7 +1939,7 @@
 
         card.innerHTML = `
           <div class="student-card-header">
-            <div class="student-card-title"><b>${s.name}</b> <span>(${s.hall})</span></div>
+            <div class="student-card-title"><b>${i + 1}. ${s.name}</b> <span>(${s.hall})</span></div>
             <div class="master-switch-box">
               <span>All Present:</span>
               <label class="switch">
@@ -1880,6 +2167,7 @@
 
     function renderTable() {
       const dept = curDept();
+      sortStudentsByHallTicket(dept);
       const q = (document.getElementById('searchInput').value || '').toLowerCase();
       const thead = document.getElementById('tblHead');
       const tbody = document.getElementById('tblBody');
@@ -1887,13 +2175,14 @@
       let matching = [];
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
-        if (!q || s.name.toLowerCase().includes(q) || s.hall.toLowerCase().includes(q)) {
-          matching.push({ s, idx: i });
+        const serialStr = String(i + 1);
+        if (!q || serialStr === q || s.name.toLowerCase().includes(q) || s.hall.toLowerCase().includes(q)) {
+          matching.push({ s, idx: i, serial: i + 1 });
         }
       }
 
       if (activeView === 'dashboard') {
-        let th = '<tr><th>Hall Ticket</th><th>Student Name</th>';
+        let th = '<tr><th>S.No</th><th>Hall Ticket</th><th>Student Name</th>';
         for (let j = 0; j < dept.dates.length; j++) {
           th += `<th>${dept.dates[j]}</th>`;
         }
@@ -1905,6 +2194,7 @@
 
         for (let i = 0; i < matching.length; i++) {
           const s = matching[i].s;
+          const serial = matching[i].serial;
           let pCount = 0;
           let heldCount = 0;
           let cols = '';
@@ -1929,7 +2219,7 @@
               }
             }
             const pct = heldCount === 0 ? '0%' : `${((pCount / heldCount) * 100).toFixed(0)}%`;
-            rows += `<tr><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${pCount}/${heldCount}</td><td>${pct}</td></tr>`;
+            rows += `<tr><td>${serial}</td><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${pCount}/${heldCount}</td><td>${pct}</td></tr>`;
 
           } else {
             for (let j = 0; j < totalDays; j++) {
@@ -1941,12 +2231,12 @@
               cols += `<td class="${cls}">${st === 'No Class' ? '-' : st}</td>`;
             }
             const pct = heldCount === 0 ? '0%' : `${((pCount / heldCount) * 100).toFixed(0)}%`;
-            rows += `<tr><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${pCount}/${heldCount}</td><td>${pct}</td></tr>`;
+            rows += `<tr><td>${serial}</td><td>${s.hall}</td><td>${s.name}</td>${cols}<td>${pCount}/${heldCount}</td><td>${pct}</td></tr>`;
           }
         }
 
         if (totalDays > 0) {
-          let summaryRow = `<tr style="background:rgba(255,255,255,0.75); font-weight:bold;"><td colspan="2">Daily %</td>`;
+          let summaryRow = `<tr style="background:rgba(255,255,255,0.75); font-weight:bold;"><td colspan="3">Daily %</td>`;
           for (let j = 0; j < totalDays; j++) {
             summaryRow += `<td>${calculatePercentageForDateAndSubject(dept.dates[j], activeSubject).toFixed(0)}%</td>`;
           }
@@ -1956,13 +2246,15 @@
 
         tbody.innerHTML = rows;
       } else {
-        thead.innerHTML = '<tr><th>Hall Ticket</th><th>Name</th><th>WhatsApp</th><th>Actions</th></tr>';
+        thead.innerHTML = '<tr><th>S.No</th><th>Hall Ticket</th><th>Name</th><th>WhatsApp</th><th>Actions</th></tr>';
         let rows = '';
         for (let i = 0; i < matching.length; i++) {
           const s = matching[i].s;
           const idx = matching[i].idx;
+          const serial = matching[i].serial;
           rows += `
             <tr>
+              <td>${serial}</td>
               <td>${s.hall}</td>
               <td>${s.name}</td>
               <td>+${s.phone}</td>
@@ -2018,73 +2310,15 @@
     }
 
     function drawCollegeLogo(doc, x, y, size) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 320;
-      canvas.height = 320;
-      const ctx = canvas.getContext('2d');
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(160, 160, 156, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.lineWidth = 10;
-      ctx.strokeStyle = '#800020';
-      ctx.beginPath();
-      ctx.arc(160, 160, 150, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(160, 160, 138, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.fillStyle = '#800020';
-      ctx.beginPath();
-      ctx.arc(160, 130, 48, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(138, 114, 18, 26);
-      ctx.fillRect(164, 114, 18, 26);
-      ctx.fillStyle = '#800020';
-      ctx.fillRect(141, 119, 12, 3);
-      ctx.fillRect(141, 126, 12, 3);
-      ctx.fillRect(167, 119, 12, 3);
-      ctx.fillRect(167, 126, 12, 3);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(160, 78);
-      ctx.lineTo(153, 98);
-      ctx.lineTo(167, 98);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = '#800020';
-      ctx.font = 'bold 26px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('SARDAR PATEL', 160, 52);
-
-      ctx.font = 'bold 21px sans-serif';
-      ctx.fillText('COLLEGE', 160, 204);
-
-      ctx.font = 'bold 16px sans-serif';
-      ctx.fillText('SECUNDERABAD', 160, 230);
-
-      ctx.fillStyle = '#800020';
-      ctx.fillRect(40, 248, 240, 3);
-      ctx.font = 'bold 15px sans-serif';
-      ctx.fillText('ESTD: 1970', 160, 276);
-
-      const dataUrl = canvas.toDataURL('image/png');
-      doc.addImage(dataUrl, 'PNG', x, y, size, size);
+      const logoDataUrl = getCollegeLogoDataUrl();
+      doc.addImage(logoDataUrl, 'PNG', x, y, size, size);
     }
 
     function generatePdfDocument() {
       if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF Engine loading...'); return null; }
       const timeframe = document.getElementById('reportTimeframeSelect').value;
       const dept = curDept();
+      sortStudentsByHallTicket(dept);
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
@@ -2120,7 +2354,7 @@
       doc.rect(198, 0, 99, 4, 'F');
 
       try {
-        drawCollegeLogo(doc, 14, 7, 22);
+        drawCollegeLogo(doc, 13, 6, 24);
       } catch (e) {
         console.warn('Emblem render fallback:', e);
       }
@@ -2129,16 +2363,16 @@
       doc.setFillColor(253, 242, 244);
       doc.setDrawColor(128, 0, 32);
       doc.setLineWidth(0.5);
-      doc.roundedRect(40, 7, 118, 22, 3, 3, 'FD');
+      doc.roundedRect(41, 7, 117, 22, 3, 3, 'FD');
 
       /* Left Crimson Strip inside Date Box */
       doc.setFillColor(128, 0, 32);
-      doc.roundedRect(40, 7, 4, 22, 1.5, 1.5, 'F');
+      doc.roundedRect(41, 7, 4, 22, 1.5, 1.5, 'F');
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(13);
       doc.setTextColor(128, 0, 32);
-      doc.text(`DATE: ${chosenDate}`, 48, 15.5);
+      doc.text(`DATE: ${chosenDate}`, 49, 15.5);
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
@@ -2146,10 +2380,10 @@
       const dateRangeLabel = timeframe === 'daily'
         ? `REPORT MODE: DAILY SUMMARY (${chosenDate})`
         : `REPORT MODE: ${timeframe.toUpperCase()} (${filteredDates.length} DAYS)`;
-      doc.text(dateRangeLabel, 48, 21.5);
+      doc.text(dateRangeLabel, 49, 21.5);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
-      doc.text(`GENERATED ON: ${now.toLocaleDateString('en-GB')}`, 48, 26.5);
+      doc.text(`GENERATED ON: ${now.toLocaleDateString('en-GB')}`, 49, 26.5);
 
       /* Right College Header */
       doc.setFont('helvetica', 'bold');
@@ -2167,12 +2401,12 @@
       doc.setTextColor(79, 70, 229);
       doc.text(`CLASS: ${dept.name.toUpperCase()} (${dept.academicYear}) • ${dept.semester.toUpperCase()}`, 283, 25.5, { align: 'right' });
 
-      const headers = ['Roll No', 'Student Name', ...dept.subjects, 'Attended', 'Held', 'Overall %', 'Today Status'];
+      const headers = ['S.No', 'Roll No', 'Student Name', ...dept.subjects, 'Attended', 'Held', 'Overall %', 'Today Status'];
       const body = [];
 
       for (let i = 0; i < dept.students.length; i++) {
         const s = dept.students[i];
-        const row = [s.hall, s.name];
+        const row = [i + 1, s.hall, s.name];
         let totalP = 0;
         let totalH = 0;
 
@@ -2231,8 +2465,8 @@
       const pctColIndex = headers.length - 2;
       const attendedColIndex = headers.length - 4;
       const heldColIndex = headers.length - 3;
-      const subjectStartIndex = 2;
-      const subjectEndIndex = 2 + dept.subjects.length - 1;
+      const subjectStartIndex = 3;
+      const subjectEndIndex = 3 + dept.subjects.length - 1;
 
       doc.autoTable({
         head: [headers],
@@ -2241,7 +2475,7 @@
         theme: 'grid',
         styles: { 
           fontSize: 8, 
-          cellPadding: 2.8, 
+          cellPadding: 2.6, 
           font: 'helvetica', 
           lineColor: [203, 213, 225], 
           lineWidth: 0.15,
@@ -2253,14 +2487,15 @@
           textColor: [255, 255, 255], 
           fontStyle: 'bold', 
           halign: 'center',
-          fontSize: 8.2
+          fontSize: 8
         },
         alternateRowStyles: {
           fillColor: [248, 250, 252]
         },
         columnStyles: {
-          0: { cellWidth: 26, fontStyle: 'bold', halign: 'center' },
-          1: { cellWidth: 40, fontStyle: 'bold' },
+          0: { cellWidth: 11, fontStyle: 'bold', halign: 'center' },
+          1: { cellWidth: 25, fontStyle: 'bold', halign: 'center' },
+          2: { cellWidth: 38, fontStyle: 'bold' },
           [attendedColIndex]: { halign: 'center', fontStyle: 'bold' },
           [heldColIndex]: { halign: 'center', fontStyle: 'bold' }
         },
@@ -2367,6 +2602,7 @@
       const fullPhone = '91' + rawInput.slice(-10);
       const timeframe = document.getElementById('reportTimeframeSelect').value;
       const dept = curDept();
+      sortStudentsByHallTicket(dept);
 
       const chosenDate = document.getElementById('selectedDateDropdown').value || dept.dates[dept.dates.length - 1] || new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
       
@@ -2381,7 +2617,7 @@
           else if (st === 'Absent') aSubs.push(sub);
         });
         const held = pSubs.length + aSubs.length;
-        studentEntries += `\n${s.name} (${s.hall}): ${held === 0 ? 'No classes' : (pSubs.length === held ? 'Present' : pSubs.length + '/' + held)}\n`;
+        studentEntries += `\n${i + 1}. ${s.name} (${s.hall}): ${held === 0 ? 'No classes' : (pSubs.length === held ? 'Present' : pSubs.length + '/' + held)}\n`;
       }
 
       const msg = `Sardar Patel College\nReport: ${timeframe.toUpperCase()}\nDate: ${chosenDate}\n${studentEntries}`;
